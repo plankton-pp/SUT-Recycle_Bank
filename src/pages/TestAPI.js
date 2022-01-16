@@ -77,6 +77,7 @@ function Index() {
     return (
         <div>
             <h1>Test API</h1>
+            <h1>Test API</h1>
             <Button type="primary m-3" onClick={() => { getBooks() }}>Get All</Button>
             <Button type="primary m-3" onClick={() => { getBookById(1) }}>Get By ID 1</Button>
             <Button type="primary m-3" onClick={() => { getBookById(2) }}>Get By ID 2</Button>
