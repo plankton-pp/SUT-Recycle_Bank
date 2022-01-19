@@ -3,7 +3,7 @@ import { httpClient } from './httpClient';
 
 //=================== Test Get API
 export const getBooks = async () => {
-  return await httpClient.get(`/api/v1/books/`);
+  return await httpClient.get(`/api/v1/book/`);
 }
 
 export const getBookById = async (id) => {
