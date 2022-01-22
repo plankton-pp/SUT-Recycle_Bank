@@ -17,7 +17,7 @@ function SiderLayout(props) {
         let tabName = Object.values(props.content)[index].name
         return <React.Fragment key={`fragment-navtab-${tabName}-${index}`}>
             <Menu.Item key={`navtab-${tabName}-${index}`} onClick={() => changeNav(`navtab-${tabName}-${index}`)} style={{}}>
-                <Link to={`/${change}`} style={{ textDecoration: 'none', fontWeight: 'bolder' }}>
+                <Link to={`/${change}`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
                     {tabName}
                 </Link>
             </Menu.Item>
@@ -31,10 +31,10 @@ function SiderLayout(props) {
                 Logo
                 NavTabs */}
             <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: '#fff', }}>
-                <Row gutter={[0, 0]}>
-                    <Col lg={4} md={6} sm={10}>
+                <Row gutter={[30, 0]}>
+                    <Col>
                         <Row>
-                            <Col >
+                            <Col>
                                 <SUTLogo />
                             </Col>
                         </Row>

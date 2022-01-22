@@ -22,7 +22,7 @@ body {
 .logo {
   font-size: 28px;
   font-weight: bolder;
-  background: linear-gradient(to right, #186048 8%, #30a878 50%, #90d890 20%);
+  background: linear-gradient(to right, #186048 10%, #30a878 50%, #90d890 20%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -50,3 +50,26 @@ body {
 /* .ant-menu-item:hover > .ant-menu-submenu:hover >.ant-menu-item-active{
   border-bottom: '#000';
 } */
+
+
+.box-card {
+  background: #f0f3f5;
+}
+
+.border-card {
+  border: 1px solid #c8ced3;
+}
+
+.border-card-title {
+  border-bottom: 1px solid #c8ced3;
+}
+
+.box-head {
+  border-radius: 4px;
+  border: 1px solid #c8ced3;
+  background: #f4f4f4;
+}
+
+.container-fixed-footer {
+  min-height: calc(100vh - 110px);
+}
