@@ -12,14 +12,11 @@ function Index() {
     const [apiStatus, setApiStatus] = useState(false)
     const [lastBookId, setLastBookId] = useState('')
 
-    const stringify = (data) =>{
-        return JSON.stringify(data)
-    }
     const getBooks = async () => {
         try {
             const response = await API.getBooks();
             const data = await response?.data;
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 setJsonText(JSON.stringify(data, null, 2))
                 let dataArray = []
                 for(var item in data.data) {
@@ -38,7 +35,7 @@ function Index() {
         try {
             const response = await API.getBookById(id);
             const data = await response?.data;
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 setJsonText(JSON.stringify(data, null, 2))
                 setApiStatus(true)
             }
@@ -50,7 +47,7 @@ function Index() {
     const deleteById = async (id) => {
         try {
             const response = await API.deleteBookById(id);
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 getBooks()
             }
         } catch (error) {
@@ -61,8 +58,8 @@ function Index() {
     const addBook = async (book) => {
         try {
             const response = await API.addBook(book);
-            const data = await response?.data;
-            if (response.status === 200) {
+            // const data = await response?.data;
+            if (response?.status === 200) {
                 getBooks()
             }
         } catch (error) {
