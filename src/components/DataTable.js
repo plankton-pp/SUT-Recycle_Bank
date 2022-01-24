@@ -1,76 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table } from 'antd';
+import InputSelect from './InputSelect';
 
-function DataTable(props) {
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-        },
-        {
-            title: 'Chinese Score',
-            dataIndex: 'chinese',
-            sorter: {
-                compare: (a, b) => a.chinese - b.chinese,
-                multiple: 3,
-            },
-        },
-        {
-            title: 'Math Score',
-            dataIndex: 'math',
-            sorter: {
-                compare: (a, b) => a.math - b.math,
-                multiple: 2,
-            },
-        },
-        {
-            title: 'English Score',
-            dataIndex: 'english',
-            sorter: {
-                compare: (a, b) => a.english - b.english,
-                multiple: 1,
-            },
-        },
-    ];
 
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            chinese: 98,
-            math: 60,
-            english: 70,
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            chinese: 98,
-            math: 66,
-            english: 89,
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            chinese: 98,
-            math: 90,
-            english: 70,
-        },
-        {
-            key: '4',
-            name: 'Jim Red',
-            chinese: 88,
-            math: 99,
-            english: 89,
-        },
+function DataTable({ columns, data }) {
+    const initLimitSelectValue = [{ value: 5, label: 5 }];
+    const [limitSelectValue, setLimitSelectValue] = useState(initLimitSelectValue)
+    const limitValueList = [
+        { value: 5, label: 5 },
+        { value: 10, label: 10 },
+        { value: 25, label: 25 },
+        { value: 50, label: 50 },
+        { value: 75, label: 75 },
+        { value: 100, label: 100 },
     ];
+    const [limitList, setLimitList] = useState(limitValueList)
 
     const onChange = (pagination, filters, sorter, extra) => {
-
         console.log('params', pagination, filters, sorter, extra);
     }
 
     return <div>
-        <Table columns={columns} dataSource={data} onChange={onChange} />
+        <div className="d-flex align-items-center justify-content-start mb-2 ">
+            <InputSelect
+                star={false} mode="filter"
+                idName="limit" classFormGroup="mb-1"
+                selectValue={limitSelectValue}
+                optionsList={limitList}
+                handleChange={(value) => {
+                    console.log([value]);
+                    setLimitSelectValue([value])
+                }}
+            />
+        </div>
+        <Table columns={columns} dataSource={data} onChange={onChange} pagination={{ pageSize: limitSelectValue[0].value }} />
     </div>;
 }
 

@@ -19,9 +19,10 @@ export const NavHeader = styled.nav`
     background: #E72525;
 `
 export const Button = styled.button`
-    background: ${({ bg }) => bg || "#fff"};
-    color: ${({ color }) => color || "#000"};
-
+    background: ${({ bg,disabled }) => disabled? "#ddd": bg || "#fff"};
+    color: ${({ color,disabled }) => disabled? "#666":color || "#000"};
+    width: ${({width})=> width|| "auto"};
+    height: ${({height})=> height|| "auto"};
     ${({ padding }) => `padding: ${padding}`};
     display: inline-block;
     font-weight: 400;

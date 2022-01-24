@@ -6,7 +6,7 @@ import SUTLogo from './SUTLogo';
 
 function SiderLayout(props) {
     const { Header } = Layout;
-    const [activeNav, setActiveNav] = useState('navtab-Home-0')
+    const [activeNav, setActiveNav] = useState('navtab-deposit-1')
 
     const changeNav = (key) => {
         setActiveNav(key)
@@ -16,7 +16,7 @@ function SiderLayout(props) {
         let change = Object.keys(props.content)[index]
         let tabName = Object.values(props.content)[index].name
         return <React.Fragment key={`fragment-navtab-${tabName}-${index}`}>
-            <Menu.Item key={`navtab-${tabName}-${index}`} onClick={() => changeNav(`navtab-${tabName}-${index}`)} style={{}}>
+            <Menu.Item key={`navtab-${change}-${index}`} id={`navtab-${change}-${index}`} onClick={() => changeNav(`navtab-${tabName}-${index}`)} style={{}}>
                 <Link to={`/${change}`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
                     {tabName}
                 </Link>
@@ -42,7 +42,7 @@ function SiderLayout(props) {
                     {/* Rendering NavMenu */}
                     {Object.keys(props.content).length > 0 ?
                         <Col lg={16} md={16} sm={10}>
-                            <Menu mode="horizontal" defaultSelectedKeys={['navtab-Home-0']} style={{ lineHeight: '64px',}} activeKey={activeNav}>
+                            <Menu mode="horizontal" defaultSelectedKeys={['navtab-index-0']} style={{ lineHeight: '64px',}} activeKey={activeNav}>
                                 {Object.keys(props.content).map((item, index) => {
                                     return renderNavMenu(item, index)
                                 })}
