@@ -75,9 +75,10 @@ function Deposit() {
 
     const initForm = {
         memberId: "",
-        memberName: "test",
+        memberName: "",
         memberLastname: "",
         memberTel: "",
+        memberEmail: "",
 
         mode: "",
         idEdit: "",
@@ -86,8 +87,6 @@ function Deposit() {
     const [form, setForm] = useState(initForm);
     const [showModalSearch, setShowModalSearch] = useState(false)
     const [showModalAdd, setShowModalAdd] = useState(false)
-
-    const [memberId, setMemberId] = useState('');
     const [objectList, setObjectList] = useState([]);
     const [sumPrice, setSumPrice] = useState(0);
     const [countTransaction, setCountTransaction] = useState(0);
@@ -105,19 +104,21 @@ function Deposit() {
     }, [objectList]);
 
     useEffect(() => {
-    }, [form]);
-
-    useEffect(() => {
         let removedList = objectList.filter((item) => { return item.index !== removeItem }).map((item, i) => { return { ...item, index: i, key: i + 1 } })
         setObjectList(removedList)
     }, [removeItem]);
+
+    useEffect(() => {
+      console.log(form);
+    }, [form]);
+    
 
     const toSearchMember = () => {
         setShowModalSearch(true)
     }
 
     const clearSearch = () => {
-        setMemberId('')
+        setForm(initForm)
     }
 
     const toAddList = () => {
@@ -152,6 +153,18 @@ function Deposit() {
         setCountTransaction(countTransaction + 1)
         setSumPrice(sumPrice + data.sumPrice)
         setObjectList([...form.data, filteredData])
+    }
+
+    const setMemberData = (memberData) => {
+        console.log('param',memberData);
+        setForm({
+            ...form,
+            memberId: memberData.memberId,
+            memberName: memberData.name,
+            memberLastname: memberData.lastname,
+            memberTel: memberData.tel,
+            memberEmail: memberData.email,
+        })
     }
 
     const toSaveList = () => {
@@ -213,9 +226,9 @@ function Deposit() {
                     <Col >
                         <InputText title="รหัสสมาชิก" type="text" idName="update-date"
                             placeholder="Text" classLabel="bold"
-                            value={memberId}
+                            value={form.memberId}
                             handleChange={(value) => {
-                                setMemberId(value)
+                                setForm({...form,memberId: value})
                             }}
                         />
                     </Col>
@@ -226,7 +239,7 @@ function Deposit() {
                     </Col>
                     <Col>
                         <div className='mt-1'>
-                            <Button className={'mr-2 mt-4'} bg={'#E72525'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
+                            <Button className={'mr-2 mt-4'} bg={'#3C3C3C'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
                         </div>
                     </Col>
 
@@ -320,6 +333,8 @@ function Deposit() {
                 show={showModalSearch}
                 close={() => setShowModalSearch(false)}
                 mode={form.mode} idEdit={form.idEdit}
+                data={form.memberId}
+                save={(dataMember) => { setMemberData(dataMember) }}
             />
         }
 
