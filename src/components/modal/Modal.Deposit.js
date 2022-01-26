@@ -62,7 +62,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     useEffect(() => {
         setObjectAmount(0)
     }, [objectName, objectType]);
-    
+
 
     useEffect(() => {
         setSumPrice(Number(objectAmount) * Number(pricePerUnit))
@@ -103,7 +103,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
         >
             <ModalHeader handleClose={() => { handleClose() }} BgColor={'#96CC39'}>
                 <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="bold mt-4">{'เพิ่มรายการ'}</h5>
+                    <h4 className="bold mt-4">{'เพิ่มรายการ'}</h4>
                 </div>
             </ModalHeader>
             <Modal.Body className="p-4">
@@ -113,10 +113,10 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                             <div style={{ width: '100%' }} className='mb-3'>
                                 <Row gutter={[0, 0]}>
                                     <Col span={12} className='bold' style={{ backgroundColor: '#ddd' }}>
-                                        ประเภทวัสดุ
+                                        <h5>ประเภทวัสดุ</h5>
                                     </Col>
                                     <Col span={12} className='bold' style={{ backgroundColor: '#ddd' }}>
-                                        ชื่อวัสดุ
+                                        <h5>ชื่อวัสดุ</h5>
                                     </Col>
                                 </Row>
                             </div>
@@ -135,7 +135,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                             <div style={{ width: '100%' }} className='mb-3'>
                                 <Row gutter={[0, 0]} style={{ backgroundColor: '#ddd' }}>
                                     <Col className='bold'>
-                                        รายละเอียด
+                                        <h5>รายละเอียด</h5>
                                     </Col>
                                 </Row>
                             </div>

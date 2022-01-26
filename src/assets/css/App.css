@@ -1,5 +1,13 @@
 @import '~antd/dist/antd.css';
 @import '~bootstrap/dist/css/bootstrap.css';
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;400&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 /* @import '~bootstrap/dist/css/bootstrap.min.css'; */
 
 :hover .btn-warning {
