@@ -3,9 +3,12 @@ import { Table } from 'antd';
 import InputSelect from './InputSelect';
 
 
-function DataTable({ columns, data }) {
+function DataTable({ columns, data, option }) {
     const initLimitSelectValue = [{ value: 5, label: 5 }];
     const [limitSelectValue, setLimitSelectValue] = useState(initLimitSelectValue)
+    const [selectedRowKeys, setRowKeys] = useState([]);
+    const [selectedRows, setSelectedRow] = useState([]);
+
     const limitValueList = [
         { value: 5, label: 5 },
         { value: 10, label: 10 },
@@ -16,14 +19,67 @@ function DataTable({ columns, data }) {
     ];
     const [limitList, setLimitList] = useState([])
 
+    const start = () => {
+        setRowKeys([]);
+        setSelectedRow([])
+        if (option) {
+            option.select([])
+        }
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        selectedRows,
+        onChange: (selectedRowKeys, row) => {
+            setRowKeys(selectedRowKeys);
+            setSelectedRow(row)
+
+            if (option) {
+                option.select([selectedRowKeys, row])
+            }
+        },
+    };
+
     useEffect(() => {
         setLimitList(limitValueList);
     }, []);
+
+    useEffect(() => {
+        if (option && option.clearSelectedRow) {
+            start()
+        }
+    }, [option]);
 
 
     const onChange = (pagination, filters, sorter, extra) => {
         // console.log('params', pagination, filters, sorter, extra);
     }
+
+    const renderTable = () => {
+        if (option && option.type === 'selection') {
+            return (
+                <Table
+                    rowSelection={{
+                        type: 'radio',
+                        ...rowSelection,
+                    }}
+                    columns={columns}
+                    dataSource={data}
+                    onChange={onChange}
+                    pagination={{ pageSize: limitSelectValue[0].value, position: 'bottomLeft' }} />
+            )
+        } else {
+            return (
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                    onChange={onChange}
+                    pagination={{ pageSize: limitSelectValue[0].value, position: 'bottomLeft' }} />
+            )
+        }
+    }
+
+
 
     return <div>
         <div className="d-flex align-items-center justify-content-start mb-2 ">
@@ -33,12 +89,13 @@ function DataTable({ columns, data }) {
                 selectValue={limitSelectValue}
                 optionsList={limitList}
                 handleChange={(value) => {
-                    console.log([value]);
                     setLimitSelectValue([value])
                 }}
             />
         </div>
-        <Table columns={columns} dataSource={data} onChange={onChange} pagination={{ pageSize: limitSelectValue[0].value, position: 'bottomLeft' }} />
+        {
+            renderTable()
+        }
     </div>;
 }
 
