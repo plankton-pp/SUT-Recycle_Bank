@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
 import InputSelect from './InputSelect';
 
@@ -14,10 +14,15 @@ function DataTable({ columns, data }) {
         { value: 75, label: 75 },
         { value: 100, label: 100 },
     ];
-    const [limitList, setLimitList] = useState(limitValueList)
+    const [limitList, setLimitList] = useState([])
+
+    useEffect(() => {
+        setLimitList(limitValueList);
+    }, []);
+
 
     const onChange = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
+        // console.log('params', pagination, filters, sorter, extra);
     }
 
     return <div>
@@ -33,7 +38,7 @@ function DataTable({ columns, data }) {
                 }}
             />
         </div>
-        <Table columns={columns} dataSource={data} onChange={onChange} pagination={{ pageSize: limitSelectValue[0].value }} />
+        <Table columns={columns} dataSource={data} onChange={onChange} pagination={{ pageSize: limitSelectValue[0].value, position: 'bottomLeft' }} />
     </div>;
 }
 

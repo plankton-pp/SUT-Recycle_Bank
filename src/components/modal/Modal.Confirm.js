@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
+import ModalHeader from '../ModalHeader';
+import { Row, Col } from 'antd';
+import { Button } from '../styles/globalStyles';
 
-function ModalConfirm({ show, close, confirm, size, text, textBody, }) {
+function ModalConfirm({ show, close, confirm, size, text, textBody, mode }) {
 
     const toConfrim = async () => {
         await confirm();
@@ -15,19 +18,24 @@ function ModalConfirm({ show, close, confirm, size, text, textBody, }) {
         <Modal
             show={show}
             size={size}
-            onHide={() => handleClose(false)}
+            onHide={() => handleClose()}
             centered
         >
-            <Modal.Header closeButton className="pb-4">
-            </Modal.Header>
+            <ModalHeader closeButton className="pb-4">
+            </ModalHeader>
             <Modal.Body className="p-4">
-                <div className="mb-2 text-center">
+                <div className='d-flex justify-content-center'>
                     {text ? <p className="mb-5 bold">{text}</p> : ""}
-
-                    <div className="py-2">
-                        <button className="btn btn-danger px-4 mr-2" onClick={() => handleClose()}>ยกเลิก</button>
-                        <button className="btn btn-success px-4" onClick={() => toConfrim()}>ตกลง</button>
-                    </div>
+                </div>
+                <div className="py-2 d-flex justify-content-center">
+                    <Row gutter={[10, 0]}>
+                        <Col>
+                            <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => { handleClose() }}>ยืนยัน</Button>
+                        </Col>
+                        <Col>
+                            <Button color="white" bg="#E72525" width={'auto'} className="cursor-p" onClick={() => { toConfrim() }}>ยกเลิก</Button>
+                        </Col>
+                    </Row>
                 </div>
             </Modal.Body>
         </Modal>

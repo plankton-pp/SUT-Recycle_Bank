@@ -35,7 +35,7 @@ function InputSelect({ title, star, classLabel, placeholder, idName, selectValue
                             }),
                             container: (styles, state) => ({
                                 ...styles,
-                                width: mode == "filter" ? "115%" : "100%",
+                                width: mode === "filter" ? "115%" : "100%",
                             })
                         }
                     }

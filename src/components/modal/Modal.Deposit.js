@@ -30,54 +30,42 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     const contentTab = [
         {
             'กระดาษ': {
-                typeId: 'typeId',
+                typeId: 'paper-type-00',
                 data: [
-                    { id: 'id', name: 'สมุด' },
-                    { id: 'id', name: 'หนังสือ' },
-                    { id: 'id', name: 'ลังกระดาษ' },
-                    { id: 'id', name: 'สมุด' },
-                    { id: 'id', name: 'หนังสือ' },
-                    { id: 'id', name: 'ลังกระดาษ' },
-                    { id: 'id', name: 'สมุด' },
-                    { id: 'id', name: 'หนังสือ' },
-                    { id: 'id', name: 'ลังกระดาษ' },
-                    { id: 'id', name: 'สมุด' },
-                    { id: 'id', name: 'หนังสือ' },
-                    { id: 'id', name: 'ลังกระดาษ' },
-                    { id: 'id', name: 'สมุด' },
-                    { id: 'id', name: 'หนังสือ' },
-                    { id: 'id', name: 'ลังกระดาษ' },
+                    { id: 'paper-001', name: 'สมุด' },
+                    { id: 'paper-002', name: 'หนังสือ' },
+                    { id: 'paper-003', name: 'ลังกระดาษ' },
                 ],
             },
             'โลหะ': {
-                typeId: 'typeId',
+                typeId: 'material-type-00',
                 data: [
-                    { id: 'id', name: 'ทองแดง' },
-                    { id: 'id', name: 'เหล็ก' },
-                    { id: 'id', name: 'กระป๋องอลูมิเนียม' },
-                    { id: 'id', name: 'ทองแดง' },
-                    { id: 'id', name: 'เหล็ก' },
-                    { id: 'id', name: 'กระป๋องอลูมิเนียม' },
-                    { id: 'id', name: 'ทองแดง' },
-                    { id: 'id', name: 'เหล็ก' },
-                    { id: 'id', name: 'กระป๋องอลูมิเนียม' },
+                    { id: 'material-001', name: 'ทองแดง' },
+                    { id: 'material-002', name: 'เหล็ก' },
+                    { id: 'material-003', name: 'กระป๋องอลูมิเนียม' },
 
                 ],
             }
             ,
             'แก้ว': {
-                typeId: 'typeId',
+                typeId: 'glass-type-00',
                 data: [
-                    { id: 'id', name: 'ขวด' },
-                    { id: 'id', name: 'กระจก' },
-                    { id: 'id', name: 'ภาชนะ' },
-                    { id: 'id', name: 'เซรามิก' },
+                    { id: 'glass-001', name: 'ขวด' },
+                    { id: 'glass-002', name: 'กระจก' },
+                    { id: 'glass-003', name: 'ภาชนะ' },
+                    { id: 'glass-004', name: 'เซรามิก' },
                 ],
             }
         }
     ]
 
     useEffect(() => {
+        setObjectAmount(0)
+    }, [objectName, objectType]);
+    
+
+    useEffect(() => {
+        setSumPrice(Number(objectAmount) * Number(pricePerUnit))
         setForm({
             ...form,
             type: objectType,
@@ -86,16 +74,9 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
             name: objectName,
             amount: objectAmount,
             pricePerUnit: pricePerUnit,
-            sumPrice: sumPrice,
+            sumPrice: Number(objectAmount) * Number(pricePerUnit),
         })
     }, [objectAmount]);
-
-    useEffect(() => {
-        setSumPrice(Number(objectAmount)*Number(pricePerUnit))
-    }, [objectAmount]);
-    
-
-
 
     const addItem = () => {
         save(form)
@@ -120,12 +101,12 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
             onHide={() => { handleClose() }}
             centered
         >
-            <ModalHeader handleClose={() => { handleClose() }}>
+            <ModalHeader handleClose={() => { handleClose() }} BgColor={'#96CC39'}>
                 <div className="d-flex justify-content-between align-items-center">
                     <h5 className="bold mt-4">{'เพิ่มรายการ'}</h5>
                 </div>
             </ModalHeader>
-            <Modal.Body>
+            <Modal.Body className="p-4">
                 <div className='mb-3'>
                     <Row gutter={[10, 5]}>
                         <Col span={12}>

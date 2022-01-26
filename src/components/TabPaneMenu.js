@@ -6,12 +6,14 @@ const { TabPane } = Tabs;
 
 function TabPaneMenu({ content, type, onSet }) {
     const [tabPosition, setTabPosition] = useState('left');
+    const [onActiveObject, setOnActiveObject] = useState('');
 
     useEffect(() => {
         // console.log('TabPane', content);
     }, []);
 
-    const setData = (data) => {
+    const setData = (data, elementId) => {
+        setOnActiveObject(elementId)
         onSet(data)
     }
 
@@ -19,13 +21,13 @@ function TabPaneMenu({ content, type, onSet }) {
         const data = content[0][item].data;
         const typeId = content[0][item].typeId;
         return (
-            <TabPane tab={item} key={'tabpane-' + (index + 1)} id={'tabpane-' + (index + 1)}>
+            <TabPane tab={item} key={'tabpane-' + typeId} id={'tabpane-' + typeId}>
                 <Row gutter={5, 10}>
                     {type === 'button'
                         ?
                         data.map((element, i) => {
                             let objectDeposit = {
-                                type:item,
+                                type: item,
                                 typeId: typeId,
                                 id: element.id,
                                 name: element.name,
@@ -33,7 +35,7 @@ function TabPaneMenu({ content, type, onSet }) {
                             }
                             return (
                                 <Col sm={12} md={24} lg={6}>
-                                    <Button color="white" bg="#189078" className="cursor-p mb-2" width='100%' height='80%' onClick={() => { setData(objectDeposit) }}>{element.name}
+                                    <Button color="white" bg={element.id===onActiveObject?"#90d890":"#189078"} id={element.id} className="cursor-p mb-2" width='100%' height='80%' onClick={() => { setData(objectDeposit,element.id) }}>{element.name}
                                     </Button>
                                 </Col>
                             )

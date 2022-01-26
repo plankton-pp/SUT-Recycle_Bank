@@ -28,7 +28,7 @@ export const Button = styled.button`
     font-weight: 400;
     text-align: center;
     vertical-align: middle;
-    cursor: pointer;
+    cursor: ${({disabled})=> 'not-allowed'|| "pointer"};
     -webkit-user-select: none;
     user-select: none;    
     border: 1px solid transparent;
