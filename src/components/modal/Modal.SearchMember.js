@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../../assets/css/index.css'
 import { Modal } from 'react-bootstrap';
 import { Row, Col, Table } from 'antd';
 import { Button } from '../styles/globalStyles';
@@ -47,8 +48,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '1',
             index: '1',
             memberId: 'm01',
-            name: 'test',
-            lastname: 'test',
+            name: 'A',
+            lastname: 'L',
             tel: 'test',
             email: 'test',
         },
@@ -56,8 +57,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '2',
             index: '2',
             memberId: 'm02',
-            name: 'test',
-            lastname: 'test',
+            name: 'b',
+            lastname: 'l',
             tel: 'test',
             email: 'test',
         },
@@ -65,8 +66,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '3',
             index: '3',
             memberId: 'm03',
-            name: 'test',
-            lastname: 'test',
+            name: 'c',
+            lastname: 'j',
             tel: 'test',
             email: 'test',
         },
@@ -74,8 +75,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '4',
             index: '4',
             memberId: 'm04',
-            name: 'test',
-            lastname: 'test',
+            name: 'd',
+            lastname: 'I',
             tel: 'test',
             email: 'test',
         },
@@ -83,8 +84,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '5',
             index: '5',
             memberId: 'm061',
-            name: 'test',
-            lastname: 'test',
+            name: 'E',
+            lastname: 'H',
             tel: 'test',
             email: 'test',
         },
@@ -92,16 +93,16 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
             key: '6',
             index: '6',
             memberId: 'm062',
-            name: 'test',
+            name: 'F',
             lastname: 'test',
-            tel: 'test',
+            tel: 'G',
             email: 'test',
         },
 
     ]
 
     useEffect(() => {
-        if(selectedData.length<=0){
+        if (selectedData.length <= 0) {
             setSearchId('')
         }
     }, [selectedData]);
@@ -114,7 +115,16 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
 
     const getMemberData = () => {
         let filteredMember = memberData.filter((item, index) => {
-            return item.memberId.includes(searchId)
+            let textSearch = String(searchId).toLowerCase();
+            let checkMemId = String(item.memberId).toLowerCase().includes(textSearch)
+            let checkName = String(item.name).toLowerCase().includes(textSearch)
+            let checkLastname = String(item.lastname).toLowerCase().includes(textSearch)
+            let checkTel = String(item.tel).toLowerCase().includes(textSearch)
+            let checkEmail = String(item.email).toLowerCase().includes(textSearch)
+
+            let checkTrue = (checkMemId || checkName || checkLastname || checkTel || checkEmail)
+
+            return checkTrue
         })
         return filteredMember
     }
@@ -127,9 +137,17 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
         close()
     }
 
-    const onSelected = () =>{
+    const onSelected = () => {
         save(selectedData[1][0])
         handleClose()
+    }
+
+    const toAddMember = () => {
+
+    }
+
+    const buttonAdd = () => {
+        return (<Button onClick={() => toAddMember()} >เพิ่มสมาชิก</Button>)
     }
 
     return (
@@ -145,29 +163,32 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                 </div>
             </ModalHeader>
             <Modal.Body>
-                <Row gutter={[10, 10]} className='mb-4'>
-                    <Col>
-                        <div className=''>
-                            <h5>{`รหัสสมาชิก:`}</h5>
+                <div>
+                    <Row gutter={[10, 10]} className='mb-4'>
+                        <Col>
+                        <div className='pt-2'>
+                            <h5>{`คำค้นหา:`}</h5>
                         </div>
                     </Col>
-                    <Col >
-                        <InputText type="text" idName="update-date"
-                            placeholder="Text" classLabel="bold"
-                            value={searchId}
-                            handleChange={(value) => {
-                                setSearchId(value)
-                            }}
-                        />
-                    </Col>
-                    <Col>
+                        <Col span={12}>
+                            <InputText type="text" idName="update-date"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                                value={searchId}
+                                handleChange={(value) => {
+                                    setSearchId(value)
+                                }}
+                            />
+                        </Col>
+                        {/* <Col>
                         <Button className={'mr-2'} bg={'#96CC39'} width={'80px'} color={'#fff'} onClick={() => { }}>ค้นหา</Button>
-                    </Col>
-                    <Col>
-                        <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshRowMember() }}>ล้าง</Button>
-                    </Col>
-                </Row>
-                <BoxCard title={'รายชื่อสมาชิก'}>
+                    </Col> */}
+                        <Col>
+                            <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshRowMember() }}>ล้าง</Button>
+                        </Col>
+                    </Row>
+                </div>
+
+                <BoxCard title={'รายชื่อสมาชิก'} headRight={buttonAdd()}>
                     <div>
                         <Row>
                             <Col className='w-100'>
@@ -194,7 +215,7 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                             bg={'#96CC39'}
                             width={'80px'}
                             color={'#fff'}
-                            disabled={(selectedData.length<=0)}
+                            disabled={(selectedData.length <= 0)}
                             onClick={() => { onSelected() }}>เลือก</Button>
                     </Col>
                     <Col>

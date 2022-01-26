@@ -66,6 +66,11 @@ function DataTable({ columns, data, option }) {
                     columns={columns}
                     dataSource={data}
                     onChange={onChange}
+                    onRow={(record) => ({
+                        onClick: () => {
+                            rowSelection.onChange([record.key], [record])
+                        },
+                    })}
                     pagination={{ pageSize: limitSelectValue[0].value, position: 'bottomLeft' }} />
             )
         } else {

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
 import { Row, Col } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
-
 import DataTable from '../components/DataTable';
 import BoxCard from '../components/BoxCard';
 import InputText from '../components/InputText';
@@ -108,9 +106,9 @@ function Deposit() {
         setObjectList(removedList)
     }, [removeItem]);
 
-    useEffect(() => {
-      console.log(form);
-    }, [form]);
+    // useEffect(() => {
+    //   console.log(form);
+    // }, [form]);
     
 
     const toSearchMember = () => {
@@ -156,7 +154,6 @@ function Deposit() {
     }
 
     const setMemberData = (memberData) => {
-        console.log('param',memberData);
         setForm({
             ...form,
             memberId: memberData.memberId,
