@@ -1,12 +1,17 @@
 import { Layout, Menu, Row, Col } from 'antd';
-import React, { useState } from 'react'
-import { Link, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Link, useLocation } from "react-router-dom";
 import SUTLogo from './SUTLogo';
 // import logoEternal from '../assets/img/logo-eternal.png'
 
 function SiderLayout(props) {
     const { Header } = Layout;
-    const [activeNav, setActiveNav] = useState('navtab-Home-0')
+    const location = useLocation().pathname;
+    const [activeNav, setActiveNav] = useState(() => {
+        const activeTab = Object.keys(props.content).filter((item, index) => { return item === location.slice(1, location.length) })[0]
+        const indexOfActiveTab = Object.keys(props.content).indexOf(activeTab)
+        return (`navtab-${activeTab}-${indexOfActiveTab}`)
+    })
 
     const changeNav = (key) => {
         setActiveNav(key)
@@ -16,7 +21,7 @@ function SiderLayout(props) {
         let change = Object.keys(props.content)[index]
         let tabName = Object.values(props.content)[index].name
         return <React.Fragment key={`fragment-navtab-${tabName}-${index}`}>
-            <Menu.Item key={`navtab-${tabName}-${index}`} onClick={() => changeNav(`navtab-${tabName}-${index}`)} style={{}}>
+            <Menu.Item key={`navtab-${change}-${index}`} id={`navtab-${change}-${index}`} onClick={() => changeNav(`navtab-${tabName}-${index}`)}>
                 <Link to={`/${change}`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
                     {tabName}
                 </Link>
@@ -42,7 +47,7 @@ function SiderLayout(props) {
                     {/* Rendering NavMenu */}
                     {Object.keys(props.content).length > 0 ?
                         <Col lg={16} md={16} sm={10}>
-                            <Menu mode="horizontal" defaultSelectedKeys={['navtab-Home-0']} style={{ lineHeight: '64px',}} activeKey={activeNav}>
+                            <Menu mode="horizontal" defaultSelectedKeys={[activeNav]} style={{ lineHeight: '64px', }} >
                                 {Object.keys(props.content).map((item, index) => {
                                     return renderNavMenu(item, index)
                                 })}
