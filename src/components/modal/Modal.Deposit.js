@@ -6,6 +6,7 @@ import ModalHeader from '../ModalHeader';
 import TabPaneMenu from '../TabPaneMenu';
 import { VerticalLine } from '../styles/veriticalLine';
 import InputText from '../InputText';
+import * as API from '../../utils/apis'
 
 function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
@@ -16,6 +17,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     const [objectAmount, setObjectAmount] = useState('');
     const [pricePerUnit, setPricePerUnit] = useState('');
     const [sumPrice, setSumPrice] = useState(0);
+    const [contentTab, setContentTab] = useState([]);
 
     const initForm = {
         type: '',
@@ -27,37 +29,19 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     }
     const [form, setForm] = useState(initForm);
 
-    const contentTab = [
-        {
-            'กระดาษ': {
-                typeId: 'paper-type-00',
-                data: [
-                    { id: 'paper-001', name: 'สมุด' },
-                    { id: 'paper-002', name: 'หนังสือ' },
-                    { id: 'paper-003', name: 'ลังกระดาษ' },
-                ],
-            },
-            'โลหะ': {
-                typeId: 'material-type-00',
-                data: [
-                    { id: 'material-001', name: 'ทองแดง' },
-                    { id: 'material-002', name: 'เหล็ก' },
-                    { id: 'material-003', name: 'กระป๋องอลูมิเนียม' },
+    useEffect(() => {
+        getTypeAPI()
+    }, []);
 
-                ],
-            }
-            ,
-            'แก้ว': {
-                typeId: 'glass-type-00',
-                data: [
-                    { id: 'glass-001', name: 'ขวด' },
-                    { id: 'glass-002', name: 'กระจก' },
-                    { id: 'glass-003', name: 'ภาชนะ' },
-                    { id: 'glass-004', name: 'เซรามิก' },
-                ],
-            }
+    useEffect(() => {
+        if(contentTab.length>0){
+            getProducts()
         }
-    ]
+    }, [contentTab]);
+
+    // useEffect(() => {
+    //     console.log('contentTab: ', contentTab);
+    // }, [contentTab]);
 
     useEffect(() => {
         setObjectAmount(0)
@@ -94,6 +78,64 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     const handleClose = () => {
         close()
     }
+
+    const getTypeAPI = async () => {
+        try {
+            const response = await API.getTypes();
+            const data = await response?.data.data;
+            if (response.status === 200) {
+                // console.log('dataAPI:', data);
+
+                let tabList = []
+                //loop
+                if (data) {
+                    data.forEach((item) => {
+                        let typeTab = {}
+                        let bodyTab = {
+                            typeId: item.Type_ID,
+                            data: [],
+                        }
+                        typeTab[item.Name] = bodyTab
+                        tabList.push(typeTab)
+                    })
+                }
+                setContentTab(tabList)
+            }
+        } catch (error) {
+            // if (error.response && error.response.status === 401) {
+            //     dispatch(logout({ history }))
+
+            // }
+            console.log(error)
+        }
+    }
+
+    const getProducts = async () => {
+        try {
+            const response = await API.getProducts();
+            const data = await response?.data.data;
+            if (response.status === 200) {
+
+                let tabList = [...contentTab]
+                tabList.forEach((item) => {
+                    let itemKey = Object.keys(item)
+                    let dataList = []
+                    if (data) {
+                        dataList = data.filter((dataItem) => { return dataItem.Type_ID == item[itemKey].typeId })
+                    }
+                    item[itemKey].data = dataList
+                })
+                setContentTab(tabList)
+            }
+        } catch (error) {
+            // if (error.response && error.response.status === 401) {
+            //     dispatch(logout({ history }))
+
+            // }
+            console.log(error)
+        }
+    }
+
     return (
         <Modal
             show={show}
@@ -108,8 +150,8 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
             </ModalHeader>
             <Modal.Body className="p-4">
                 <div className='mb-3'>
-                    <Row gutter={[10, 5]}>
-                        <Col span={12}>
+                    <Row gutter={[5, 5]}>
+                        <Col span={14}>
                             <div style={{ width: '100%' }} className='mb-3'>
                                 <Row gutter={[0, 0]}>
                                     <Col span={12} className='bold' style={{ backgroundColor: '#ddd' }}>

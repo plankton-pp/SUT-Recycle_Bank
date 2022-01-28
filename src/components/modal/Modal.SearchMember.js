@@ -13,6 +13,7 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
     const [searchId, setSearchId] = useState(data);
     const [clearSelectedRow, setClearSelectedRow] = useState(false);
     const [selectedData, setSelectedData] = useState([]);
+    const [onChangeSearch, setOnChangeSearch] = useState(false)
     const columns = [
         {
             title: '#',
@@ -103,15 +104,20 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
 
     useEffect(() => {
         if (selectedData.length <= 0) {
-            setSearchId('')
+            data = ''
         }
     }, [selectedData]);
 
     useEffect(() => {
         if (clearSelectedRow === true) {
+            setSearchId('')
             setClearSelectedRow(false)
+        } else {
+            if (!onChangeSearch) {
+                setSearchId(data)
+            }
         }
-    }, [clearSelectedRow]);
+    }, [clearSelectedRow, searchId, onChangeSearch]);
 
     const getMemberData = () => {
         let filteredMember = memberData.filter((item, index) => {
@@ -166,22 +172,20 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                 <div>
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col>
-                        <div className='pt-2'>
-                            <h5>{`คำค้นหา:`}</h5>
-                        </div>
-                    </Col>
+                            <div className='pt-2'>
+                                <h5>{`คำค้นหา:`}</h5>
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <InputText type="text" idName="update-date"
                                 placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
                                 value={searchId}
                                 handleChange={(value) => {
+                                    setOnChangeSearch(true)
                                     setSearchId(value)
                                 }}
                             />
                         </Col>
-                        {/* <Col>
-                        <Button className={'mr-2'} bg={'#96CC39'} width={'80px'} color={'#fff'} onClick={() => { }}>ค้นหา</Button>
-                    </Col> */}
                         <Col>
                             <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshRowMember() }}>ล้าง</Button>
                         </Col>

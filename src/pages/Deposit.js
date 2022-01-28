@@ -109,14 +109,38 @@ function Deposit() {
     // useEffect(() => {
     //   console.log(form);
     // }, [form]);
-    
+
 
     const toSearchMember = () => {
         setShowModalSearch(true)
     }
 
     const clearSearch = () => {
-        setForm(initForm)
+        if (form.data.length > 0) {
+            MySwal.fire({
+                text: `ยืนยันการล้างข้อมูลสมาชิก `,
+                icon: "question",
+                showCloseButton: true,
+                confirmButtonColor: '#E72525',
+                showCancelButton: true,
+                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "ตกลง",
+            }).then(async (result) => {
+                if (result.value) {
+                    setForm(initForm)
+                    clearDataTable()
+                    //if success
+                    MySwal.fire({
+                        text: `ลบสำเร็จ`,
+                        icon: "success",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#96CC39',
+                    })
+                }
+            })
+        } else {
+            setForm(initForm)
+        }
     }
 
     const toAddList = () => {
@@ -175,6 +199,7 @@ function Deposit() {
             confirmButtonText: "ตกลง",
         }).then(async (result) => {
             if (result.value) {
+                setForm(initForm)
                 clearDataTable()
                 //if success
                 MySwal.fire({
@@ -225,7 +250,7 @@ function Deposit() {
                             placeholder="Text" classLabel="bold"
                             value={form.memberId}
                             handleChange={(value) => {
-                                setForm({...form,memberId: value})
+                                setForm({ ...form, memberId: value })
                             }}
                         />
                     </Col>
