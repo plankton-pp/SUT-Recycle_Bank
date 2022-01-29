@@ -35,6 +35,14 @@ body {
   color: #30a878;
 }
 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #30a878;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #30a878;
+}
+
 .box-card {
   background: #f0f3f5;
 }

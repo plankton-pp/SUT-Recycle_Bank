@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+
 import { Modal } from 'react-bootstrap';
 import { Row, Col } from 'antd';
 import { Button } from '../styles/globalStyles';
+
 import ModalHeader from '../ModalHeader';
 import TabPaneMenu from '../TabPaneMenu';
-import { VerticalLine } from '../styles/veriticalLine';
 import InputText from '../InputText';
+import { VerticalLine } from '../styles/veriticalLine';
+
 import * as API from '../../utils/apis'
 
 function ModalDeposit({ show, close, save, mode, idEdit, data }) {
@@ -34,14 +37,10 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     }, []);
 
     useEffect(() => {
-        if(contentTab.length>0){
+        if (contentTab.length > 0) {
             getProducts()
         }
     }, [contentTab]);
-
-    // useEffect(() => {
-    //     console.log('contentTab: ', contentTab);
-    // }, [contentTab]);
 
     useEffect(() => {
         setObjectAmount(0)
@@ -121,7 +120,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                     let itemKey = Object.keys(item)
                     let dataList = []
                     if (data) {
-                        dataList = data.filter((dataItem) => { return dataItem.Type_ID == item[itemKey].typeId })
+                        dataList = data.filter((dataItem) => { return dataItem.Type_ID === item[itemKey].typeId })
                     }
                     item[itemKey].data = dataList
                 })
@@ -181,10 +180,23 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                     </Col>
                                 </Row>
                             </div>
-                            <Row>
+                            <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Row gutter={[60, 0]} className='mb-2'>
-                                        <Col className='pt-2'>ชื่อวัสดุ:</Col>
+                                    <Row className='mt-3'>
+                                        <Col >ชื่อวัสดุ:</Col>
+                                    </Row>
+                                    <Row className='mt-3'>
+                                        <Col >ประเภท:</Col>
+                                    </Row>
+                                    <Row className='mt-4'>
+                                        <Col >ราคาต่อหน่วย:</Col>
+                                    </Row>
+                                    <Row className='mt-4'>
+                                        <Col >จำนวน:</Col>
+                                    </Row>
+                                </Col>
+                                <Col>
+                                    <Row className='mb-2'>
                                         <Col>
                                             <InputText type="text" idName="object-name"
                                                 placeholder="-" classLabel="normal"
@@ -196,8 +208,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                             />
                                         </Col>
                                     </Row>
-                                    <Row gutter={[56, 0]} className='mb-2'>
-                                        <Col className='pt-2'>ประเภท:</Col>
+                                    <Row className='mb-2'>
                                         <Col>
                                             <InputText type="text" idName="object-name"
                                                 placeholder="-" classLabel="normal"
@@ -209,8 +220,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                             />
                                         </Col>
                                     </Row>
-                                    <Row gutter={[18, 0]} className='mb-2'>
-                                        <Col className='pt-2'>ราคาต่อหน่วย:</Col>
+                                    <Row gutter={[10,0]} className='mb-2'>
                                         <Col>
                                             <InputText type="text" idName="object-name"
                                                 placeholder="-" classLabel="normal"
@@ -221,9 +231,11 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                                 }}
                                             />
                                         </Col>
+                                        <Col>
+                                            <div className='pt-2 pb-2'>บาท</div>
+                                        </Col>
                                     </Row>
-                                    <Row gutter={[65, 0]} className='mb-2'>
-                                        <Col className='pt-2'>จำนวน:</Col>
+                                    <Row gutter={[10,0]} className='mb-2'>
                                         <Col>
                                             <InputText type="number" idName="object-name"
                                                 placeholder="0" classLabel="normal"
@@ -235,27 +247,32 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                                     } else {
                                                         setObjectAmount(value)
                                                     }
-
                                                 }}
                                             />
                                         </Col>
-                                    </Row>
-                                    <Row gutter={[48, 0]} className='mb-2'>
-                                        <Col className='pt-2'>
-                                            <h5>มูลค่ารวม:</h5>
-                                        </Col>
                                         <Col>
-                                            <div className='mt-2 pt-1'>
-                                                <h5>
-                                                    {sumPrice} บาท
-                                                </h5>
-                                            </div>
+                                            <div className='pt-2'>กิโลกรัม</div>
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col style={{ paddingTop: '25%', paddingLeft: '10px' }}>
-                                    <div className='pt-2 pb-2'>บาท</div>
-                                    <div className='pt-2'>กิโลกรัม</div>
+                            </Row>
+                            <Row gutter={[50, 0]} className='mt-3 mb-3'>
+                                <Col className='pt-2'>
+                                    <h4>มูลค่ารวม:</h4>
+                                </Col>
+                                <Col>
+                                    <div className='pt-2'>
+                                        <h4>
+                                            {sumPrice.toFixed(2)}
+                                        </h4>
+                                    </div>
+                                </Col>
+                                <Col>
+                                    <div className='pt-2'>
+                                        <h4>
+                                            บาท
+                                        </h4>
+                                    </div>
                                 </Col>
                             </Row>
                         </Col>

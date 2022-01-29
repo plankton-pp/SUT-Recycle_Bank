@@ -63,3 +63,17 @@ export const addProduct = async (data) => {
 export const updateProduct = async (data) => {
   return await httpClient.put(`/api/v1/product/`, data);
 }
+
+//=================== API: Deposit
+export const addDeposit = async (data) => {
+  return await httpClient.post(`/api/v1/deposit/`, data);
+}
+
+//=================== API: Search Member
+export const searchMember = async (key) => {
+  return await httpClient.get(`/api/v1/member/key/${key}`);
+}
+
+export const getMember = async () => {
+  return await httpClient.get(`/api/v1/member`);
+}

@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { Button } from './styles/globalStyles'
 import { Row, Col } from 'antd'
+import DataTable from './DataTable';
 const { TabPane } = Tabs;
 
-function TabPaneMenu({ content, type, onSet }) {
+function TabPaneMenu({ content, type, onSet, optional }) {
     const [tabPosition, setTabPosition] = useState('left');
     const [onActiveObject, setOnActiveObject] = useState('');
 
-    // useEffect(() => {
-    //     console.log('TabPane', content);
-    // }, []);
+    useEffect(() => {
+        console.disableYellowBox = true;
+        // console.log('TabPane', optional);
+    }, []);
 
     const setData = (data, elementId) => {
         setOnActiveObject(elementId)
@@ -18,6 +20,7 @@ function TabPaneMenu({ content, type, onSet }) {
     }
 
     const renderTabPane = (item) => {
+        console.disableYellowBox = true;
         if (typeof item !== undefined) {
             const tabName = Object.keys(item)
             const data = item[tabName].data;
@@ -25,8 +28,7 @@ function TabPaneMenu({ content, type, onSet }) {
             return (
                 <TabPane tab={tabName} key={tabName} id={tabName}>
                     <Row gutter={[5, 10]}>
-                        {type === 'button'
-                            ?
+                        {type === 'button' &&
                             data.map((element, i) => {
                                 let objectDeposit = {
                                     type: tabName,
@@ -51,10 +53,19 @@ function TabPaneMenu({ content, type, onSet }) {
                                     </Col>
                                 )
                             })
-                            :
-                            <div key={`undefined-data-h99`}> undefined </div>
                         }
                     </Row>
+
+                    {type === 'data-table' &&
+                        <DataTable
+                            key={`data-table-${tabName}`}
+                            columns={optional.columns}
+                            data={data}
+                            limitPositionLeft={true}
+                            height={optional.height}
+                        >
+                        </DataTable>
+                    }
                 </TabPane>
             );
         } else {
