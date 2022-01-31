@@ -1,18 +1,19 @@
 import React from 'react'
-import NavBar from '../components/NavBar'
+import NavLayout from '../components/NavLayout'
+import * as helper from '../utils/helper'
 
 function NavMenu() {
     const content = {
-        index: { name: 'Home'},
-        deposit: { name: 'ฝากวัสดุ'},
-        price: { name: 'ราคารับซื้อ'},
-        audit: { name: 'รายการบัญชีออมทรัพย์'},
-        report: { name: 'เอกสาร'},
+        index: { name: 'Home' },
+        deposit: { name: 'ฝากวัสดุ' },
+        price: { name: 'ราคารับซื้อ' },
+        audit: { name: 'รายการบัญชีออมทรัพย์' },
+        report: { name: 'เอกสาร' },
 
     }
     return (
         <div>
-            <NavBar
+            <NavLayout
                 content={content}
             />
         </div>

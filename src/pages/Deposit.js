@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
+
 import { Row, Col } from 'antd'
+import { Button as ButtonIcon } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
+
 import DataTable from '../components/DataTable';
 import BoxCard from '../components/BoxCard';
 import InputText from '../components/InputText';
 import { Button } from '../components/styles/globalStyles';
-import { Button as ButtonIcon } from 'antd';
 import ModalDeposit from '../components/modal/Modal.Deposit';
 import ModalSearchMember from '../components/modal/Modal.SearchMember';
+
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
+
 import * as converter from '../utils/converter'
+import * as API from '../utils/apis'
+
 const MySwal = withReactContent(swal)
 
 function Deposit() {
@@ -72,11 +78,20 @@ function Deposit() {
     ];
 
     const initForm = {
-        memberId: "",
-        memberName: "",
-        memberLastname: "",
-        memberTel: "",
-        memberEmail: "",
+        searchKeyword: "",
+        key: "",
+        Acc_number: "",
+        Bank: "",
+        Email: "",
+        Firstname: "",
+        ID: "",
+        Lastname: "",
+        No_members: "",
+        Phone_number: "",
+        Phone_number2: "",
+        Remark: "",
+        Role: "",
+        Username: "",
 
         mode: "",
         idEdit: "",
@@ -109,14 +124,38 @@ function Deposit() {
     // useEffect(() => {
     //   console.log(form);
     // }, [form]);
-    
+
 
     const toSearchMember = () => {
         setShowModalSearch(true)
     }
 
     const clearSearch = () => {
-        setForm(initForm)
+        if (form.data.length > 0) {
+            MySwal.fire({
+                text: `ยืนยันการล้างข้อมูลสมาชิก `,
+                icon: "question",
+                showCloseButton: true,
+                confirmButtonColor: '#E72525',
+                showCancelButton: true,
+                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "ตกลง",
+            }).then(async (result) => {
+                if (result.value) {
+                    setForm(initForm)
+                    clearDataTable()
+                    //if success
+                    MySwal.fire({
+                        text: `ลบสำเร็จ`,
+                        icon: "success",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#96CC39',
+                    })
+                }
+            })
+        } else {
+            setForm(initForm)
+        }
     }
 
     const toAddList = () => {
@@ -156,11 +195,19 @@ function Deposit() {
     const setMemberData = (memberData) => {
         setForm({
             ...form,
-            memberId: memberData.memberId,
-            memberName: memberData.name,
-            memberLastname: memberData.lastname,
-            memberTel: memberData.tel,
-            memberEmail: memberData.email,
+            key: memberData.key,
+            Acc_number: memberData.Acc_number,
+            Bank: memberData.Bank,
+            Email: memberData.Email,
+            Firstname: memberData.Firstname,
+            ID: memberData.ID,
+            Lastname: memberData.Lastname,
+            No_members: memberData.No_members,
+            Phone_number: memberData.Phone_number,
+            Phone_number2: memberData.Phone_number2,
+            Remark: memberData.Remark,
+            Role: memberData.Role,
+            Username: memberData.Username,
         })
     }
 
@@ -175,14 +222,47 @@ function Deposit() {
             confirmButtonText: "ตกลง",
         }).then(async (result) => {
             if (result.value) {
-                clearDataTable()
-                //if success
-                MySwal.fire({
-                    text: `บันทึกสำเร็จ`,
-                    icon: "success",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: '#96CC39',
-                })
+                const demoData = {
+                    memid: 2,
+                    placeby: 'Front-end',
+                    status: 'unpaid',
+                    empid: '1',
+                    product: [
+                        {
+                            productid: '99',
+                            weight: '99',
+                            totalprice: '999',
+                        },
+                        {
+                            productid: '100',
+                            weight: '99',
+                            totalprice: '999',
+                        }]
+                }
+                try {
+                    const response = await API.addDeposit(demoData);
+                    if (response.status === 200) {
+                        setForm(initForm)
+                        clearDataTable()
+                        //if success
+                        MySwal.fire({
+                            text: `บันทึกสำเร็จ`,
+                            icon: "success",
+                            confirmButtonText: "ตกลง",
+                            confirmButtonColor: '#96CC39',
+                        })
+                    } else {
+                        //if success
+                        MySwal.fire({
+                            text: `บันทึกไม่สำเร็จ`,
+                            icon: "error",
+                            confirmButtonText: "ตกลง",
+                            confirmButtonColor: '#96CC39',
+                        })
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
             }
         })
     }
@@ -212,7 +292,7 @@ function Deposit() {
     }
 
     const buttonAdd = () => {
-        return (<Button onClick={() => toAddList()} disabled={form.memberName === ''}>เพิ่มรายการ</Button>)
+        return (<Button onClick={() => toAddList()} disabled={form.Firstname === ''}>เพิ่มรายการ</Button>)
     }
 
 
@@ -220,12 +300,12 @@ function Deposit() {
         <div className="pt-3 mb-4">
             <BoxCard title="ข้อมูลผู้ฝาก">
                 <Row gutter={[10, 10]} className='mb-4'>
-                    <Col >
-                        <InputText title="รหัสสมาชิก" type="text" idName="update-date"
-                            placeholder="Text" classLabel="bold"
-                            value={form.memberId}
+                    <Col span={8}>
+                        <InputText title="ค้นหาสมาชิก" type="text" idName="update-date"
+                            placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                            value={form.searchKeyword}
                             handleChange={(value) => {
-                                setForm({...form,memberId: value})
+                                setForm({ ...form, searchKeyword: value })
                             }}
                         />
                     </Col>
@@ -243,10 +323,20 @@ function Deposit() {
                 </Row>
                 <Row gutter={[30, 10]} className='mb-4'>
                     <Col >
+                        <InputText title="รหัสสมาชิก" type="text" idName="user-id"
+                            placeholder="Text" classLabel="bold"
+                            disabled={true}
+                            value={form.ID}
+                            handleChange={(value) => {
+                                //
+                            }}
+                        />
+                    </Col>
+                    <Col >
                         <InputText title="ชื่อ" type="text" idName="user-name"
                             placeholder="Text" classLabel="bold"
                             disabled={true}
-                            value={form.memberName}
+                            value={form.Firstname}
                             handleChange={(value) => {
                                 //
                             }}
@@ -256,7 +346,7 @@ function Deposit() {
                         <InputText title="สกุล" type="text" idName="user-lastname"
                             placeholder="Text" classLabel="bold"
                             disabled={true}
-                            value={form.memberLastname}
+                            value={form.Lastname}
                             handleChange={(value) => {
                                 //
                             }}
@@ -266,7 +356,7 @@ function Deposit() {
                         <InputText title="โทรศัพท์มือถือ" type="text" idName="user-tel"
                             placeholder="Text" classLabel="bold"
                             disabled={true}
-                            value={form.memberTel}
+                            value={form.Phone_number ? form.Phone_number : "-"}
                             handleChange={(value) => {
                                 //
                             }}
@@ -277,7 +367,7 @@ function Deposit() {
         </div>
         <div>
             <BoxCard title="รายการวัสดุที่ต้องการฝาก" headRight={buttonAdd()}>
-                <DataTable columns={columns} data={form.data}></DataTable>
+                <DataTable columns={columns} data={form.data} limitPositionLeft={true} option={{ "showLimitPage": true }}></DataTable>
                 <div>
                     <hr />
                     <Row className='mx-2 pt-3 d-flex justify-content-end' gutter={[40, 0]}>
@@ -330,7 +420,7 @@ function Deposit() {
                 show={showModalSearch}
                 close={() => setShowModalSearch(false)}
                 mode={form.mode} idEdit={form.idEdit}
-                data={form.memberId}
+                data={form.searchKeyword}
                 save={(dataMember) => { setMemberData(dataMember) }}
             />
         }

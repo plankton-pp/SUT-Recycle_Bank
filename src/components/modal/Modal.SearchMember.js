@@ -7,12 +7,34 @@ import ModalHeader from '../ModalHeader'
 import InputText from '../InputText';
 import DataTable from '../DataTable';
 import BoxCard from '../BoxCard';
+import * as API from '../../utils/apis';
 
 function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
+    const initMember = [
+        {
+            key: '1',
+            Acc_number: "ktb-1234",
+            Bank: "กรุงไทย",
+            Email: "planktonplnt@gmail.com",
+            Firstname: "นายพชรพล",
+            ID: 92,
+            Lastname: "แก้วกัลยา",
+            No_members: "15",
+            Password: "81dc9bdb52d04dc20036dbd8313ed055",
+            Phone_number: "011-1111111",
+            Phone_number2: "022-2222222",
+            Remark: "test",
+            Role: "นักศึกษา",
+            Username: "planktonplnt",
+        },
 
-    const [searchId, setSearchId] = useState(data);
+    ]
+
+    const [searchKeyword, setSearchKeyword] = useState(data);
     const [clearSelectedRow, setClearSelectedRow] = useState(false);
     const [selectedData, setSelectedData] = useState([]);
+    const [onChangeSearch, setOnChangeSearch] = useState(false)
+    const [memberData, setMemberData] = useState(initMember);
     const columns = [
         {
             title: '#',
@@ -21,106 +43,60 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
         },
         {
             title: 'รหัสสมาชิก',
-            dataIndex: 'memberId',
+            dataIndex: 'ID',
         },
         {
             title: 'ชื่อ',
-            dataIndex: 'name',
+            dataIndex: 'Firstname',
         },
         {
             title: 'นามสกุล',
-            dataIndex: 'lastname',
+            dataIndex: 'Lastname',
 
         },
         {
             title: 'เบอร์โทร',
-            dataIndex: 'tel',
+            dataIndex: 'Phone_number',
 
         },
         {
             title: 'อีเมล',
-            dataIndex: 'email',
+            dataIndex: 'Email',
 
         },
     ];
-    const memberData = [
-        {
-            key: '1',
-            index: '1',
-            memberId: 'm01',
-            name: 'A',
-            lastname: 'L',
-            tel: 'test',
-            email: 'test',
-        },
-        {
-            key: '2',
-            index: '2',
-            memberId: 'm02',
-            name: 'b',
-            lastname: 'l',
-            tel: 'test',
-            email: 'test',
-        },
-        {
-            key: '3',
-            index: '3',
-            memberId: 'm03',
-            name: 'c',
-            lastname: 'j',
-            tel: 'test',
-            email: 'test',
-        },
-        {
-            key: '4',
-            index: '4',
-            memberId: 'm04',
-            name: 'd',
-            lastname: 'I',
-            tel: 'test',
-            email: 'test',
-        },
-        {
-            key: '5',
-            index: '5',
-            memberId: 'm061',
-            name: 'E',
-            lastname: 'H',
-            tel: 'test',
-            email: 'test',
-        },
-        {
-            key: '6',
-            index: '6',
-            memberId: 'm062',
-            name: 'F',
-            lastname: 'test',
-            tel: 'G',
-            email: 'test',
-        },
 
-    ]
+    useEffect(() => {
+        searchMember(searchKeyword)
+    }, []);
+
 
     useEffect(() => {
         if (selectedData.length <= 0) {
-            setSearchId('')
+            data = ''
         }
     }, [selectedData]);
 
     useEffect(() => {
         if (clearSelectedRow === true) {
+            setSearchKeyword('')
             setClearSelectedRow(false)
+        } else {
+            if (!onChangeSearch) {
+                setSearchKeyword(data)
+            }
         }
-    }, [clearSelectedRow]);
+        searchMember(searchKeyword)
+    }, [clearSelectedRow, searchKeyword, onChangeSearch]);
 
     const getMemberData = () => {
         let filteredMember = memberData.filter((item, index) => {
-            let textSearch = String(searchId).toLowerCase();
-            let checkMemId = String(item.memberId).toLowerCase().includes(textSearch)
-            let checkName = String(item.name).toLowerCase().includes(textSearch)
-            let checkLastname = String(item.lastname).toLowerCase().includes(textSearch)
-            let checkTel = String(item.tel).toLowerCase().includes(textSearch)
-            let checkEmail = String(item.email).toLowerCase().includes(textSearch)
+            let textSearch = String(searchKeyword).toLowerCase();
+            let checkMemId = String(item.ID).toLowerCase().includes(textSearch)
+            let checkName = String(item.Firstname).toLowerCase().includes(textSearch)
+            let checkLastname = String(item.Lastname).toLowerCase().includes(textSearch)
+            let checkTel = String(item.Phone_number).toLowerCase().includes(textSearch)
+            let checkEmail = String(item.Email).toLowerCase().includes(textSearch)
 
             let checkTrue = (checkMemId || checkName || checkLastname || checkTel || checkEmail)
 
@@ -146,6 +122,23 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
 
     }
 
+    const searchMember = async (keyword) => {
+        try {
+            const response = searchKeyword.length > 0 ? await API.searchMember(searchKeyword) : await API.getMember();
+            const data = await response?.data.data;
+            if (response.status === 200) {
+                if (data.length > 0) {
+                    data.forEach((item, index) => {
+                        item['key'] = index
+                    });
+                    setMemberData(data)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const buttonAdd = () => {
         return (<Button onClick={() => toAddMember()} >เพิ่มสมาชิก</Button>)
     }
@@ -153,7 +146,7 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
     return (
         <Modal
             show={show}
-            size="lg"
+            size="xl"
             onHide={() => { handleClose() }}
             centered
         >
@@ -166,22 +159,20 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                 <div>
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col>
-                        <div className='pt-2'>
-                            <h5>{`คำค้นหา:`}</h5>
-                        </div>
-                    </Col>
+                            <div className='pt-2'>
+                                <h5>{`คำค้นหา:`}</h5>
+                            </div>
+                        </Col>
                         <Col span={12}>
-                            <InputText type="text" idName="update-date"
+                            <InputText type="text" idName="search-keyword"
                                 placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
-                                value={searchId}
+                                value={searchKeyword}
                                 handleChange={(value) => {
-                                    setSearchId(value)
+                                    setOnChangeSearch(true)
+                                    setSearchKeyword(value)
                                 }}
                             />
                         </Col>
-                        {/* <Col>
-                        <Button className={'mr-2'} bg={'#96CC39'} width={'80px'} color={'#fff'} onClick={() => { }}>ค้นหา</Button>
-                    </Col> */}
                         <Col>
                             <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshRowMember() }}>ล้าง</Button>
                         </Col>
@@ -197,6 +188,7 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                                     data={getMemberData()}
                                     option={
                                         {
+                                            "selectionType":"radio",
                                             "type": 'selection',
                                             "clearSelectedRow": clearSelectedRow,
                                             "select": (data) => { setSelectedData(data) }
