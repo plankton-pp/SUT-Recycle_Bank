@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import './assets/css/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -7,9 +9,12 @@ import reportWebVitals from './reportWebVitals';
 import { HashRouter } from "react-router-dom";
 
 ReactDOM.render(
-  <HashRouter basename="/recycle-bank">
-    <App />
-  </HashRouter>,
+  <Provider store={store}>
+    <HashRouter basename="/recycle-bank">
+      <App />
+    </HashRouter>
+  </Provider>
+  ,
   document.getElementById('root')
 );
 

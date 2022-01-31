@@ -18,36 +18,26 @@ function Report() {
         },
 
         {
-            title: 'รหัสสมาชิก',
+            title: 'รหัสเอกสาร',
             dataIndex: 'ID',
             width: '150px',
             align: 'center',
         },
         {
-            title: 'ชื่อ',
+            title: 'ชื่อเอกสาร',
             dataIndex: 'Firstname',
             align: 'center',
 
         },
         {
-            title: 'นามสกุล',
+            title: 'หมวดหมู่',
             dataIndex: 'Lastname',
             align: 'center',
         },
         {
-            title: 'วันที่ทำรายการฝาก',
-            dataIndex: 'Date',
-            align: 'center',
-        },
-        {
-            title: 'ยอดคงค้าง (บาท)',
+            title: 'การจัดการ',
             dataIndex: 'Total_price',
-            sorter: {
-                compare: (a, b) => a.Total_price - b.Total_price,
-                multiple: 1,
-            },
-            width: '200px',
-            align: 'right',
+            align: 'center',
         },
     ];
     const initForm = {
@@ -72,7 +62,7 @@ function Report() {
     }
     const [form, setForm] = useState(initForm);
 
-    const toSearchMember = () => {
+    const filterReport = () => {
     }
 
     const clearSearch = () => {
@@ -108,28 +98,24 @@ function Report() {
                     <div className='m-5'>
                         <Row gutter={[10, 20]}>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินคงเหลือ`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`เอกสารหมวด 1`}</h4>} bordered={true}>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสมาชิกคงค้าง`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`เอกสารหมวด 2`}</h4>} bordered={true}>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสุทธิ`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`เอกสารหมวด 3`}</h4>} bordered={true}>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสมาชิกคงค้าง`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`เอกสารหมวด 4`}</h4>} bordered={true}>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสุทธิ`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`เอกสารหมวด 5`}</h4>} bordered={true}>
+                                    
                                 </Card>
                             </Col>
                         </Row>
@@ -137,7 +123,7 @@ function Report() {
                 </BoxCard>
             </div>
             <div>
-                <BoxCard title={"หมวดเอกสาร"}>
+                <BoxCard title={"รายการเอกสาร"}>
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col span={8}>
                             <InputText title="กรองรายการ" type="text" idName="update-date"
@@ -150,7 +136,7 @@ function Report() {
                         </Col>
                         <Col>
                             <div className='mt-1'>
-                                <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { toSearchMember() }}>ค้นหา</Button>
+                                <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { filterReport() }}>ค้นหา</Button>
                             </div>
                         </Col>
                         <Col>
@@ -158,28 +144,18 @@ function Report() {
                                 <Button className={'mr-2 mt-4'} bg={'#3C3C3C'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
                             </div>
                         </Col>
-
                     </Row>
                     <DataTable
                         columns={columns}
-                        option={
-                            {
-                                "selectionType": "checkbox",
-                                "type": 'selection',
-                                // "clearSelectedRow": clearSelectedRow,
-                                // "select": (data) => { setSelectedData(data) }
-                            }
-                        }
+                    // option={
+                    //     {
+                    //         "selectionType": "checkbox",
+                    //         "type": 'selection',
+                    //         "clearSelectedRow": clearSelectedRow,
+                    //         "select": (data) => { setSelectedData(data) }
+                    //     }
+                    // }
                     ></DataTable>
-                    <div>
-                        <div className="my-5 d-flex justify-content-end">
-                            <Row gutter={[10, 0]}>
-                                <Col>
-                                    <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => { }}>ถอนเงินให้กับสมาชิก</Button>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
                 </BoxCard>
             </div>
         </div>);

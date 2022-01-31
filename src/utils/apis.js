@@ -1,5 +1,38 @@
 import { httpClient } from './httpClient';
+import * as helper from './helper'
 // import axios from 'axios';
+
+//=================== API: Login
+
+export const login = async (formData) => {
+  return await httpClient.post(`/api/v1/employee/auth`, formData);
+}
+
+//=================== API: Authenticate
+
+export const userAuthenticated = async () => {
+  let token = helper.sessionGet('token')
+  token = token.slice(1,token.length-1)
+  const data = {
+    headers: {
+      "x-access-token": token
+    }
+  }
+  return await httpClient.get(`/api/v1/employee/auth/isUserAuth`, data);
+}
+
+
+// export const getProfile = async (token) => {
+//   const getProfile = axios.create({
+//     baseURL: process.env.REACT_APP_API_ENDPOINT,
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Authorization": token,
+//       "OAuth": "DLD"
+//     }
+//   });
+//   return await getProfile.get(`/user/profile`);
+// }
 
 //=================== Test Get API
 export const getBooks = async () => {

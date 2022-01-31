@@ -13,7 +13,7 @@ export const BoxCardHead = styled.div`
 export const BoxCardBody = styled.div`
     background: #FFFFFF;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.25), 0px 3px 4px rgba(0, 0, 0, 0.14), 0px 1px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 0px 0px 5px 5px;
+    border-radius: ${({ props }) => props ? "5px 5px 5px 5px" : "0px 0px 5px 5px"};
     padding: 0.5rem 1rem;
 `
 export const CardBody = styled.div`

@@ -61,22 +61,22 @@ const monthsShort = {
     "Dec",
   ],
 };
-const weekdaysFull = {
-  th: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"],
-  en: [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ],
-};
-const weekdaysShort = {
-  th: ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."],
-  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-};
+// const weekdaysFull = {
+//   th: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"],
+//   en: [
+//     "Sunday",
+//     "Monday",
+//     "Tuesday",
+//     "Wednesday",
+//     "Thursday",
+//     "Friday",
+//     "Saturday",
+//   ],
+// };
+// const weekdaysShort = {
+//   th: ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."],
+//   en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+// };
 
 
 export const getDate = (date) => {
@@ -119,7 +119,7 @@ export const checkEmailFormat = (email) => {
 export const momentDayMonth = (datetime, lang = "en", type = "month") => {
   if (datetime !== null) {
     let year;
-    if (lang == "en") {
+    if (lang === "en") {
       year = parseInt(moment(datetime).format("YYYY"));
     } else {
       year = parseInt(moment(datetime).format("YYYY")) + 543;
@@ -128,7 +128,7 @@ export const momentDayMonth = (datetime, lang = "en", type = "month") => {
     let month =
       (moment(datetime).get("month") + 1 < 10 ? "0" : "") +
       (moment(datetime).get("month") + 1);
-    if (type == "month") {
+    if (type === "month") {
       return month + "." + year;
     } else {
       return dd;
@@ -140,14 +140,14 @@ export const momentDayMonth = (datetime, lang = "en", type = "month") => {
 export const momentDate = (datetime, lang = "en", type = "short") => {
   if (datetime !== null) {
     let year;
-    if (lang == "en") {
+    if (lang === "en") {
       year = Number(moment(datetime).format("YYYY"));
     } else {
       year = Number(moment(datetime).format("YYYY")) + 543;
     }
     let dd = moment(datetime).get("date");
     let month;
-    if (type == "short") {
+    if (type === "short") {
       month = monthsShort[lang][moment(datetime).get("month")];
     } else {
       month = monthsFull[lang][moment(datetime).get("month")];
@@ -161,14 +161,14 @@ export const momentDate = (datetime, lang = "en", type = "short") => {
 export const momentDateTh = (datetime, lang = "th", type = "short") => {
   if (datetime !== null) {
     let year;
-    if (lang == "th") {
+    if (lang === "th") {
       year = Number(moment(datetime).format("YY")) + 43;
     } else {
       year = Number(moment(datetime).format("YY"));
     }
     let dd = moment(datetime).get("date");
     let month;
-    if (type == "short") {
+    if (type === "short") {
       month = monthsShort[lang][moment(datetime).get("month")];
     } else {
       month = monthsFull[lang][moment(datetime).get("month")];
@@ -187,14 +187,14 @@ export const getTodayTh = (style = 'full') => {
 export const fullDateTh = (datetime, lang = "th", type = "long") => {
   if (datetime !== null) {
     let year;
-    if (lang == "th") {
+    if (lang === "th") {
       year = Number(moment(datetime).format("YYYY")) + 543;
     } else {
       year = Number(moment(datetime).format("YYYY"));
     }
     let dd = moment(datetime).get("date");
     let month;
-    if (type == "long") {
+    if (type === "long") {
       month = monthsFull[lang][moment(datetime).get("month")];
     } else {
       month = monthsShort[lang][moment(datetime).get("month")];
@@ -207,32 +207,32 @@ export const fullDateTh = (datetime, lang = "th", type = "long") => {
 
 export const momentTime = (time, lang = "en") => {
   let datetime = moment().format("YYYY-MM-DD " + time);
-  return moment(datetime).format(`HH:mm ${lang == "en" ? "" : "[น.]"}`);
+  return moment(datetime).format(`HH:mm ${lang === "en" ? "" : "[น.]"}`);
 };
 export const getTime = (time, lang = "en") => {
-  return moment(time).format(`HH:mm:ss ${lang == "en" ? "" : "[น.]"}`);
+  return moment(time).format(`HH:mm:ss ${lang === "en" ? "" : "[น.]"}`);
 };
 export const momentDateTime = (datetime, lang = "en", type = "short", setTime = false) => {
   let year;
-  if (lang == "en") {
+  if (lang === "en") {
     year = Number(moment(datetime).format("YYYY"));
   } else {
     year = Number(moment(datetime).format("YYYY")) + 543;
   }
   let date = moment(datetime).get("date");
   let month;
-  if (type == "short") {
+  if (type === "short") {
     month = monthsShort[lang][moment(datetime).get("month")];
   } else {
     month = monthsFull[lang][moment(datetime).get("month")];
   }
-  let time = setTime ? moment(datetime).format(`HH:mm ${lang == "en" ? "" : "[น.]"}`) : "";
+  let time = setTime ? moment(datetime).format(`HH:mm ${lang === "en" ? "" : "[น.]"}`) : "";
 
   return date + " " + month + " " + year + " " + time;
 };
 // export const momentTime = (datetime, lang = "en") => {
 
-//   let time = moment(datetime).format(`HH:mm ${lang == "en" ? "" : "[น.]"}`);
+//   let time = moment(datetime).format(`HH:mm ${lang === "en" ? "" : "[น.]"}`);
 
 //   return time;
 // };
@@ -267,7 +267,7 @@ export const pageControl = (page_number, total_pages) => {
   return page;
 };
 export const isEvenRow = (value) => {
-  return value % 2 == 0 ? "even" : "odd";
+  return value % 2 === 0 ? "even" : "odd";
 };
 export const pagination = (current, last, delta = 2) => {
   let left = current + 1 - delta,
@@ -355,10 +355,10 @@ export const getCookie = (cname) => {
   let ca = decodedCookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) == " ") {
+    while (c.charAt(0) === " ") {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }
@@ -398,7 +398,7 @@ export const setBase64ToFile = async (fileBase64) => {
   const contentType = await block[0].split(":")[1];
   const realData = await block[1].split(",")[1];
   const fileType = file_Ext.find(item => {
-    return item.type == contentType;
+    return item.type === contentType;
   })
   let ext = ".jpg";
   if (fileType) {
@@ -417,16 +417,16 @@ export const setBase64ToFile = async (fileBase64) => {
   });
   return getFile;
 };
-export const renderCategory = (data) => {
-  let str = "";
-  if (data) {
-    data.map((item, index) => {
-      str += item.name;
-      if (index != data.length - 1) str += ", ";
-    });
-  }
-  return str;
-};
+// export const renderCategory = (data) => {
+//   let str = "";
+//   if (data) {
+//     data.map((item, index) => {
+//       str += item.name;
+//       if (index !== data.length - 1) str += ", ";
+//     });
+//   }
+//   return str;
+// };
 
 // export const encryptData = (data, obj = false) => {
 //   if (obj) {
@@ -466,12 +466,12 @@ export const chkDigitPid = (pid) => {
     j++;
   }
   chk = 11 - Math.ceil(total % 11);
-  if (chk == 10) {
+  if (chk === 10) {
     chk = 0;
-  } else if (chk == 11) {
+  } else if (chk === 11) {
     chk = 1;
   }
-  if (chk == Validchk) {
+  if (chk === Validchk) {
     return true;
   } else {
     return false;
@@ -479,11 +479,11 @@ export const chkDigitPid = (pid) => {
 };
 /*************************************************/
 export const getTimeHAndM = (time, lang = "en") => {
-  return moment(time).format(`HH:mm ${lang == "en" ? "" : "[น.]"}`);
+  return moment(time).format(`HH:mm ${lang === "en" ? "" : "[น.]"}`);
 };
 
 export const getTimeAll = (time, lang = "en") => {
-  return moment(time).format(`HH:mm:ss ${lang == "en" ? "" : "[น.]"}`);
+  return moment(time).format(`HH:mm:ss ${lang === "en" ? "" : "[น.]"}`);
 };
 
 /*************************************************/
@@ -497,11 +497,11 @@ export const getRandomString = (length) => {
   }
   return result;
 
-  return Array(length)
-    .join()
-    .split(",")
-    .map(function () {
-      return characters.charAt(Math.floor(Math.random() * characters.length));
-    })
-    .join("");
+  // return Array(length)
+  //   .join()
+  //   .split(",")
+  //   .map(function () {
+  //     return characters.charAt(Math.floor(Math.random() * characters.length));
+  //   })
+  //   .join("");
 };

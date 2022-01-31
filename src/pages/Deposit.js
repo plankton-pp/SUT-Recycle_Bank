@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
+
 import { Row, Col } from 'antd'
+import { Button as ButtonIcon } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
+
 import DataTable from '../components/DataTable';
 import BoxCard from '../components/BoxCard';
 import InputText from '../components/InputText';
 import { Button } from '../components/styles/globalStyles';
-import { Button as ButtonIcon } from 'antd';
 import ModalDeposit from '../components/modal/Modal.Deposit';
 import ModalSearchMember from '../components/modal/Modal.SearchMember';
+
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
+
 import * as converter from '../utils/converter'
 import * as API from '../utils/apis'
 
@@ -352,7 +356,7 @@ function Deposit() {
                         <InputText title="โทรศัพท์มือถือ" type="text" idName="user-tel"
                             placeholder="Text" classLabel="bold"
                             disabled={true}
-                            value={form.Phone_number?form.Phone_number:"-"}
+                            value={form.Phone_number ? form.Phone_number : "-"}
                             handleChange={(value) => {
                                 //
                             }}
