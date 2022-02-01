@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { Row, Col } from 'antd'
+import { Row, Col, Image, Carousel, Spin, } from 'antd'
 
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/actions/loginAction';
 import { logout } from '../redux/actions/logoutAction';
@@ -13,8 +13,16 @@ import { Button } from '../components/styles/globalStyles';
 import InputText from '../components/InputText';
 import BoxCard from '../components/BoxCard';
 
+import SUTLogo from '../components/SUTLogo';
+import cover1 from '../assets/cover/cover1.jpg'
+import cover2 from '../assets/cover/cover2.jpg'
+import cover3 from '../assets/cover/cover3.jpg'
+import cover4 from '../assets/cover/cover4.jpg'
+import cover5 from '../assets/cover/cover5.jpg'
+
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
+import Gellery from '../components/Gellery';
 
 const MySwal = withReactContent(swal)
 
@@ -35,6 +43,8 @@ function Login() {
     password: '',
   }
   const [form, setForm] = useState(initForm);
+
+  const [isLoad, setIsLoad] = useState(false)
 
   const addInvalid = (element, message) => {
     invalid[element] = message;
@@ -61,11 +71,12 @@ function Login() {
       addInvalid('password', "กรุณากรอกรหัสผ่าน");
       validated = false;
     }
-
     return validated;
   }
 
-  const toLogin = async (e) => {
+
+  const toLogin = async () => {
+    setIsLoad(true)
     // e.preventDefault();
     if (validate()) {
       let dataUser = {
@@ -91,9 +102,12 @@ function Login() {
           //   })
           // }
           if (data.auth) {
+            setIsLoad(false)
             dispatch(login({ data, history }))
           }
           setForm(initForm);
+        } else {
+          setIsLoad(false)
         }
 
       } catch (error) {
@@ -105,32 +119,66 @@ function Login() {
           confirmButtonText: 'ตกลง'
         })
       }
+    }else{
+      setIsLoad(false)
     }
 
   }
   return (
-    <div className='container'>
-      <div style={{ width: '70%', paddingTop: '20%' }}>
+    <div className='container' style={{ paddingTop: '3%' }}>
+      <Spin tip="Loading..." spinning={isLoad}>
         <BoxCard>
-          <h1>Login</h1>
-          <div className="d-flex justify-content-center flex-column">
-            <div className='mb-3'>
-              <InputText title="" type="text" idName="username" value={form.username} star={false} classFormGroup="w-100"
-                placeholder="email" handleChange={(value) => setForm({ ...form, username: value })}
-                handleInvalid={() => removeInvalid("username")} invalid={invalid.username}
-              />
-            </div>
-            <div className='mb-3'>
-              <InputText title="" type="password" idName="password" value={form.password} star={false} classFormGroup="w-100"
-                placeholder="password" handleChange={(value) => setForm({ ...form, password: value })}
-                handleInvalid={() => removeInvalid("password")} invalid={invalid.password}
-              />
-            </div>
-          </div>
-          <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { toLogin() }}>Login</Button>
-          <Button className={'mr-2 mt-4'} bg={'#1AA'} color={'#fff'} onClick={() => { toLogin() }}>Register</Button>
+          <Row>
+            <Col span={12}>
+              <div className='p-5 m-5'>
+                <SUTLogo style={{ fontSize: '52px' }} />
+                <h1 className='logo mt-3'>เข้าสู่ระบบ</h1>
+                <div className='mb-3'>
+                  <InputText title="บัญชีผู้ใช้" type="text" idName="username" value={form.username} star={false} classFormGroup="w-100"
+                    placeholder="email" handleChange={(value) => setForm({ ...form, username: value })}
+                    handleInvalid={() => removeInvalid("username")} invalid={invalid.username}
+                  />
+                </div>
+                <div className='mb-4'>
+                  <InputText title="รหัสผ่าน" type="password" idName="password" value={form.password} star={false} classFormGroup="w-100"
+                    placeholder="password" handleChange={(value) => setForm({ ...form, password: value })}
+                    handleInvalid={() => removeInvalid("password")} invalid={invalid.password}
+                  />
+                </div>
+                <div className='mb-4'>
+                  <Row gutter={[20, 0]}>
+                    <Col>
+                      <Button bg={'#96CC39'} color={'#fff'} onClick={() => { toLogin() }}>เข้าสู่ระบบ</Button>
+                    </Col>
+                    <Col>
+                      <Link to={`/register`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
+                        <Button className={''} bg={'#1AA'} color={'#fff'} onClick={() => { }}>ลืมรหัสผ่าน</Button>
+                      </Link>
+                    </Col>
+                  </Row>
+                </div>
+                <div>
+                  <Row gutter={[10, 0]}>
+                    <Col>
+                      <span>
+                        ยังไม่มีบัญชีผู้ใช้งาน ?
+                      </span>
+                    </Col>
+                    <Col>
+                      <Link to={`/register`} style={{ fontWeight: 'bolder', fontSize: '16px' }}>
+                        สมัครสมาชิก
+                      </Link>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            </Col>
+            <Col span={12}>
+              <Gellery style={{ widht: '80%', borderRadius: '10px' }}></Gellery>
+            </Col>
+          </Row>
         </BoxCard>
-      </div>
+      </Spin>
     </div>
   );
 }

@@ -21,6 +21,19 @@ export const userAuthenticated = async () => {
   return await httpClient.get(`/api/v1/employee/auth/isUserAuth`, data);
 }
 
+//=================== API: Register
+
+export const register = async (formData) => {
+  console.log(formData);
+  return await httpClient.post(`/api/v1/employee/register`, formData);
+}
+
+//=================== API: Check Duplicate Username
+
+export const checkDuplicate = async (data) => {
+  return await httpClient.post(`/api/v1/employee/checkDuplicate`, data);
+}
+
 
 // export const getProfile = async (token) => {
 //   const getProfile = axios.create({
