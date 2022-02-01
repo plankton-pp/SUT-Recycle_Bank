@@ -16,6 +16,8 @@ import SecureRoute from '../utils/SecureRoute';
 
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import ForgetPass from '../pages/ForgetPass'
+import ResetPass from '../pages/ResetPass';
 import PageNotFound from '../pages/PageNotFound';
 import Index from '../pages/Index';
 import TestAPI from '../pages/TestAPI';
@@ -60,7 +62,7 @@ const Routes = (props) => {
     // const { loading } = useSelector((state) => state.loading);
 
     const checkPath = (location) => {
-        return location.pathname !== '/login' && location.pathname !== '/register';
+        return location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/forgetpass' && !String(location.pathname).includes("/resetpassword");
     }
 
     useEffect(() => {
@@ -73,6 +75,8 @@ const Routes = (props) => {
                 <Route exact path="/" component={() => <Redirect to="/login" />} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/register" component={Register} />
+                <Route exact path="/forgetpass" component={ForgetPass} />
+                <Route exact path="/resetpassword" component={ResetPass} />
 
                 <SecureRoute exact path="/index" component={Index} />
                 <SecureRoute exact path="/api" component={TestAPI} />

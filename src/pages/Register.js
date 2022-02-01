@@ -38,14 +38,14 @@ function Register() {
     const [invalid, setInvalid] = useState(initInvalidMsg);
 
     const initForm = {
-        username: "test_",
-        empId: "1234",
-        phone: "1234",
-        firstname: "test",
-        lastname: "test",
-        email: "test@test.com",
-        password: "1234",
-        confirmPassword: "1234",
+        username: "",
+        empId: "",
+        phone: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     }
     const [form, setForm] = useState(initForm);
 

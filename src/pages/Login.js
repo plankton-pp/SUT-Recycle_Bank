@@ -151,7 +151,7 @@ function Login() {
                       <Button bg={'#96CC39'} color={'#fff'} onClick={() => { toLogin() }}>เข้าสู่ระบบ</Button>
                     </Col>
                     <Col>
-                      <Link to={`/register`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
+                      <Link to={`/forgetpass`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
                         <Button className={''} bg={'#1AA'} color={'#fff'} onClick={() => { }}>ลืมรหัสผ่าน</Button>
                       </Link>
                     </Col>

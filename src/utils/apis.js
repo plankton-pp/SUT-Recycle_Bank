@@ -34,6 +34,17 @@ export const checkDuplicate = async (data) => {
   return await httpClient.post(`/api/v1/employee/checkDuplicate`, data);
 }
 
+//=================== API: Check Duplicate Username
+
+export const resetPassword = async (data) => {
+  return await httpClient.post(`/api/v1/employee/resetPassword`, data);
+}
+
+//=================== API: Check Duplicate Username
+
+export const sendValidateCode = async (data) => {
+  return await httpClient.post(`/api/v1/email/validate`, data);
+}
 
 // export const getProfile = async (token) => {
 //   const getProfile = axios.create({
