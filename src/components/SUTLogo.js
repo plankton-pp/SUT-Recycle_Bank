@@ -1,9 +1,9 @@
 import React from 'react'
 
-function SUTLogo(props) {
+function SUTLogo({style}) {
     return (
         <div>
-            <span className='logo'>SUT Recycle Bank</span>
+            <span className='logo' style={style}>SUT Recycle Bank</span>
         </div>
     )
 }

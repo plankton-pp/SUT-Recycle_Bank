@@ -23,7 +23,7 @@ function InputText({
             handleInvalid()
           }
         }} />
-      {invalid ? <div className="invalid-error">{invalid}</div> : ""}
+      {invalid ? <div className="invalid-error"><span style={{ color: 'red' }}>{invalid}</span></div> : ""}
     </Form.Group>
   );
 }

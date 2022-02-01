@@ -60,7 +60,7 @@ const Routes = (props) => {
     // const { loading } = useSelector((state) => state.loading);
 
     const checkPath = (location) => {
-        return location.pathname !== '/login';
+        return location.pathname !== '/login' && location.pathname !== '/register';
     }
 
     useEffect(() => {
