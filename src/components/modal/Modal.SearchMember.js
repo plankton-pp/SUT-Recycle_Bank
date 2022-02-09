@@ -12,20 +12,20 @@ import * as API from '../../utils/apis';
 function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
     const initMember = [
         {
-            key: '1',
-            Acc_number: "ktb-1234",
-            Bank: "กรุงไทย",
-            Email: "planktonplnt@gmail.com",
-            Firstname: "นายพชรพล",
-            ID: 92,
-            Lastname: "แก้วกัลยา",
-            No_members: "15",
-            Password: "81dc9bdb52d04dc20036dbd8313ed055",
-            Phone_number: "011-1111111",
-            Phone_number2: "022-2222222",
-            Remark: "test",
-            Role: "นักศึกษา",
-            Username: "planktonplnt",
+            key: '',
+            Acc_number: "",
+            Bank: "",
+            Email: "",
+            Firstname: "",
+            ID: "",
+            Lastname: "",
+            No_members: "",
+            Password: "",
+            Phone_number: "",
+            Phone_number2: "",
+            Remark: "",
+            Role: "",
+            Username: "",
         },
 
     ]
@@ -44,6 +44,10 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
         {
             title: 'รหัสสมาชิก',
             dataIndex: 'ID',
+            sorter: {
+                compare: (a, b) => a.ID - b.ID,
+                multiple: 1,
+            },
         },
         {
             title: 'ชื่อ',
@@ -188,7 +192,7 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                                     data={getMemberData()}
                                     option={
                                         {
-                                            "selectionType":"radio",
+                                            "selectionType": "radio",
                                             "type": 'selection',
                                             "clearSelectedRow": clearSelectedRow,
                                             "select": (data) => { setSelectedData(data) }

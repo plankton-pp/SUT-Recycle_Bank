@@ -5,8 +5,7 @@ import { Table } from 'antd';
 function DataTable({ columns, data, height, option }) {
     const [selectedRowKeys, setRowKeys] = useState([]);
     const [selectedRows, setSelectedRow] = useState([]);
-
-    const start = () => {
+    const initSelection = () => {
         setRowKeys([]);
         setSelectedRow([])
         if (option) {
@@ -29,13 +28,12 @@ function DataTable({ columns, data, height, option }) {
 
     useEffect(() => {
         if (option && option.clearSelectedRow) {
-            start()
+            initSelection()
         }
     }, [option]);
 
 
     const onChange = (pagination, filters, sorter, extra) => {
-
         // setLimitSelectValue([value])
         // console.log('params', pagination, filters, sorter, extra);
     }
@@ -55,7 +53,7 @@ function DataTable({ columns, data, height, option }) {
                             rowSelection.onChange([record.key], [record])
                         },
                     })}
-                    pagination={{pageSizeOptions:[5,10,25,50,100],defaultPageSize:5}}
+                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true }}
                 />
             )
         } else {
@@ -65,13 +63,11 @@ function DataTable({ columns, data, height, option }) {
                     columns={columns}
                     dataSource={data}
                     onChange={onChange}
-                    pagination={{pageSizeOptions:[5,10,25,50,100],defaultPageSize:5}}
-                    />
+                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true}}
+                />
             )
         }
     }
-
-
 
     return <div>
         {

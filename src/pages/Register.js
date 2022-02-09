@@ -38,14 +38,14 @@ function Register() {
     const [invalid, setInvalid] = useState(initInvalidMsg);
 
     const initForm = {
-        username: "test_",
-        empId: "1234",
-        phone: "1234",
-        firstname: "test",
-        lastname: "test",
-        email: "test@test.com",
-        password: "1234",
-        confirmPassword: "1234",
+        username: "",
+        empId: "",
+        phone: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     }
     const [form, setForm] = useState(initForm);
 
@@ -111,12 +111,11 @@ function Register() {
         try {
             const response = await API.login(dataUser);
             const data = await response?.data;
-            console.log("response", response);
             if (response.status === 200) {
                 if (data.auth) {
                     dispatch(login({ data, history }))
                 }
-                  setForm(initForm);
+                setForm(initForm);
             }
         } catch (error) {
             history.push("/login")
@@ -126,12 +125,18 @@ function Register() {
     const toRegister = async (e) => {
         if (validate()) {
             try {
-                const responseCheckUser = await API.checkDuplicate({ username: form.username });
+                const responseCheckUser = await API.checkDuplicate({ username: form.username, email: form.email });
                 const dataCheckUser = await responseCheckUser?.data;
                 if (responseCheckUser.status === 200) {
-                    if (dataCheckUser.duplicate) {
-                        addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้แล้ว");
-                    } else {
+                    if (dataCheckUser.duplicateUsername) {
+                        addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้งานแล้ว");
+                    }
+                    
+                    if (dataCheckUser.duplicateEmail) {
+                        addInvalid('email', "อีเมลล์นี้มีคนใช้งานแล้ว");
+                    }
+
+                    if (!(dataCheckUser.duplicateUsername && dataCheckUser.duplicateEmail)) {
                         //register
                         const response = await API.register({ ...form, role: 'employee' })
                         if (response.status === 200) {
@@ -189,7 +194,10 @@ function Register() {
                                 <Col span={12}>
                                     <InputText title="ชื่อบัญชีผู้ใช้" type="text" idName="username" value={form.username} star={true} classFormGroup="w-100"
                                         placeholder="username" handleChange={(value) => setForm({ ...form, username: value })}
-                                        handleInvalid={() => removeInvalid("username")} invalid={invalid.username}
+                                        handleInvalid={() => {
+                                            removeInvalid("username")
+                                            removeInvalid("email")
+                                        }} invalid={invalid.username}
                                     />
                                 </Col>
                             </Row>
@@ -215,7 +223,9 @@ function Register() {
                             <div className='mb-3'>
                                 <InputText title="อีเมลล์" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
                                     placeholder="email" handleChange={(value) => setForm({ ...form, email: value })}
-                                    handleInvalid={() => removeInvalid("email")} invalid={invalid.email}
+                                    handleInvalid={() => {
+                                        removeInvalid("username")
+                                    }} invalid={invalid.email}
                                 />
                             </div>
                             <div className='mb-4'>

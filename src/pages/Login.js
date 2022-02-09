@@ -14,11 +14,6 @@ import InputText from '../components/InputText';
 import BoxCard from '../components/BoxCard';
 
 import SUTLogo from '../components/SUTLogo';
-import cover1 from '../assets/cover/cover1.jpg'
-import cover2 from '../assets/cover/cover2.jpg'
-import cover3 from '../assets/cover/cover3.jpg'
-import cover4 from '../assets/cover/cover4.jpg'
-import cover5 from '../assets/cover/cover5.jpg'
 
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
@@ -74,6 +69,17 @@ function Login() {
     return validated;
   }
 
+  const invalidLogin = () => {
+    MySwal.fire({
+      text: "ไม่พบข้อมูลผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง",
+      icon: 'warning',
+      confirmButtonColor: '#96CC39',
+      confirmButtonText: 'ตกลง'
+    }).then(() => {
+      setIsLoad(false)
+    })
+  }
+
 
   const toLogin = async () => {
     setIsLoad(true)
@@ -89,37 +95,21 @@ function Login() {
         const data = await response?.data;
         // console.log("response", response);
         if (response.status === 200) {
-          const role = data.data[0]['Role'];
-          // if (role !== 'admin' && role !== 'employee') {
-          //   dispatch(login({ data, history }))
-          // } else {
-          //   dispatch(logout({ history }))
-          //   MySwal.fire({
-          //     text: "ท่านไม่มีสิทธิ์เข้าถึง ระบบนี้สำหรับเจ้าหน้าที่",
-          //     icon: 'warning',
-          //     confirmButtonColor: '#96CC39',
-          //     confirmButtonText: 'ตกลง'
-          //   })
-          // }
           if (data.auth) {
             setIsLoad(false)
             dispatch(login({ data, history }))
+          } else {
+            invalidLogin()
           }
           setForm(initForm);
         } else {
-          setIsLoad(false)
+          invalidLogin()
         }
 
       } catch (error) {
-        const mgeError = error?.response?.data.errors[0]
-        MySwal.fire({
-          text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง",
-          icon: 'warning',
-          confirmButtonColor: '#96CC39',
-          confirmButtonText: 'ตกลง'
-        })
+        invalidLogin()
       }
-    }else{
+    } else {
       setIsLoad(false)
     }
 
@@ -131,11 +121,11 @@ function Login() {
           <Row>
             <Col span={12}>
               <div className='p-5 m-5'>
-                <SUTLogo style={{ fontSize: '52px' }} />
+                <SUTLogo style={{ fontSize: '42px' }} />
                 <h1 className='logo mt-3'>เข้าสู่ระบบ</h1>
                 <div className='mb-3'>
                   <InputText title="บัญชีผู้ใช้" type="text" idName="username" value={form.username} star={false} classFormGroup="w-100"
-                    placeholder="email" handleChange={(value) => setForm({ ...form, username: value })}
+                    placeholder="username or email" handleChange={(value) => setForm({ ...form, username: value })}
                     handleInvalid={() => removeInvalid("username")} invalid={invalid.username}
                   />
                 </div>
@@ -151,7 +141,7 @@ function Login() {
                       <Button bg={'#96CC39'} color={'#fff'} onClick={() => { toLogin() }}>เข้าสู่ระบบ</Button>
                     </Col>
                     <Col>
-                      <Link to={`/register`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
+                      <Link to={`/forgetpass`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px' }}>
                         <Button className={''} bg={'#1AA'} color={'#fff'} onClick={() => { }}>ลืมรหัสผ่าน</Button>
                       </Link>
                     </Col>

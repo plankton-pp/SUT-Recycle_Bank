@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Col } from 'antd'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/actions/logoutAction';
 
-import { Button } from '../components/styles/globalStyles'
 import BoxCard from '../components/BoxCard';
 import TabPaneMenu from '../components/TabPaneMenu';
-import ModalManageTypes from '../components/modal/Modal.ManageType';
-import ModalManageProducts from '../components/modal/Modal.ManageProducts';
-import ModalManagePrices from '../components/modal/Modal.ManagePrice';
+import SideMenu from '../components/SideMenu';
+import ManageTypes from './ManageTypes';
+import ManageProducts from './ManageProducts';
 
 import * as API from '../utils/apis'
+import * as helper from '../utils/helper'
+
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
+const MySwal = withReactContent(swal)
 
 function Price() {
+
+    const dispatch = useDispatch();
+    const history = useHistory();
+
     const [contentTab, setContentTab] = useState([]);
-    const [showModalManageTypes, setShowModalManageTypes] = useState(false);
-    const [showModalManageProducts, setShowModalManageProducts] = useState(false);
-    const [showModalManagePrices, setShowModalManagePrices] = useState(false);
     const columns = [
         {
             title: '#',
@@ -51,7 +58,15 @@ function Price() {
 
     useEffect(() => {
         if (contentTab.length > 0) {
-            getProducts()
+            let checkDataAmount = 0
+            //loop
+            contentTab.forEach((item) => {
+                let key = Object.keys(item)
+                checkDataAmount += item[key].data.length
+            })
+            if (checkDataAmount === 0) {
+                getProducts()
+            }
         }
     }, [contentTab]);
 
@@ -63,9 +78,11 @@ function Price() {
                 // console.log('dataAPI:', data);
 
                 let tabList = []
+                let filteredDataType = []
+                let optionList = []
                 //loop
                 if (data) {
-                    data.forEach((item) => {
+                    data.forEach((item, index) => {
                         let typeTab = {}
                         let bodyTab = {
                             typeId: item.Type_ID,
@@ -73,9 +90,25 @@ function Price() {
                         }
                         typeTab[item.Name] = bodyTab
                         tabList.push(typeTab)
+                        optionList.push({
+                            value: item.Type_ID,
+                            label: item.Name,
+                        })
+                        filteredDataType.push({
+                            key: index + 1,
+                            id: item.Type_ID,
+                            name: item.Name,
+                            disabled: true,
+                            createDate: helper.dateElement(item.Create_Date),
+                            updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
+                            createBy: item.Create_By,
+                            updateBy: item.Update_By.length > 0 ? item.Update_By : item.Create_By,
+                            status: 'query',
+                        })
                     })
+                    setContentTab(tabList)
                 }
-                setContentTab(tabList)
+
             }
         } catch (error) {
             // if (error.response && error.response.status === 401) {
@@ -91,11 +124,12 @@ function Price() {
             const response = await API.getProducts();
             const data = await response?.data.data;
             if (response.status === 200) {
-
                 let tabList = [...contentTab]
+
                 tabList.forEach((item) => {
                     let itemKey = Object.keys(item)
                     let dataList = []
+
                     if (data) {
                         dataList = data.filter((dataItem) => {
                             return dataItem.Type_ID === item[itemKey].typeId
@@ -103,6 +137,7 @@ function Price() {
                         dataList.forEach((item, index) => {
                             item['Price_per_unit'] = item.Price_per_unit.toFixed(2)
                             item['key'] = index + 1
+                            item['unit'] = item.Unit_Detail
                         })
                     }
                     item[itemKey].data = dataList
@@ -111,69 +146,23 @@ function Price() {
                 setContentTab(tabList)
             }
         } catch (error) {
-            // if (error.response && error.response.status === 401) {
-            //     dispatch(logout({ history }))
-
-            // }
+            if (error.response && error.response.status === 401) {
+                dispatch(logout({ history }))
+            }
             console.log(error)
         }
     }
 
-    const renderButtonManager = () => {
-        return (
-            <Row gutter={[10, 0]}>
-                <Col>
-                    <Button color={'#FF5677'} width={'auto'} className="cursor-p" onClick={() => { setShowModalManageTypes(true) }}>จัดการประเภทวัสดุ</Button>
-                </Col>
-                <Col>
-                    <Button color={'#064663'} width={'auto'} className="cursor-p" onClick={() => { setShowModalManageProducts(true) }}>จัดการรายการวัสดุ</Button>
-                </Col>
-                <Col>
-                    <Button color={'#E79E4F'} width={'auto'} className="cursor-p" onClick={() => { setShowModalManagePrices(true) }}>แก้ไขมูลค่าวัสดุ</Button>
-                </Col>
-            </Row>
-        )
-    }
-
     return (
-        <div className='container'>
-            <BoxCard title="มูลค่าวัสดุ" headRight={renderButtonManager()}>
-                <div className='w-100'>
-                    {/* {console.log(contentTab)} */}
-                    <TabPaneMenu
-                        content={contentTab}
-                        type={'data-table'}
-                        optional={{ columns: columns, height: '450px' }}
-                    ></TabPaneMenu>
-                </div>
-            </BoxCard>
-            {
-                showModalManageTypes &&
-                <ModalManageTypes
-                    show={showModalManageTypes}
-                    close={() => setShowModalManageTypes(false)}
-                // save={(value) => addItemToList(value)}
-                />
-            }
-
-            {
-                showModalManageProducts &&
-                <ModalManageProducts
-                    show={showModalManageProducts}
-                    close={() => setShowModalManageProducts(false)}
-                // save={(value) => addItemToList(value)}
-                />
-            }
-
-            {
-                showModalManagePrices &&
-                <ModalManagePrices
-                    show={showModalManagePrices}
-                    close={() => setShowModalManagePrices(false)}
-                // save={(value) => addItemToList(value)}
-                />
-            }
-        </div>
+        <BoxCard title={"ภาพรวม"}>
+            <div className='w-100'>
+                <TabPaneMenu
+                    content={contentTab}
+                    type={'data-table'}
+                    optional={{ columns: columns }}
+                ></TabPaneMenu>
+            </div>
+        </BoxCard>
     );
 }
 

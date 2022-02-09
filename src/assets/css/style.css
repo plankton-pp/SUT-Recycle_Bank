@@ -64,3 +64,23 @@ body {
 .container-fixed-footer {
   min-height: calc(100vh - 110px);
 }
+
+.otp-input-style {
+  width: 60px !important;
+  /* position: relative; */
+  /* height: 82%; */
+  height: 45px;
+  border-radius: 5px;
+  border: 0px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background: #dddddd;
+  font-size: 20px;
+}
+
+.ant-layout {
+  background-color: #fff;
+}
+/* .ant-table-thead > tr > th{
+  padding-top: 0px;
+} */

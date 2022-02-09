@@ -12,7 +12,9 @@ export const login = async (formData) => {
 
 export const userAuthenticated = async () => {
   let token = helper.sessionGet('token')
-  token = token.slice(1,token.length-1)
+  if (token) {
+    token = token.slice(1, token.length - 1)
+  }
   const data = {
     headers: {
       "x-access-token": token
@@ -34,6 +36,17 @@ export const checkDuplicate = async (data) => {
   return await httpClient.post(`/api/v1/employee/checkDuplicate`, data);
 }
 
+//=================== API: Check Duplicate Username
+
+export const resetPassword = async (data) => {
+  return await httpClient.put(`/api/v1/employee/resetPassword`, data);
+}
+
+//=================== API: Check Duplicate Username
+
+export const sendValidateCode = async (data) => {
+  return await httpClient.post(`/api/v1/email/validate`, data);
+}
 
 // export const getProfile = async (token) => {
 //   const getProfile = axios.create({

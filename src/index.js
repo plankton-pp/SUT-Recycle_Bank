@@ -10,7 +10,7 @@ import { HashRouter } from "react-router-dom";
 
 ReactDOM.render(
   <Provider store={store}>
-    <HashRouter basename="/recycle-bank">
+    <HashRouter basename="/dld-sut-recycle-bank">
       <App />
     </HashRouter>
   </Provider>
