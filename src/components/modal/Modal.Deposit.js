@@ -38,7 +38,15 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
     useEffect(() => {
         if (contentTab.length > 0) {
-            getProducts()
+            let checkDataAmount = 0
+            //loop
+            contentTab.forEach((item) => {
+                let key = Object.keys(item)
+                checkDataAmount += item[key].data.length
+            })
+            if (checkDataAmount === 0) {
+                getProducts()
+            }
         }
     }, [contentTab]);
 
@@ -124,6 +132,9 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                     }
                     item[itemKey].data = dataList
                 })
+                // let key = Object.keys(tabList[0])
+                // console.log();
+                // console.log(tabList[0][key]);
                 setContentTab(tabList)
             }
         } catch (error) {
@@ -220,7 +231,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                             />
                                         </Col>
                                     </Row>
-                                    <Row gutter={[10,0]} className='mb-2'>
+                                    <Row gutter={[10, 0]} className='mb-2'>
                                         <Col>
                                             <InputText type="text" idName="object-name"
                                                 placeholder="-" classLabel="normal"
@@ -235,7 +246,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                                             <div className='pt-2 pb-2'>บาท</div>
                                         </Col>
                                     </Row>
-                                    <Row gutter={[10,0]} className='mb-2'>
+                                    <Row gutter={[10, 0]} className='mb-2'>
                                         <Col>
                                             <InputText type="number" idName="object-name"
                                                 placeholder="0" classLabel="normal"

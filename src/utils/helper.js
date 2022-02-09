@@ -95,7 +95,7 @@ export const getDateFormat = (date) => {
 export const getDateFormatTH = (date) => {
   let dd = (moment(date).get("date") < 10 ? "0" : "") + moment(date).get("date");
   let MM = (moment(date).get("month") + 1 < 10 ? "0" : "") + (moment(date).get("month") + 1);
-  let yyyy = moment(date).get("year")+543;
+  let yyyy = moment(date).get("year") + 543;
   return dd + "/" + MM + "/" + yyyy;
 };
 
@@ -236,6 +236,17 @@ export const momentDateTime = (datetime, lang = "en", type = "short", setTime = 
 
 //   return time;
 // };
+
+export const dateElement = (unixTimeSting) => {
+  if (unixTimeSting.length > 0) {
+    let dateElement = new Date(unixTimeSting * 1000)
+    return <div><div>{momentDateTh(dateElement)}</div><div>{getTimeAll(dateElement, "th")}</div></div>
+  } else {
+    return <div>{"-"}</div>
+  }
+
+}
+
 export const nextZeroPadLeft = (num, width, sign) => {
   num = num + "";
   width = width || 6;

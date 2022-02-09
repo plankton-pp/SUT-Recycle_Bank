@@ -3,12 +3,13 @@ import { Form } from "react-bootstrap";
 
 function InputText({
   title, star, type, idName, value, placeholder, classLabel, handleChange, maxLength, minLength,
-  invalid, handleInvalid, disabled, classFormGroup, as, rows, classFormCon, min, max
+  invalid, handleInvalid, disabled, classFormGroup, as, rows, classFormCon, min, max, ref
 }) {
   return (
     <Form.Group className={classFormGroup}>
       {title ? <Form.Label className={`${classLabel} mb-1`}>{title} <span className="text-danger">{star ? "*" : ""}</span></Form.Label> : ""}
       <Form.Control type={type} id={idName} name={idName}
+        itemRef={ref}
         className={invalid ? "is-invalid" : classFormCon ? classFormCon : ""}
         as={as} rows={rows}
         value={value} disabled={disabled ? true : false}

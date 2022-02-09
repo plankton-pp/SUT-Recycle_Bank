@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Row, Col, } from 'antd'
 
-import { useHistory, Link } from 'react-router-dom'
+import { useLocation, useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/actions/loginAction';
 import withReactContent from 'sweetalert2-react-content';
@@ -25,6 +25,7 @@ function ResetPass() {
 
     const dispatch = useDispatch();
     const history = useHistory();
+    const location = useLocation();
 
 
     const initInvalidMsg = {
@@ -51,7 +52,7 @@ function ResetPass() {
         setInvalid({ ...invalid });
     }
 
-    const validate = async () => {
+    const validate = () => {
         let validated = true;
         if (form.confirmPassword !== form.password) {
             if (form.password === '') {
@@ -66,15 +67,40 @@ function ResetPass() {
         } else {
             if (form.password === '') {
                 addInvalid('password', "กรุณากรอกรหัสผ่าน");
+                validated = false;
             }
         }
-
         return validated;
     }
 
-    const resetNewPassword = () => {
+    const resetNewPassword = async () => {
         if (validate()) {
+            let param = String(location.search)
+            let mail = param.substring(7, param.length)
             //reset pass api
+            try {
+                const response = await API.resetPassword({ email: mail, newpassword: form.password })
+                if (response.status === 200) {
+                    MySwal.fire({
+                        text: "เปลี่ยนรหัสผ่านสำเร็จ",
+                        icon: 'success',
+                        confirmButtonColor: '#96CC39',
+                        confirmButtonText: 'ตกลง'
+                    }).then(() => {
+                        history.push('/login')
+                    })
+                } else {
+                    MySwal.fire({
+                        text: "ระบบไม่สามารถทำการเปลี่ยนรหัสผ่านได้",
+                        icon: 'error',
+                        confirmButtonText: 'ตกลง'
+                    }).then(() => {
+                        history.push('/login')
+                    })
+                }
+            } catch (error) {
+
+            }
         }
     }
 

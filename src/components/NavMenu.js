@@ -1,12 +1,11 @@
 import React from 'react'
 import NavLayout from '../components/NavLayout'
-import * as helper from '../utils/helper'
 
 function NavMenu() {
     const content = {
         index: { name: 'Home' },
         deposit: { name: 'ฝากวัสดุ' },
-        price: { name: 'ราคารับซื้อ' },
+        management: { name: 'การจัดการ' },
         audit: { name: 'รายการบัญชีออมทรัพย์' },
         report: { name: 'เอกสาร' },
 

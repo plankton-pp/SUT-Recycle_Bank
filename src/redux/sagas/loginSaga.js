@@ -11,6 +11,7 @@ export default function* watchLoginSaga() {
 
 function* watchLogin(payload) {
   const { data, history } = payload.payload;
+  console.log("dataSaga: ", data);
   helper.sessionSave("login", data.data[0]);
   helper.sessionSave("token", 'Bearer ' + data.token);
   history.push("/index");

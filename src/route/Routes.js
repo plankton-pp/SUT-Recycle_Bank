@@ -22,7 +22,7 @@ import PageNotFound from '../pages/PageNotFound';
 import Index from '../pages/Index';
 import TestAPI from '../pages/TestAPI';
 import Deposit from '../pages/Deposit';
-import Price from '../pages/Price';
+import Management from '../pages/Management';
 import Audit from '../pages/Audit';
 import Report from '../pages/Report';
 import ProfileSetting from '../pages/ProfileSetting';
@@ -33,13 +33,23 @@ const Routes = (props) => {
     const location = useLocation();
     const dispatch = useDispatch();
 
+    // const login = useSelector(state => state.login);
+    const [isAuthen, setIsAuthen] = useState(useSelector(state => state.login));
+    const [oldPath, setOldPath] = useState(location.pathname);
+    // const { loading } = useSelector((state) => state.loading);
+
+    const checkPath = (location) => {
+        let outPath = location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/forgetpass' && !String(location.pathname).includes("/resetpassword");
+        return outPath
+    }
+
     //check authenticated
-    history.listen(async () => {
+    useEffect(async () => {
         try {
             const response = await API.userAuthenticated();
             const data = await response?.data;
             if (response.status == 200) {
-                if (!data.auth) {
+                if (!data.auth && checkPath(location)) {
                     MySwal.fire({
                         text: "หมดเวลาในการเชื่อมต่อกรุณาเข้าสู่ระบบอีกครั้ง",
                         icon: 'warning',
@@ -53,20 +63,10 @@ const Routes = (props) => {
                 dispatch(logout({ history }))
             }
         } catch (error) {
-
+            console.log(error);
         }
-    })
-    // const login = useSelector(state => state.login);
-    const [isAuthen, setIsAuthen] = useState(useSelector(state => state.login));
-    const [renderNav, setRenderNav] = useState(true);
-    // const { loading } = useSelector((state) => state.loading);
 
-    const checkPath = (location) => {
-        return location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/forgetpass' && !String(location.pathname).includes("/resetpassword");
-    }
-
-    useEffect(() => {
-    }, [])
+    }, [location.pathname])
 
     return (
         <>
@@ -77,11 +77,10 @@ const Routes = (props) => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/forgetpass" component={ForgetPass} />
                 <Route exact path="/resetpassword" component={ResetPass} />
-
                 <SecureRoute exact path="/index" component={Index} />
                 <SecureRoute exact path="/api" component={TestAPI} />
                 <SecureRoute exact path="/deposit" component={Deposit} />
-                <SecureRoute exact path="/price" component={Price} />
+                <SecureRoute exact path="/management" component={Management} />
                 <SecureRoute exact path="/audit" component={Audit} />
                 <SecureRoute exact path="/report" component={Report} />
                 <SecureRoute exact path="/profile" component={ProfileSetting} />

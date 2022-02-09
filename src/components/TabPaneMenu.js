@@ -38,7 +38,7 @@ function TabPaneMenu({ content, type, onSet, optional }) {
                                     pricePerUnit: element.Price_per_unit,
                                 }
                                 return (
-                                    <Col sm={12} md={24} lg={6} key={`col-${tabName}-${typeId}-${element.Name}`}>
+                                    <Col sm={12} md={24} lg={6} key={`col-${tabName}-${typeId}-${element.Name}-${element.Material_ID}`}>
                                         <Button
                                             key={`button-${tabName}-${element.Material_ID}`}
                                             color="white"

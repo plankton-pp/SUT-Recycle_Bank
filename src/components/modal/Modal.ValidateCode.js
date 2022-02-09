@@ -52,6 +52,7 @@ function ModalValidateCode({ show, close, save, mode, idEdit, data }) {
             let redirectTo = '/resetpassword?email=' + data
             setTimeout(() => { history.push(redirectTo) }, 2000);
         } else {
+            setIsLoad(false)
             console.log("incorrect");
             setCheckInvalid(true)
         }
