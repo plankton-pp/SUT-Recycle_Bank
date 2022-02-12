@@ -156,24 +156,43 @@ function Report() {
             let employeeIncome = "ค่าตอบแทนเจ้าหน้าที่ (25%)";
             let enviIncome = "รายได้เข้ากองทุนสิ่งแวดล้อมฯ (75%)";
             let month = "เดือน";
+            let sumBank = 0;
+            let sumEmp = 0;
+            let sumFund = 0;
             //loop get body
             objArray.map((element, index) => {
+                sumBank += Number(element.Bank)
+                sumEmp += Number(element.Emp)
+                sumFund += Number(element.Fund)
                 excelTable.push({
-                    "ลำดับ ที่": index + 1,
+                    "ลำดับที่": index + 1,
                 })
-                excelTable[index][month] = 'Feb 65';
+                excelTable[index][month] = element.month;
                 excelTable[index][SUTIncome] = element.Bank;
                 excelTable[index][employeeIncome] = element.Emp;
                 excelTable[index][enviIncome] = element.Fund;
+                if (index === objArray.length - 1) {
+                    //sumation
+                    console.log("YES: SUm");
+                    excelTable.push({
+                        "ลำดับที่": "รวม",
+                    })
+                    excelTable[index + 1][SUTIncome] = sumBank.toFixed(2);
+                    excelTable[index + 1][employeeIncome] = sumEmp.toFixed(2);
+                    excelTable[index + 1][enviIncome] = sumFund.toFixed(2);
+                    merge.push(
+                        { s: { r: index + 4, c: 0 }, e: { r: index + 4, c: 0 } },
+                    )
+                }
             })
-            return [excelTable, ["ลำดับ ที่"], wscols, merge];
+            return [excelTable, wscols, merge];
         }
     }
 
     const convertToExcel = (objArray) => {
         const workSheet = XLSX.utils.json_to_sheet(objArray[0], { skipHeader: false, origin: "A3" });
-        workSheet['!cols'] = objArray[2];
-        workSheet["!merges"] = objArray[3];
+        workSheet['!cols'] = objArray[1];
+        workSheet["!merges"] = objArray[2];
         // then add ur txt
         XLSX.utils.sheet_add_json(workSheet,
             [
