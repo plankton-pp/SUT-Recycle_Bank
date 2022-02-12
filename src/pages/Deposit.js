@@ -16,10 +16,12 @@ import swal from 'sweetalert2';
 
 import * as converter from '../utils/converter'
 import * as API from '../utils/apis'
+import * as helper from '../utils/helper'
 
 const MySwal = withReactContent(swal)
 
 function Deposit() {
+    const { ID } = JSON.parse(helper.sessionGet('login'))
     const columns = [
         {
             title: '#',
@@ -28,16 +30,16 @@ function Deposit() {
         },
         {
             title: 'ชื่อวัสดุ',
-            dataIndex: 'name',
+            dataIndex: 'productname',
 
         },
         {
             title: 'ประเภท',
-            dataIndex: 'type',
+            dataIndex: 'typename',
         },
         {
             title: 'จำนวน',
-            dataIndex: 'amount',
+            dataIndex: 'unit',
             sorter: {
                 compare: (a, b) => a.amount - b.amount,
                 multiple: 3,
@@ -47,12 +49,12 @@ function Deposit() {
         },
         {
             title: 'หน่วย',
-            dataIndex: 'unit',
+            dataIndex: 'unitdetail',
             align: 'center'
         },
         {
             title: 'มูลค่าต่อหน่วย (บาท)',
-            dataIndex: 'pricePerUnit',
+            dataIndex: 'productprice',
             sorter: {
                 compare: (a, b) => a.pricePerUnit - b.pricePerUnit,
                 multiple: 2,
@@ -62,7 +64,7 @@ function Deposit() {
         },
         {
             title: 'ยอดฝาก (บาท)',
-            dataIndex: 'sumPrice',
+            dataIndex: 'totalprice',
             sorter: {
                 compare: (a, b) => a.sumPrice - b.sumPrice,
                 multiple: 1,
@@ -101,7 +103,7 @@ function Deposit() {
     const [showModalSearch, setShowModalSearch] = useState(false)
     const [showModalAdd, setShowModalAdd] = useState(false)
     const [objectList, setObjectList] = useState([]);
-    const [sumPrice, setSumPrice] = useState(0);
+    const [netPrice, setNetPrice] = useState(0);
     const [countTransaction, setCountTransaction] = useState(0);
     const [removeItem, setRemoveItem] = useState('');
 
@@ -110,9 +112,9 @@ function Deposit() {
         setCountTransaction(objectList.length)
         let sumPriceChanged = 0
         objectList.forEach((item) => {
-            sumPriceChanged = Number(sumPriceChanged) + Number(item.sumPrice)
+            sumPriceChanged = Number(sumPriceChanged) + Number(item.totalprice)
         })
-        setSumPrice(sumPriceChanged)
+        setNetPrice(sumPriceChanged)
 
     }, [objectList]);
 
@@ -122,8 +124,8 @@ function Deposit() {
     }, [removeItem]);
 
     // useEffect(() => {
-    //   console.log(form);
-    // }, [form]);
+    //     console.log(ID);
+    // }, []);
 
 
     const toSearchMember = () => {
@@ -176,19 +178,23 @@ function Deposit() {
 
     const addItemToList = async (data) => {
         let filteredData = {
-            id: data.id,
             index: form.data.length,
             key: form.data.length + 1,
-            name: data.name,
-            type: data.type,
-            amount: data.amount,
-            pricePerUnit: data.pricePerUnit,
-            sumPrice: data.sumPrice.toFixed(2),
-            unit: 'กิโลกรัม',
+            productid: String(data.id),
+            productname: data.name,
+            typeid: String(data.typeId),
+            typename: data.type[0],
+            unit: data.amount,
+            productprice: Number(data.pricePerUnit).toFixed(2),
+            totalprice: data.sumPrice.toFixed(2),
+            unitdetail: data.unitDetail,
+            //เอาออก
+            "feeid": "1",
+            "fee": "10",
             management: <ButtonIcon type="primary" icon={<DeleteOutlined></DeleteOutlined>} onClick={() => { removeItemFromList(filteredData.index) }} danger></ButtonIcon>,
         }
         setCountTransaction(countTransaction + 1)
-        setSumPrice(sumPrice + data.sumPrice)
+        setNetPrice(Number(netPrice) + Number(filteredData.totalprice))
         setObjectList([...form.data, filteredData])
     }
 
@@ -222,34 +228,28 @@ function Deposit() {
             confirmButtonText: "ตกลง",
         }).then(async (result) => {
             if (result.value) {
-                const demoData = {
-                    memid: 2,
-                    placeby: 'Front-end',
-                    status: 'unpaid',
-                    empid: '1',
-                    product: [
-                        {
-                            productid: '99',
-                            weight: '99',
-                            totalprice: '999',
-                        },
-                        {
-                            productid: '100',
-                            weight: '99',
-                            totalprice: '999',
-                        }]
+                const dataToSave = {
+                    memid: form.ID,
+                    placeby: `${form.Firstname} ${form.Lastname}`,
+                    status: "unpaid",
+                    empid: `${ID}`,
+                    netprice: String(netPrice),
+                    product: form.data,
                 }
                 try {
-                    const response = await API.addDeposit(demoData);
+                    const response = await API.addDeposit(dataToSave);
                     if (response.status === 200) {
-                        setForm(initForm)
-                        clearDataTable()
                         //if success
                         MySwal.fire({
                             text: `บันทึกสำเร็จ`,
                             icon: "success",
                             confirmButtonText: "ตกลง",
                             confirmButtonColor: '#96CC39',
+                        }).then((value) => {
+                            if (value.isConfirmed) {
+                                setForm(initForm)
+                                clearDataTable()
+                            }
                         })
                     } else {
                         //if success
@@ -383,10 +383,10 @@ function Deposit() {
                             </div>
                             <hr />
                             <div className='w-100 text-end'>
-                                <h6>{`${sumPrice.toFixed(2)}`}</h6>
+                                <h6>{`${Number(netPrice).toFixed(2)}`}</h6>
                             </div>
 
-                            <h6>{`(${converter.ArabicNumberToText(sumPrice.toFixed(2))})`}</h6>
+                            <h6>{`(${converter.ArabicNumberToText(Number(netPrice).toFixed(2))})`}</h6>
                         </Col>
                         <Col>
                             <h6>{`รายการ`}</h6>

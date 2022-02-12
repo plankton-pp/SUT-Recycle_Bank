@@ -136,3 +136,29 @@ export const searchMember = async (key) => {
 export const getMember = async () => {
   return await httpClient.get(`/api/v1/member`);
 }
+
+//=================== API: Report Document
+// export const getReport1 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+export const getReport2 = async (role) => {
+  return await httpClient.get(`/api/v1/report2/`, role);
+}
+
+// export const getReport3 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+
+// export const getReport4_1 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+export const getReport5_1 = async (data) => {
+  return await httpClient.get(`/api/v1/report5-1/`, data);
+}
+
+export const getReport5_2 = async (data) => {
+  return await httpClient.get(`/api/v1/report5-2/`, data);
+}
