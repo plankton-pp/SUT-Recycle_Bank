@@ -14,7 +14,7 @@ import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
 
-function Price() {
+function TransactionHistory() {
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -151,7 +151,7 @@ function Price() {
     }
 
     return (
-        <BoxCard title={"ภาพรวม"}>
+        <BoxCard title={"ประวัติการทำรายการ"}>
             <div className='w-100'>
                 <TabPaneMenu
                     content={contentTab}
@@ -163,4 +163,4 @@ function Price() {
     );
 }
 
-export default Price;
+export default TransactionHistory;

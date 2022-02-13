@@ -25,7 +25,7 @@ export const getReportType2 = async (role) => {
 export const getReportType5 = async (year) => {
     let reportGroup = [];
     try {
-        const response = await API.getReport5_1({ "Year": year });
+        const response = await API.getReport5_1(year);
         const data = await response?.data.data;
         if (response.status && !response?.data.error) {
             let docs = {}
@@ -39,7 +39,7 @@ export const getReportType5 = async (year) => {
             if (data && data.lenght > 0) {
                 data.forEach((item) => {
                     docs.table.push({
-                        "Month": item.Month,
+                        "MonthYear": item.MonthYear,
                         "Unit": item.Unit,
                         "Member_Price": String(Number(item.Member_Price).toFixed(2)),
                         "Bank_Price": String(Number(item.Bank_Price).toFixed(2)),
@@ -56,7 +56,7 @@ export const getReportType5 = async (year) => {
     }
 
     try {
-        const response = await API.getReport5_2({ "year": year });
+        const response = await API.getReport5_2(year);
         const data = await response?.data.data;
         if (response.status && !response?.data.error) {
             let docs = {}
@@ -70,7 +70,7 @@ export const getReportType5 = async (year) => {
             if (data) {
                 data.forEach((item) => {
                     docs.table.push({
-                        "month": item.month,
+                        "MonthYear": item.MonthYear,
                         "Bank": String(Number(item.Bank).toFixed(2)),
                         "Emp": String(Number(item.Emp).toFixed(2)),
                         "Fund": String(Number(item.Fund).toFixed(2)),

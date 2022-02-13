@@ -13,7 +13,7 @@ function NavLayout(props) {
     const location = useLocation().pathname;
     const dispatch = useDispatch();
     const history = useHistory();
-    
+
     const [activeNav, setActiveNav] = useState(() => {
         const activeTab = Object.keys(props.content).filter((item, index) => { return item === location.slice(1, location.length) })[0]
         const indexOfActiveTab = Object.keys(props.content).indexOf(activeTab)
@@ -58,13 +58,13 @@ function NavLayout(props) {
                 Logo
                 NavTabs */}
             <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: '#fff', }}>
-                <Row gutter={[0, 0]} className='d-flex justify-content-end'>
-                    <Col>
+                <Row gutter={[0, 0]} className='d-flex justify-content-start'>
+                    <Col span={5}>
                         <SUTLogo />
                     </Col>
                     {/* Rendering NavMenu */}
                     {Object.keys(props.content).length > 0 ?
-                        <Col span={14}>
+                        <Col span={12}>
                             <Menu mode="horizontal" defaultSelectedKeys={[activeNav]} style={{ lineHeight: '64px', }}>
                                 {Object.keys(props.content).map((item, index) => {
                                     return renderNavMenu(item, index)
@@ -74,24 +74,28 @@ function NavLayout(props) {
                         :
                         null
                     }
-                    <Col>
-                        <Link to={`/profile`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px', color: '#000' }}>
-                            <div className='profile'>
-                                <Row gutter={[10, 0]}>
-                                    <Col style={{ paddingLeft: '20px' }}>
-                                        <Avatar src={<Image src="https://joeschmoe.io/api/v1/random" style={{ width: 32 }} />} />
-                                    </Col>
-                                    <Col style={{ paddingRight: '30px' }}>{getUsername()}</Col>
-                                </Row>
-                            </div>
-                        </Link>
-                    </Col>
-                    <Col>
-                        <div className='profile bold' onClick={() => { toLogout() }}>
-                            <Row gutter={[0, 0]}>
-                                <Col style={{ paddingLeft: '30px', paddingRight: '30px', }}><span>ออกจากระบบ</span></Col>
-                            </Row>
-                        </div>
+                    <Col span={7}>
+                        <Menu mode="horizontal" defaultSelectedKeys={['']} style={{ lineHeight: '64px', }}>
+                            <Menu.Item key={`navtab-profile`} id={`navtab-profile`}>
+                                <Link to={`/profile`} style={{ textDecoration: 'none', fontWeight: 'bolder', fontSize: '16px', color: '#000' }} onClick={() => changeNav(``)}>
+                                    <div className='profile'>
+                                        <Row gutter={[10, 0]}>
+                                            <Col style={{ paddingLeft: '20px' }}>
+                                                <Avatar src={<Image src="https://joeschmoe.io/api/v1/random" style={{ width: 32 }} />} />
+                                            </Col>
+                                            <Col style={{ paddingRight: '30px' }}>{getUsername()}</Col>
+                                        </Row>
+                                    </div>
+                                </Link>
+                            </Menu.Item>
+                            <Menu.Item key={`navtab-logout`} id={`navtab-logout`}>
+                                <div className='profile bold' onClick={() => { toLogout() }}>
+                                    <Row gutter={[0, 0]}>
+                                        <Col style={{ paddingLeft: '30px', paddingRight: '30px', }}><span>ออกจากระบบ</span></Col>
+                                    </Row>
+                                </div>
+                            </Menu.Item>
+                        </Menu>
                     </Col>
                 </Row>
             </Header>

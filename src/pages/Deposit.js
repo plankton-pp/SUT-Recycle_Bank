@@ -11,15 +11,13 @@ import { Button } from '../components/styles/globalStyles';
 import ModalDeposit from '../components/modal/Modal.Deposit';
 import ModalSearchMember from '../components/modal/Modal.SearchMember';
 
-import withReactContent from 'sweetalert2-react-content';
-import swal from 'sweetalert2';
-
 import * as converter from '../utils/converter'
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
 
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
-
 function Deposit() {
     const { ID } = JSON.parse(helper.sessionGet('login'))
     const columns = [
@@ -400,10 +398,10 @@ function Deposit() {
                         <div className="my-5 d-flex justify-content-end">
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => { toSaveList() }}>บันทึกรายการ</Button>
+                                    <Button color="white" bg="#96CC39" width={'auto'} onClick={() => { toSaveList() }}>บันทึกรายการ</Button>
                                 </Col>
                                 <Col>
-                                    <Button color="white" bg="#E72525" width={'auto'} className="cursor-p" onClick={() => { toClearList() }}>ล้างรายการ</Button>
+                                    <Button color="white" bg="#E72525" width={'auto'} onClick={() => { toClearList() }}>ล้างรายการ</Button>
                                 </Col>
                             </Row>
                         </div>

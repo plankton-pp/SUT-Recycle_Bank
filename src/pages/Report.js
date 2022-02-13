@@ -127,7 +127,8 @@ function Report() {
 
         if (catagory == 5) {
             try {
-                const report = await Docs.getReportType5(2022)
+                const report = await Docs.getReportType5(2565)
+                console.log("Report.js: ", report);
                 setForm({ ...form, data: report })
             } catch (error) {
 
@@ -136,6 +137,7 @@ function Report() {
     }
 
     const convertListToExcelTable = (docId, objArray) => {
+        console.log("objArray: ", objArray);
         let excelTable = [];
         if (docId === "doc_5-2") {
             //columns width
@@ -152,7 +154,7 @@ function Report() {
                 { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
             ];
             //header
-            let SUTIncome = "รายได้ธนาคารวัสดุรีไซเคิล มทส. (บาท)";
+            let incomeSUT = "รายได้ธนาคารวัสดุรีไซเคิล มทส. (บาท)";
             let employeeIncome = "ค่าตอบแทนเจ้าหน้าที่ (25%)";
             let enviIncome = "รายได้เข้ากองทุนสิ่งแวดล้อมฯ (75%)";
             let month = "เดือน";
@@ -167,21 +169,20 @@ function Report() {
                 excelTable.push({
                     "ลำดับที่": index + 1,
                 })
-                excelTable[index][month] = element.month;
-                excelTable[index][SUTIncome] = element.Bank;
+                excelTable[index][month] = element.MonthYear;
+                excelTable[index][incomeSUT] = element.Bank;
                 excelTable[index][employeeIncome] = element.Emp;
                 excelTable[index][enviIncome] = element.Fund;
                 if (index === objArray.length - 1) {
                     //sumation
-                    console.log("YES: SUm");
                     excelTable.push({
                         "ลำดับที่": "รวม",
                     })
-                    excelTable[index + 1][SUTIncome] = sumBank.toFixed(2);
+                    excelTable[index + 1][incomeSUT] = sumBank.toFixed(2);
                     excelTable[index + 1][employeeIncome] = sumEmp.toFixed(2);
                     excelTable[index + 1][enviIncome] = sumFund.toFixed(2);
                     merge.push(
-                        { s: { r: index + 4, c: 0 }, e: { r: index + 4, c: 0 } },
+                        { s: { r: index + 4, c: 0 }, e: { r: index + 4, c: 1 } },
                     )
                 }
             })
@@ -211,7 +212,7 @@ function Report() {
                 header: ["year"], skipHeader: true, origin: "A2",
             }
         );
-        workSheet["A1"].s = {									// set the style for target cell
+        workSheet["A1"].s = {
             font: {
                 name: 'TH SarabunPSK',
                 sz: 16,
@@ -222,19 +223,25 @@ function Report() {
                 horizontal: "center"
             }
         };
-        workSheet["A2"].s = {									// set the style for target cell
+        workSheet["A2"].s = {
             font: {
                 name: 'TH SarabunPSK',
                 sz: 16,
                 bold: true,
             },
+            alignment: {
+                vertical: "center",
+                horizontal: "center"
+            }
+        };
+        workSheet["A5"].s = {
             alignment: {
                 vertical: "center",
                 horizontal: "center"
             }
         };
 
-        const workBook = { Sheets: { 'data': workSheet }, SheetNames: ['data'], Title: ['ลำดับ ที่'] };
+        const workBook = { Sheets: { 'ค่าตอบแทน': workSheet }, SheetNames: ['ค่าตอบแทน'], Title: ['ลำดับที่'] };
         return XLSX.write(workBook, { bookType: 'xlsx', type: 'array' });
     }
 
@@ -257,7 +264,6 @@ function Report() {
         if (selectedData && selectedData[0].length > 0) {
             let report = selectedData[1][0]
             if (report) {
-                console.log("Report", report);
                 saveDocs(report)
             }
         }
