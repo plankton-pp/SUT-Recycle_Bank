@@ -183,12 +183,10 @@ function Deposit() {
             typeid: String(data.typeId),
             typename: data.type[0],
             unit: data.amount,
+            fee: data.lastFee,
             productprice: Number(data.pricePerUnit).toFixed(2),
             totalprice: data.sumPrice.toFixed(2),
             unitdetail: data.unitDetail,
-            //เอาออก
-            "feeid": "1",
-            "fee": "10",
             management: <ButtonIcon type="primary" icon={<DeleteOutlined></DeleteOutlined>} onClick={() => { removeItemFromList(filteredData.index) }} danger></ButtonIcon>,
         }
         setCountTransaction(countTransaction + 1)
@@ -229,12 +227,14 @@ function Deposit() {
                 const dataToSave = {
                     memid: form.ID,
                     placeby: `${form.Firstname} ${form.Lastname}`,
-                    status: "unpaid",
                     empid: `${ID}`,
                     netprice: String(netPrice),
                     product: form.data,
+                    type: "deposit",
+                    status: "unpaid",
                 }
                 try {
+                    console.log(dataToSave);
                     const response = await API.addDeposit(dataToSave);
                     if (response.status === 200) {
                         //if success

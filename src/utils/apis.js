@@ -161,3 +161,8 @@ export const getReport5_1 = async (year) => {
 export const getReport5_2 = async (year) => {
   return await httpClient.get(`/api/v1/report5-2/${year}`);
 }
+
+//=================== API: Transaction
+export const getTransaction = async () => {
+  return await httpClient.get(`/api/v1/transaction/`);
+}

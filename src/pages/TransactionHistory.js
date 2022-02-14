@@ -12,6 +12,7 @@ import * as helper from '../utils/helper'
 
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
+import DataTable from '../components/DataTable';
 const MySwal = withReactContent(swal)
 
 function TransactionHistory() {
@@ -19,7 +20,6 @@ function TransactionHistory() {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const [contentTab, setContentTab] = useState([]);
     const columns = [
         {
             title: '#',
@@ -27,85 +27,86 @@ function TransactionHistory() {
             width: '50px'
         },
         {
-            title: 'ชื่อวัสดุ',
-            dataIndex: 'Name',
-            width: '30%'
-
-        },
-        {
-            title: 'หน่วย',
-            dataIndex: 'unit',
+            title: 'วันที่บันทึก',
+            dataIndex: 'createDate',
             align: 'center',
-            width: '30%'
-        },
-        {
-            title: 'มูลค่ารับซื้อต่อหน่วย (บาท)',
-            dataIndex: 'Price_per_unit',
             sorter: {
-                compare: (a, b) => a.Price_per_unit - b.Price_per_unit,
+                compare: (a, b) => a.createDate - b.createDate,
                 multiple: 1,
             },
-            width: '200px',
+        },
+        {
+            title: 'สถานะ',
+            dataIndex: 'type',
+        },
+        {
+            title: 'ผู้ทำรายการ',
+            dataIndex: 'user',
+            align: 'left',
+        },
+        {
+            title: 'รายละเอียด',
+            dataIndex: 'detail',
+            align: 'center',
+        },
+        {
+            title: 'จำนวนเงิน (บาท)',
+            dataIndex: 'amount',
             align: 'right',
         },
+        {
+            title: 'ผู้บันทึกรายการ',
+            dataIndex: 'createBy',
+            align: 'left',
+        },
     ];
+    const [contentTab, setContentTab] = useState([]);
+
     useEffect(() => {
-        getTypeAPI()
+        getTransaction()
     }, []);
 
-    useEffect(() => {
-        if (contentTab.length > 0) {
-            let checkDataAmount = 0
-            //loop
-            contentTab.forEach((item) => {
-                let key = Object.keys(item)
-                checkDataAmount += item[key].data.length
-            })
-            if (checkDataAmount === 0) {
-                getProducts()
-            }
+    const getStatusColor = (status) => {
+        if (status === "withdraw") {
+            return "red"
+        } else if (status === "deposit") {
+            return "#96CC39"
+        } else {
+            return "orange"
         }
-    }, [contentTab]);
+    }
 
-    const getTypeAPI = async () => {
+    const getTypeStatus = (status) => {
+        if (status === "withdraw") {
+            return "ถอน"
+        } else if (status === "deposit") {
+            return "ฝาก"
+        } else {
+            return "รอดำเนินการ"
+        }
+    }
+
+    const getTransaction = async () => {
         try {
-            const response = await API.getTypes();
+            const response = await API.getTransaction();
             const data = await response?.data.data;
             if (response.status === 200) {
-                // console.log('dataAPI:', data);
-
-                let tabList = []
-                let filteredDataType = []
-                let optionList = []
+                let filteredData = []
                 //loop
                 if (data) {
                     data.forEach((item, index) => {
-                        let typeTab = {}
-                        let bodyTab = {
-                            typeId: item.Type_ID,
-                            data: [],
-                        }
-                        typeTab[item.Name] = bodyTab
-                        tabList.push(typeTab)
-                        optionList.push({
-                            value: item.Type_ID,
-                            label: item.Name,
-                        })
-                        filteredDataType.push({
+                        filteredData.push({
                             key: index + 1,
-                            id: item.Type_ID,
-                            name: item.Name,
-                            disabled: true,
-                            createDate: helper.dateElement(item.Create_Date),
-                            updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
+                            user: item.Firstname + " " + item.Lastname,
+                            detail: item.Detail,
+                            type: <h6 style={{ color: getStatusColor(item.Type) }}>{getTypeStatus(item.Type)}</h6>,
+                            amount: item.Amount,
+                            createDate: item.Create_Date,
                             createBy: item.Create_By,
-                            updateBy: item.Update_By.length > 0 ? item.Update_By : item.Create_By,
-                            status: 'query',
                         })
-                    })
-                    setContentTab(tabList)
+                    });
+                    setContentTab(filteredData)
                 }
-
             }
         } catch (error) {
             // if (error.response && error.response.status === 401) {
@@ -116,48 +117,16 @@ function TransactionHistory() {
         }
     }
 
-    const getProducts = async () => {
-        try {
-            const response = await API.getProducts();
-            const data = await response?.data.data;
-            if (response.status === 200) {
-                let tabList = [...contentTab]
-
-                tabList.forEach((item) => {
-                    let itemKey = Object.keys(item)
-                    let dataList = []
-
-                    if (data) {
-                        dataList = data.filter((dataItem) => {
-                            return dataItem.Type_ID === item[itemKey].typeId
-                        })
-                        dataList.forEach((item, index) => {
-                            item['Price_per_unit'] = item.Price_per_unit.toFixed(2)
-                            item['key'] = index + 1
-                            item['unit'] = item.Unit_Detail
-                        })
-                    }
-                    item[itemKey].data = dataList
-
-                })
-                setContentTab(tabList)
-            }
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                dispatch(logout({ history }))
-            }
-            console.log(error)
-        }
-    }
-
     return (
         <BoxCard title={"ประวัติการทำรายการ"}>
             <div className='w-100'>
-                <TabPaneMenu
-                    content={contentTab}
-                    type={'data-table'}
-                    optional={{ columns: columns }}
-                ></TabPaneMenu>
+                <DataTable
+                    columns={columns}
+                    data={contentTab}
+                    limitPositionLeft={true}
+                    option={{ "showLimitPage": true }}>
+
+                </DataTable>
             </div>
         </BoxCard>
     );

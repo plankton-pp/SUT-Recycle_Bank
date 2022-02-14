@@ -11,6 +11,10 @@ import { VerticalLine } from '../styles/veriticalLine';
 
 import * as API from '../../utils/apis'
 
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
+const MySwal = withReactContent(swal)
+
 function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
     const [objectId, setObjectId] = useState('');
@@ -31,11 +35,13 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
         pricePerUnit: '',
         sumPrice: '',
         unitDetail: '',
+        lastFee: '',
     }
     const [form, setForm] = useState(initForm);
 
     useEffect(() => {
         getTypeAPI()
+        getLastFee()
     }, []);
 
     useEffect(() => {
@@ -88,6 +94,28 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
     const handleClose = () => {
         close()
+    }
+
+    const getLastFee = async () => {
+        try {
+            const respone = await API.getLastFee()
+            const data = await respone?.data.data[0]
+            if (respone.status === 200 && !respone?.data.error) {
+                setForm({
+                    ...form,
+                    lastFee: data.fee,
+                })
+            } else {
+                MySwal.fire({
+                    text: `ไม่พบข้อมูลสัดส่วน `,
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "ตกลง",
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const getTypeAPI = async () => {
