@@ -1,3 +1,4 @@
+
 export const CheckNumber = (Number) => {
     let decimal = false;
     Number = Number.toString();
@@ -73,4 +74,6 @@ export const ArabicNumberToText = (numberParams) => {
         }
     }
 }
+
+
 

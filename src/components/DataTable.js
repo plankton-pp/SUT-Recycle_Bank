@@ -53,7 +53,7 @@ function DataTable({ columns, data, height, option }) {
                             rowSelection.onChange([record.key], [record])
                         },
                     })}
-                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true }}
+                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true, position: ["topRight"]}}
                 />
             )
         } else {
@@ -63,7 +63,7 @@ function DataTable({ columns, data, height, option }) {
                     columns={columns}
                     dataSource={data}
                     onChange={onChange}
-                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true}}
+                    pagination={{ pageSizeOptions: [5, 10, 25, 50, 100], defaultPageSize: 5, showSizeChanger: true, position: ["topRight"]}}
                 />
             )
         }

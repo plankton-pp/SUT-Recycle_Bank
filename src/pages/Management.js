@@ -5,7 +5,16 @@ import SideMenu from '../components/SideMenu';
 import ManageTypes from './ManageTypes';
 import ManageProducts from './ManageProducts';
 import ManagePrice from './ManagePrice'
-import { SnippetsOutlined, FileDoneOutlined, DollarOutlined } from '@ant-design/icons';
+import Proportion from './Proportion';
+import TransactionHistory from './TransactionHistory';
+import {
+    HomeOutlined,
+    SnippetsOutlined,
+    FileDoneOutlined,
+    DollarOutlined,
+    PercentageOutlined,
+    HistoryOutlined
+} from '@ant-design/icons';
 
 function Management() {
 
@@ -18,10 +27,19 @@ function Management() {
                         <Price />,
                         <ManageTypes />,
                         <ManageProducts />,
-                        <ManagePrice />
+                        <ManagePrice />,
+                        <Proportion />,
+                        <TransactionHistory />
                     ]}
-                    icon={[<SnippetsOutlined />, <FileDoneOutlined />, <DollarOutlined />]}
-                    title={["จัดการรายการประเภท", "จัดการรายการวัสดุ", "ปรับเปลี่ยนราคารับซื้อ"]}
+                    mainIcon={<HomeOutlined />}
+                    icon={[
+                        <SnippetsOutlined />,
+                        <FileDoneOutlined />,
+                        <DollarOutlined />,
+                        <PercentageOutlined />,
+                        <HistoryOutlined />]}
+                    mainTitle={"ภาพรวม"}
+                    title={["จัดการรายการประเภท", "จัดการรายการวัสดุ", "ปรับเปลี่ยนราคารับซื้อ", "ปรับสัดส่วนค่าฝากวัสดุ", "ประวัติการทำรายการ"]}
                 />
             </BoxCard>
         </div >

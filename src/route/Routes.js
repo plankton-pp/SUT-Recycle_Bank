@@ -19,13 +19,12 @@ import Register from '../pages/Register'
 import ForgetPass from '../pages/ForgetPass'
 import ResetPass from '../pages/ResetPass';
 import PageNotFound from '../pages/PageNotFound';
-import Index from '../pages/Index';
-import TestAPI from '../pages/TestAPI';
+import Home from '../pages/Home';
 import Deposit from '../pages/Deposit';
 import Management from '../pages/Management';
 import Audit from '../pages/Audit';
 import Report from '../pages/Report';
-import ProfileSetting from '../pages/ProfileSetting';
+import Setting from '../pages/Setting';
 
 const Routes = (props) => {
     const MySwal = withReactContent(swal);
@@ -77,13 +76,12 @@ const Routes = (props) => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/forgetpass" component={ForgetPass} />
                 <Route exact path="/resetpassword" component={ResetPass} />
-                <SecureRoute exact path="/index" component={Index} />
-                <SecureRoute exact path="/api" component={TestAPI} />
+                <SecureRoute exact path="/index" component={Home} />
                 <SecureRoute exact path="/deposit" component={Deposit} />
                 <SecureRoute exact path="/management" component={Management} />
                 <SecureRoute exact path="/audit" component={Audit} />
                 <SecureRoute exact path="/report" component={Report} />
-                <SecureRoute exact path="/profile" component={ProfileSetting} />
+                <SecureRoute exact path="/profile" component={Setting} />
                 <Route path="*" exact={true} component={PageNotFound} />
 
             </Switch>

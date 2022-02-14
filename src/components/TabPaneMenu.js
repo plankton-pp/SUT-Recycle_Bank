@@ -11,7 +11,6 @@ function TabPaneMenu({ content, type, onSet, optional }) {
 
     useEffect(() => {
         console.disableYellowBox = true;
-        // console.log('TabPane', optional);
     }, []);
 
     const setData = (data, elementId) => {
@@ -33,20 +32,21 @@ function TabPaneMenu({ content, type, onSet, optional }) {
                                 let objectDeposit = {
                                     type: tabName,
                                     typeId: typeId,
-                                    id: element.Material_ID,
+                                    id: element.Product_ID,
                                     name: element.Name,
                                     pricePerUnit: element.Price_per_unit,
+                                    unitDetail: element.Unit_Detail,
                                 }
                                 return (
-                                    <Col sm={12} md={24} lg={6} key={`col-${tabName}-${typeId}-${element.Name}-${element.Material_ID}`}>
+                                    <Col sm={12} md={24} lg={6} key={`col-${tabName}-${typeId}-${element.Name}-${element.Product_ID}`}>
                                         <Button
-                                            key={`button-${tabName}-${element.Material_ID}`}
+                                            key={`button-${tabName}-${element.Product_ID}`}
                                             color="white"
-                                            bg={element.Material_ID === onActiveObject ? "#90d890" : "#189078"}
-                                            id={element.Material_ID}
+                                            bg={element.Product_ID === onActiveObject ? "#90d890" : "#189078"}
+                                            id={element.Product_ID}
                                             className="cursor-p mb-2"
                                             width='100%' height='100%'
-                                            onClick={() => { setData(objectDeposit, element.Material_ID) }}
+                                            onClick={() => { setData(objectDeposit, element.Product_ID) }}
                                         >
                                             {element.Name}
                                         </Button>
