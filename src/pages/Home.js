@@ -4,10 +4,13 @@ import { Row, Col } from 'antd'
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
 import TabPaneMenu from '../components/TabPaneMenu';
+import GraphDoughnut from './GraphDoughnut';
+import GraphBar from './GraphBar';
 
 function Home() {
 
     const [contentTab, setContentTab] = useState([]);
+    // const [showGraph, setShowGraph] = useState(false);
     const columns = [
         {
             title: '#',
@@ -38,6 +41,7 @@ function Home() {
     ];
     useEffect(() => {
         getTypeAPI()
+        // setShowGraph(true)
     }, []);
 
     useEffect(() => {
@@ -136,24 +140,29 @@ function Home() {
             console.log(error)
         }
     }
-
     return (
-        <div className='container'>
-            <div className='mb-3'>
+        <div className='container pb-5'>
+            <div className='mb-3' style={{ width: '100%' }}>
                 <Row gutter={[20, 0]}>
-                    <Col>
+                    <Col span={12}>
                         <BoxCard>
-                            <h1 className='' style={{ fontWeight: 'bolder' }}>ราคารับซื้อปัจจุบัน</h1>
+                            <GraphDoughnut></GraphDoughnut>
+                            <div className='d-flex justify-content-center mt-3'>
+                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนการฝากจากแต่ละประเภท 5 อันดับสูงสุด'}</h6>
+                            </div>
                         </BoxCard>
                     </Col>
-                    <Col>
+                    <Col span={12}>
                         <BoxCard>
-                            <h1 className='' style={{ fontWeight: 'bolder' }}>ราคารับซื้อปัจจุบัน</h1>
+                            <GraphBar></GraphBar>
+                            <div className='d-flex justify-content-center mt-3'>
+                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนข้อมูลวัสดุที่มีการนำฝากมากที่สุด 5 อันดับ'}</h6>
+                            </div>
                         </BoxCard>
                     </Col>
                 </Row>
             </div>
-            <BoxCard title={<h1 className='' style={{ fontWeight: 'bolder', color: '#fff' }}>ราคารับซื้อปัจจุบัน</h1>}>
+            <BoxCard title={<span className='' style={{ fontWeight: 'bolder', color: '#fff' }}>ราคารับซื้อปัจจุบัน</span>}>
                 <div>
                     <TabPaneMenu
                         content={contentTab}

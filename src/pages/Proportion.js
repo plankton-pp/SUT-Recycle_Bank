@@ -35,9 +35,9 @@ function Proportion() {
 
     const getLastFee = async () => {
         try {
-            const respone = await API.getLastFee()
-            const data = await respone?.data.data[0]
-            if (respone.status === 200 && !respone?.data.error) {
+            const response = await API.getLastFee()
+            const data = await response?.data.data[0]
+            if (response.status === 200 && !response?.data.error) {
                 setForm({
                     ...form,
                     memberFee: Number(100 - Number(data.fee)).toFixed(2),
@@ -75,7 +75,6 @@ function Proportion() {
                     icon: "success",
                     showCloseButton: true,
                     confirmButtonColor: '#96CC39',
-                    showCancelButton: true,
                     confirmButtonText: "ตกลง",
                 }).then((value) => {
                     if (value.isConfirmed) {
