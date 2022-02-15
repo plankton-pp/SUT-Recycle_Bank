@@ -162,7 +162,32 @@ export const getReport5_2 = async (year) => {
   return await httpClient.get(`/api/v1/report5-2/${year}`);
 }
 
+export const getReport5_3 = async (year) => {
+
+  return await httpClient.get(`/api/v1/report5-3/${year}`);
+}
+
+export const getReport5_4 = async (year) => {
+  return await httpClient.get(`/api/v1/report5-4/${year}`);
+}
+
+//=================== API: Emailing
+
+export const sendReceipt = async (data) => {
+  return await httpClient.post(`/api/v1/email/receipt`, data);
+}
+
 //=================== API: Transaction
 export const getTransaction = async () => {
   return await httpClient.get(`/api/v1/transaction/`);
+}
+
+//=================== API: Wallet
+export const getWallets = async () => {
+  return await httpClient.get(`/api/v1/wallet/WWB`);
+}
+
+//=================== API: Withdraw
+export const withdrawBalance = async (data) => {
+  return await httpClient.post(`/api/v1/withdraw/`, data);
 }

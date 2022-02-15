@@ -1,15 +1,22 @@
-import React, {useState,  } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'
 import BoxCard from '../components/BoxCard';
 import { Card, Row, Col } from 'antd'
 import DataTable from '../components/DataTable';
 import InputText from '../components/InputText';
 import { Button } from '../components/styles/globalStyles';
+
+import * as API from '../utils/apis'
+import * as helper from '../utils/helper'
+
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
-
 const MySwal = withReactContent(swal)
 
 function Audit() {
+    const history = useHistory()
+    const { ID } = JSON.parse(helper.sessionGet('login'))
+
     const columns = [
         {
             title: '#',
@@ -19,35 +26,40 @@ function Audit() {
 
         {
             title: 'รหัสสมาชิก',
-            dataIndex: 'ID',
+            dataIndex: 'id',
             width: '150px',
             align: 'center',
         },
         {
-            title: 'ชื่อ',
-            dataIndex: 'Firstname',
-            align: 'center',
-
-        },
-        {
-            title: 'นามสกุล',
-            dataIndex: 'Lastname',
-            align: 'center',
-        },
-        {
-            title: 'วันที่ทำรายการฝาก',
-            dataIndex: 'Date',
-            align: 'center',
-        },
-        {
             title: 'ยอดคงค้าง (บาท)',
-            dataIndex: 'Total_price',
+            dataIndex: 'balance',
             sorter: {
-                compare: (a, b) => a.Total_price - b.Total_price,
+                compare: (a, b) => a.balance - b.balance,
                 multiple: 1,
             },
             width: '200px',
             align: 'right',
+            render: ((_, record) => {
+                return (<h5 style={{ color: 'orange' }}>{record.balance}</h5>)
+            })
+        },
+        {
+            title: 'ชื่อ',
+            dataIndex: 'firstname',
+            align: 'left',
+            width: '300px',
+
+        },
+        {
+            title: 'นามสกุล',
+            dataIndex: 'lastname',
+            align: 'left',
+            width: '300px',
+        },
+        {
+            title: 'วันที่ทำรายการฝาก',
+            dataIndex: 'createDate',
+            align: 'center',
         },
     ];
     const initForm = {
@@ -71,9 +83,24 @@ function Audit() {
         data: [],
     }
     const [form, setForm] = useState(initForm);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [bankPrice, setBankPrice] = useState(0);
+    const [memberPrice, setMemberPrice] = useState(0);
+    const [waitingPrice, setWaitingPrice] = useState(0);
+    const [contentTab, setContentTab] = useState([]);
+    const [clearSelectedRow, setClearSelectedRow] = useState(false);
+    const [selectedData, setSelectedData] = useState([]);
+    const [currentMonth, setCurrentMonth] = useState("กุมภาพันธ์");
 
-    const toSearchMember = () => {
-    }
+    useEffect(() => {
+        getLastFee()
+        getBalance()
+    }, [])
+
+
+    useEffect(() => {
+        getToWithDraw(form.searchKeyword)
+    }, [form.searchKeyword])
 
     const clearSearch = () => {
         if (form.data.length > 0) {
@@ -102,25 +129,211 @@ function Audit() {
         }
     }
 
+    const getBalance = async () => {
+        const date = new Date()
+        const now = date.getFullYear() + 543
+        const month = date.toLocaleString('en-us', { month: 'short' });
+        const monthENArray = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+        const monthTHArray = [
+            "มกราคม",
+            "กุมภาพันธ์",
+            "มีนาคม",
+            "เมษายน",
+            "พฤษภาคม",
+            "มิถุนายน",
+            "กรกฎาคม",
+            "สิงหาคม",
+            "กันยายน",
+            "ตุลาคม",
+            "พฤศจิกายน",
+            "ธันวาคม",
+        ]
+        let indexMonth = monthENArray.indexOf(date.toLocaleString('en-us', { month: 'long' }));
+        let name = monthTHArray[indexMonth]
+        try {
+            const respone = await API.getReport5_1(now)
+            const data = await respone?.data.data
+            if (respone.status === 200 && !respone?.data.error) {
+                data.forEach((item) => {
+                    if (String(item.Month).includes(String(month))) {
+                        setTotalPrice(Number(item.Total_Price).toFixed(2))
+                        setBankPrice(Number(item.Bank_Price).toFixed(2))
+                        setMemberPrice(Number(item.Member_Price).toFixed(2))
+                        setCurrentMonth(name + " " + now)
+                    }
+                })
+                // console.log(data);
+            } else {
+                MySwal.fire({
+                    text: `ไม่พบข้อมูลยอดเงิน \nกรุณาทำรายการอีกครั้ง `,
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "ตกลง",
+                }).then((value) => {
+                    if (value.isConfirmed) {
+                        history.push("/index")
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getLastFee = async () => {
+        try {
+            const respone = await API.getLastFee()
+            const data = await respone?.data.data[0]
+            if (respone.status === 200 && !respone?.data.error) {
+                setForm({
+                    ...form,
+                    memberFee: Number(100 - Number(data.fee)).toFixed(2),
+                    bankFee: data.fee,
+                    updateDate: helper.momentDate(data.Update_Date.length > 0 ? Number(data.Update_Date) * 1000 : Number(data.Create_Date) * 1000, "th", "short"),
+                    updateBy: data.Update_By,
+                })
+            } else {
+                MySwal.fire({
+                    text: `ไม่พบข้อมูลสัดส่วน \nกรุณาทำรายการอีกครั้ง `,
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "ตกลง",
+                }).then((value) => {
+                    if (value.isConfirmed) {
+                        history.push("/index")
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getToWithDraw = async (search) => {
+        try {
+            const response = await API.getWallets()
+            const data = response?.data.data
+            if (response.status === 200 && !data.error) {
+                if (data && data.length > 0) {
+                    let filteredData = []
+                    let sumBalance = 0
+                    data.forEach((item, index) => {
+                        sumBalance += Number(item.Balance)
+                        filteredData.push({
+                            key: index + 1,
+                            id: item.ID,
+                            firstname: item.Firstname,
+                            lastname: item.Lastname,
+                            createDate: item.Create_Date,
+                            balance: Number(item.Balance).toFixed(2),
+                        })
+                    })
+                    setWaitingPrice(Number(sumBalance).toFixed(2))
+                    if (search !== "") {
+                        let filter = filteredData.filter((item) => String(item.firstname).includes(search) || String(item.lastname).includes(search))
+                        setContentTab(filter)
+                    } else {
+                        setContentTab(filteredData)
+                    }
+
+                }
+            } else {
+                MySwal.fire({
+                    text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
+                    icon: "error",
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "ยกเลิก",
+                })
+            }
+        } catch (error) {
+            MySwal.fire({
+                text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
+                icon: "error",
+                showCloseButton: true,
+                showCancelButton: true,
+                confirmButtonText: "ยกเลิก",
+            })
+            console.log(error);
+        }
+    }
+
+    const toWithDrawBalance = () => {
+        if (selectedData && selectedData[1].length > 0) {
+            try {
+                selectedData[1].forEach(async (item) => {
+                    let dataToWithdraw = {
+                        memid: item.id,
+                        empid: ID,
+                        netprice: item.balance
+                    }
+                    const response = await API.withdrawBalance(dataToWithdraw)
+                })
+                MySwal.fire({
+                    text: `บันทึกข้อมูลสำเร็จ`,
+                    icon: "success",
+                    showCloseButton: true,
+                    confirmButtonColor: '#96CC39',
+                    confirmButtonText: "ตกลง",
+                }).then((value) => {
+                    if (value.isConfirmed) {
+                        setForm(initForm)
+                        setClearSelectedRow([])
+                        setTotalPrice(0)
+                        setWaitingPrice(0)
+                        getToWithDraw("")
+                        getLastFee()
+                        getBalance()
+                    }
+                })
+
+            } catch (error) {
+                MySwal.fire({
+                    text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
+                    icon: "error",
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "ยกเลิก",
+                })
+                console.log(error);
+            }
+        }
+
+    }
+
     return (
         <div className='container'>
             <div className='mb-3'>
                 <BoxCard title={"รายการบัญชีออมทรัพย์"}>
                     <div className='m-5'>
+                        <h4 className='mb-3 bold'>{`บันทึกรายการปัจจุบัน เดือน: ${currentMonth}`}</h4>
                         <Row gutter={[10, 0]}>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินคงเหลือ`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`ยอดฝากทั้งหมด (บาท)`}</h4>} bordered={true}>
+                                    <h3>{totalPrice}</h3>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสมาชิกคงค้าง`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`ยอดเงินสมาชิก (บาท)`}</h4>} bordered={true}>
+                                    <h3>{memberPrice}</h3>
                                 </Card>
                             </Col>
                             <Col span={8}>
-                                <Card title={<h4>{`ยอดเงินสุทธิ`}</h4>} bordered={true}>
-                                    <h3>0.00</h3>
+                                <Card title={<h4>{`ยอดเงินธนาคารวัสดุ (บาท)`}</h4>} bordered={true}>
+                                    <h3>{bankPrice}</h3>
                                 </Card>
                             </Col>
                         </Row>
@@ -132,7 +345,7 @@ function Audit() {
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col span={8}>
                             <InputText title="กรองรายการ" type="text" idName="update-date"
-                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                                placeholder="ชื่อ, นามสกุล" classLabel="bold"
                                 value={form.searchKeyword}
                                 handleChange={(value) => {
                                     setForm({ ...form, searchKeyword: value })
@@ -141,24 +354,22 @@ function Audit() {
                         </Col>
                         <Col>
                             <div className='mt-1'>
-                                <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { toSearchMember() }}>ค้นหา</Button>
-                            </div>
-                        </Col>
-                        <Col>
-                            <div className='mt-1'>
                                 <Button className={'mr-2 mt-4'} bg={'#3C3C3C'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
                             </div>
                         </Col>
-
                     </Row>
+                    <div className='d-flex justify-content-end my-3'>
+                        <h2>{`ยอดคงค้างทั้งหมด: ${waitingPrice} บาท`}</h2>
+                    </div>
                     <DataTable
                         columns={columns}
+                        data={contentTab}
                         option={
                             {
                                 "selectionType": "checkbox",
                                 "type": 'selection',
-                                // "clearSelectedRow": clearSelectedRow,
-                                // "select": (data) => { setSelectedData(data) }
+                                "clearSelectedRow": clearSelectedRow,
+                                "select": (data) => { setSelectedData(data) }
                             }
                         }
                     ></DataTable>
@@ -166,7 +377,7 @@ function Audit() {
                         <div className="my-5 d-flex justify-content-end">
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => {  }}>ถอนเงินให้กับสมาชิก</Button>
+                                    <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => { toWithDrawBalance() }}>ถอนเงินให้กับสมาชิก</Button>
                                 </Col>
                             </Row>
                         </div>

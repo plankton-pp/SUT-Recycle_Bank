@@ -45,11 +45,6 @@ function TransactionHistory() {
             align: 'left',
         },
         {
-            title: 'รายละเอียด',
-            dataIndex: 'detail',
-            align: 'center',
-        },
-        {
             title: 'จำนวนเงิน (บาท)',
             dataIndex: 'amount',
             align: 'right',
@@ -71,6 +66,8 @@ function TransactionHistory() {
             return "red"
         } else if (status === "deposit") {
             return "#96CC39"
+        } else if (status === "sum") {
+            return "blue"
         } else {
             return "orange"
         }
@@ -81,6 +78,8 @@ function TransactionHistory() {
             return "ถอน"
         } else if (status === "deposit") {
             return "ฝาก"
+        } else if (status === "sum") {
+            return "อัพเดทยอดฝากทั้งหมด"
         } else {
             return "รอดำเนินการ"
         }
@@ -98,9 +97,8 @@ function TransactionHistory() {
                         filteredData.push({
                             key: index + 1,
                             user: item.Firstname + " " + item.Lastname,
-                            detail: item.Detail,
                             type: <h6 style={{ color: getStatusColor(item.Type) }}>{getTypeStatus(item.Type)}</h6>,
-                            amount: item.Amount,
+                            amount: Number(item.Amount).toFixed(2),
                             createDate: item.Create_Date,
                             createBy: item.Create_By,
                         })
