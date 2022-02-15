@@ -272,45 +272,58 @@ function Audit() {
     }
 
     const toWithDrawBalance = () => {
-        if (selectedData && selectedData[1].length > 0) {
-            try {
-                selectedData[1].forEach(async (item) => {
-                    let dataToWithdraw = {
-                        memid: item.id,
-                        empid: ID,
-                        netprice: item.balance
-                    }
-                    const response = await API.withdrawBalance(dataToWithdraw)
-                })
-                MySwal.fire({
-                    text: `บันทึกข้อมูลสำเร็จ`,
-                    icon: "success",
-                    showCloseButton: true,
-                    confirmButtonColor: '#96CC39',
-                    confirmButtonText: "ตกลง",
-                }).then((value) => {
-                    if (value.isConfirmed) {
-                        setForm(initForm)
-                        setClearSelectedRow([])
-                        setTotalPrice(0)
-                        setWaitingPrice(0)
-                        getToWithDraw("")
-                        getLastFee()
-                        getBalance()
-                    }
-                })
+        MySwal.fire({
+            text: `ยืนยันการบันทึกรายการ `,
+            icon: "question",
+            showCloseButton: true,
+            confirmButtonColor: '#96CC39',
+            showCancelButton: true,
+            cancelButtonText: "ยกเลิก",
+            confirmButtonText: "ตกลง",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                if (selectedData && selectedData[1].length > 0) {
+                    try {
+                        selectedData[1].forEach(async (item) => {
+                            let dataToWithdraw = {
+                                memid: item.id,
+                                empid: ID,
+                                netprice: item.balance
+                            }
+                            const response = await API.withdrawBalance(dataToWithdraw)
+                        })
+                        MySwal.fire({
+                            text: `บันทึกข้อมูลสำเร็จ`,
+                            icon: "success",
+                            showCloseButton: true,
+                            confirmButtonColor: '#96CC39',
+                            confirmButtonText: "ตกลง",
+                        }).then((value) => {
+                            if (value.isConfirmed) {
+                                setForm(initForm)
+                                setClearSelectedRow([])
+                                setTotalPrice(0)
+                                setWaitingPrice(0)
+                                getToWithDraw("")
+                                getLastFee()
+                                getBalance()
+                            }
+                        })
 
-            } catch (error) {
-                MySwal.fire({
-                    text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
-                    icon: "error",
-                    showCloseButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: "ยกเลิก",
-                })
-                console.log(error);
+                    } catch (error) {
+                        MySwal.fire({
+                            text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
+                            icon: "error",
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: "ยกเลิก",
+                        })
+                        console.log(error);
+                    }
+                }
             }
-        }
+        })
+
 
     }
 
