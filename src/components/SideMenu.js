@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, Layout } from 'antd';
-import { HomeOutlined, } from '@ant-design/icons';
 
-const { SubMenu } = Menu;
-
-function SideMenu({ style, className, content, icon, title }) {
+function SideMenu({ style, className, content, icon, mainIcon, mainTitle, title }) {
     const { Content } = Layout;
     const [onActiveKey, setOnActiveKey] = useState(0);
 
@@ -30,10 +27,11 @@ function SideMenu({ style, className, content, icon, title }) {
                 onClick={handleClick}
             >
                 <Menu.Item key="0"
-                    icon={<HomeOutlined />}
+                    icon={mainIcon}
                     onClick={() => {
                         setOnActiveKey(0)
-                    }}>{"ภาพรวม"}</Menu.Item>
+                    }}>{mainTitle}
+                </Menu.Item>
                 {renderMenu()}
             </Menu>
             <Layout className='mx-2 my-2'>

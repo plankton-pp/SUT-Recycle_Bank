@@ -170,9 +170,13 @@ function ManagePrice() {
             reIndexList = null
         }
 
-        if (contentTab && contentTab.length === 0) {
+        if (typeOptionList && typeOptionList.length === 0) {
             setForm({ ...form, data: [] })
-            getType().then(getProducts())
+            getType()
+        }
+
+        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
+            getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
 
@@ -201,24 +205,24 @@ function ManagePrice() {
         }
     }
 
-    const getProducts = async () => {
+    const getProducts = async (optionList) => {
         try {
             const response = await API.getProducts();
             const data = await response?.data.data;
             if (response.status === 200) {
                 let filteredDataProds = []
                 data.forEach((item, index) => {
-                    let type = typeOptionList.filter(element => item.Type_ID === element.value)[0]
-                    console.log(type.label);
+                    let type = optionList.filter(element => item.Type_ID === element.value)[0];
                     filteredDataProds.push({
                         key: index + 1,
-                        id: item.Material_ID,
+                        id: item.Product_ID,
                         name: item.Name,
                         type: type.label,
-                        typeOptionList: typeOptionList,
+                        typeOptionList: optionList,
                         detail: item.Detail,
                         unit: item.Unit_Detail,
                         pricePerUnit: Number(item.Price_per_unit).toFixed(2),
+                        feeId: item.Fee_ID,
                         createDate: helper.dateElement(item.Create_Date),
                         updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
                         createBy: item.Create_By,
@@ -260,7 +264,9 @@ function ManagePrice() {
                     //init state
                     setChangedState(false)
                     setContentTab([])
+                    setTypeOptionList([])
                     setOnEditKey('')
+                    setCountChanged(0)
                 }
             })
         } else {
@@ -269,23 +275,9 @@ function ManagePrice() {
     }
 
     const updateProd = async (data) => {
+        // console.log("update: ", data);
         try {
             const response = await API.updateProduct(data)
-        } catch (error) {
-
-        }
-    }
-    const addProd = async (data) => {
-        try {
-            const response = await API.addProduct(data)
-        } catch (error) {
-
-        }
-    }
-
-    const removeProd = async (id) => {
-        try {
-            const response = await API.deleteProductById(id)
         } catch (error) {
 
         }
@@ -306,37 +298,25 @@ function ManagePrice() {
                     try {
                         let validator = false
                         prodsForm.data.forEach(async (item) => {
+                            let type = typeOptionList.filter((element) => { return item.type === element.label })
+                            // console.log("type", type[0].value);
                             if (item.status !== "query") {
                                 if (item.status === "edit") {
                                     let pack = {
-                                        matid: String(item.id),
-                                        typeid: String(item.type.value),
+                                        productid: String(item.id),
+                                        typeid: type[0].value,
                                         name: String(item.name),
                                         price: String(item.pricePerUnit),
                                         updateby: String(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
+                                        feeid: String(item.feeId),
                                     }
+                                    // console.log("pack: ", pack);
                                     updateProd(pack)
-                                } else {
-                                    let pack = {
-                                        typeid: String(item.type.value),
-                                        name: String(item.name),
-                                        price: String(item.pricePerUnit),
-                                        createby: String(item.createBy),
-                                        detail: String(item.detail),
-                                        unitdetail: String(item.unit),
-                                    }
-                                    addProd(pack)
                                 }
                             }
                         })
-
-                        if (prodsForm.removedDataId.length > 0) {
-                            prodsForm.removedDataId.forEach((item) => {
-                                removeProd(item)
-                            })
-                        }
                         if (validator) {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
@@ -352,6 +332,13 @@ function ManagePrice() {
                                 showCloseButton: true,
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
+                            }).then(() => {
+                                //init state
+                                setChangedState(false)
+                                setContentTab([])
+                                setTypeOptionList([])
+                                setOnEditKey('')
+                                setCountChanged(0)
                             })
                         }
                     } catch (error) {

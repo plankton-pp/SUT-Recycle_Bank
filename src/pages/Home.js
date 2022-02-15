@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from 'react';
-
-import { useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
-import { logout } from '../redux/actions/logoutAction';
-
 import BoxCard from '../components/BoxCard';
-import TabPaneMenu from '../components/TabPaneMenu';
-
+import { Row, Col } from 'antd'
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
+import TabPaneMenu from '../components/TabPaneMenu';
+import GraphDoughnut from './GraphDoughnut';
+import GraphBar from './GraphBar';
 
-import withReactContent from 'sweetalert2-react-content';
-import swal from 'sweetalert2';
-const MySwal = withReactContent(swal)
-
-function Price() {
-
-    const dispatch = useDispatch();
-    const history = useHistory();
+function Home() {
 
     const [contentTab, setContentTab] = useState([]);
+    // const [showGraph, setShowGraph] = useState(false);
     const columns = [
         {
             title: '#',
@@ -33,24 +24,24 @@ function Price() {
 
         },
         {
-            title: 'หน่วย',
-            dataIndex: 'unit',
-            align: 'center',
-            width: '30%'
-        },
-        {
             title: 'มูลค่ารับซื้อต่อหน่วย (บาท)',
             dataIndex: 'Price_per_unit',
             sorter: {
                 compare: (a, b) => a.Price_per_unit - b.Price_per_unit,
                 multiple: 1,
             },
-            width: '200px',
             align: 'right',
+        },
+        {
+            title: 'หน่วย',
+            dataIndex: 'unit',
+            align: 'center',
+            width: '30%'
         },
     ];
     useEffect(() => {
         getTypeAPI()
+        // setShowGraph(true)
     }, []);
 
     useEffect(() => {
@@ -143,24 +134,45 @@ function Price() {
                 setContentTab(tabList)
             }
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                dispatch(logout({ history }))
-            }
+            // if (error.response && error.response.status === 401) {
+            //     dispatch(logout({ history }))
+            // }
             console.log(error)
         }
     }
-
     return (
-        <BoxCard title={"ภาพรวม"}>
-            <div className='w-100'>
-                <TabPaneMenu
-                    content={contentTab}
-                    type={'data-table'}
-                    optional={{ columns: columns }}
-                ></TabPaneMenu>
+        <div className='container pb-5'>
+            <div className='mb-3' style={{ width: '100%' }}>
+                <Row gutter={[20, 0]}>
+                    <Col span={12}>
+                        <BoxCard>
+                            <GraphDoughnut></GraphDoughnut>
+                            <div className='d-flex justify-content-center mt-3'>
+                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนการฝากจากแต่ละประเภท 5 อันดับสูงสุด'}</h6>
+                            </div>
+                        </BoxCard>
+                    </Col>
+                    <Col span={12}>
+                        <BoxCard>
+                            <GraphBar></GraphBar>
+                            <div className='d-flex justify-content-center mt-3'>
+                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนข้อมูลวัสดุที่มีการนำฝากมากที่สุด 5 อันดับ'}</h6>
+                            </div>
+                        </BoxCard>
+                    </Col>
+                </Row>
             </div>
-        </BoxCard>
-    );
+            <BoxCard title={<span className='' style={{ fontWeight: 'bolder', color: '#fff' }}>ราคารับซื้อปัจจุบัน</span>}>
+                <div>
+                    <TabPaneMenu
+                        content={contentTab}
+                        type={'data-table'}
+                        optional={{ columns: columns }}
+                    ></TabPaneMenu>
+                </div>
+            </BoxCard>
+        </div>
+    )
 }
 
-export default Price;
+export default Home

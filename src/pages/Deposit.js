@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Col } from 'antd'
+import { Row, Col, Spin } from 'antd'
 import { Button as ButtonIcon } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -11,15 +11,15 @@ import { Button } from '../components/styles/globalStyles';
 import ModalDeposit from '../components/modal/Modal.Deposit';
 import ModalSearchMember from '../components/modal/Modal.SearchMember';
 
-import withReactContent from 'sweetalert2-react-content';
-import swal from 'sweetalert2';
-
 import * as converter from '../utils/converter'
 import * as API from '../utils/apis'
+import * as helper from '../utils/helper'
 
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
-
 function Deposit() {
+    const { ID } = JSON.parse(helper.sessionGet('login'))
     const columns = [
         {
             title: '#',
@@ -28,16 +28,16 @@ function Deposit() {
         },
         {
             title: 'ชื่อวัสดุ',
-            dataIndex: 'name',
+            dataIndex: 'productname',
 
         },
         {
             title: 'ประเภท',
-            dataIndex: 'type',
+            dataIndex: 'typename',
         },
         {
             title: 'จำนวน',
-            dataIndex: 'amount',
+            dataIndex: 'unit',
             sorter: {
                 compare: (a, b) => a.amount - b.amount,
                 multiple: 3,
@@ -47,12 +47,12 @@ function Deposit() {
         },
         {
             title: 'หน่วย',
-            dataIndex: 'unit',
+            dataIndex: 'unitdetail',
             align: 'center'
         },
         {
             title: 'มูลค่าต่อหน่วย (บาท)',
-            dataIndex: 'pricePerUnit',
+            dataIndex: 'productprice',
             sorter: {
                 compare: (a, b) => a.pricePerUnit - b.pricePerUnit,
                 multiple: 2,
@@ -62,7 +62,7 @@ function Deposit() {
         },
         {
             title: 'ยอดฝาก (บาท)',
-            dataIndex: 'sumPrice',
+            dataIndex: 'totalprice',
             sorter: {
                 compare: (a, b) => a.sumPrice - b.sumPrice,
                 multiple: 1,
@@ -92,6 +92,7 @@ function Deposit() {
         Remark: "",
         Role: "",
         Username: "",
+        LastFee: 0,
 
         mode: "",
         idEdit: "",
@@ -101,18 +102,19 @@ function Deposit() {
     const [showModalSearch, setShowModalSearch] = useState(false)
     const [showModalAdd, setShowModalAdd] = useState(false)
     const [objectList, setObjectList] = useState([]);
-    const [sumPrice, setSumPrice] = useState(0);
+    const [netPrice, setNetPrice] = useState(0);
     const [countTransaction, setCountTransaction] = useState(0);
     const [removeItem, setRemoveItem] = useState('');
+    const [isLoad, setIsLoad] = useState(false)
 
     useEffect(() => {
         setForm({ ...form, data: [...objectList] })
         setCountTransaction(objectList.length)
         let sumPriceChanged = 0
         objectList.forEach((item) => {
-            sumPriceChanged = Number(sumPriceChanged) + Number(item.sumPrice)
+            sumPriceChanged = Number(sumPriceChanged) + Number(item.totalprice)
         })
-        setSumPrice(sumPriceChanged)
+        setNetPrice(sumPriceChanged)
 
     }, [objectList]);
 
@@ -122,8 +124,8 @@ function Deposit() {
     }, [removeItem]);
 
     // useEffect(() => {
-    //   console.log(form);
-    // }, [form]);
+    //     console.log(ID);
+    // }, []);
 
 
     const toSearchMember = () => {
@@ -174,21 +176,121 @@ function Deposit() {
         setForm({ ...form, data: [] })
     }
 
+    const renderReceiptMessage = (item) => {
+        return (`<tr >
+            <td class="sub">`+ item.productname + `</td>
+            <td class="sub">`+ item.typename + `</td>
+            <td class="sub">`+ item.productprice + ` บาท</td>
+            <td class="sub"> จำนวน `+ item.unit + `</td>
+            <td class="sub">กิโลกรัม</td>
+        </tr>`)
+    }
+
+    const sendReceipt = async () => {
+        if (String(form.Email).length <= 0) {
+            MySwal.fire({
+                text: `บันทึกสำเร็จ`,
+                icon: "success",
+                confirmButtonText: "ตกลง",
+                confirmButtonColor: '#96CC39',
+            }).then(() => {
+                setIsLoad(false)
+                setForm(initForm)
+                clearDataTable()
+            })
+        } else {
+            try {
+                const now = new Date().getTime()
+                const today = helper.momentDateTh(now, "th", "short")
+                let message = `
+                <html  lang="th">
+                    <head>
+                        <meta charset="UTF-8">
+                    </head>
+                    <style>
+                        table {width: 100%}
+                        table, th,tr {border:1px solid black;font: 18px;Arial, sans-serif;}
+                        td.sub {
+                            font: 18px;Arial, sans-serif;
+                        }
+                    </style>
+                    <body>
+                        <h3>บัญชีของ ` + form.Firstname + " " + form.Lastname + ` ได้ทำรายการฝากวัสดุ</h3>
+                        <h3>รายละเอียดวัสดุนำฝาก:<br /></h3>
+                        <table>
+                            <tr>
+                                <th>ชื่อวัสดุ</th>
+                                <th>ประเภทที่ฝาก</th>
+                                <th>มูลค่าต่อหน่วย</th>
+                                <th>ยอดฝาก</th>
+                                <th>หน่วย</th>
+                            </tr>`
+                    + form.data.map((item) => { return renderReceiptMessage(item) }) +
+                    `<tr>
+                                <td colspan="3">ยอดรวม</td>
+                                <td>`+ netPrice + ` บาท</td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <hr/>
+                        <h3>ทำรายการเมื่อวันที่ ` + today + `</h3>
+                        <h3>เจ้าหน้าที่</h3>
+                        <h3>ธนาคารวัสดุรีไซเคิล มหาวิทยาลัยเทคโนโลยีสุรนารี</h3>
+                        <h3>
+                        ติดต่อส่วนอาคารสถานที่
+                        สำนักงานส่วนอาคารสถานที่ 111 มหาวิทยาลัยเทคโนโลยีสุรนารี ถ.มหาวิทยาลัย ต.สุรนารี อ.เมือง จ.นครราชสีมา 30000
+                            <h3>
+                    </body>
+                </html>`
+                // console.log(String(message));
+                const response = await API.sendReceipt({ sendto: form.Email, receipt: message })
+                if (response.status === 200) {
+                    MySwal.fire({
+                        text: `บันทึกสำเร็จ`,
+                        icon: "success",
+                        confirmButtonText: "ตกลง",
+                        confirmButtonColor: '#96CC39',
+                    }).then(() => {
+                        setIsLoad(false)
+                        setForm(initForm)
+                        clearDataTable()
+                    })
+                } else {
+                    MySwal.fire({
+                        text: `ไม่สามารถส่งข้อมูลใบเสร็จได้ `,
+                        icon: "error",
+                        showConfirmButton: true,
+                        confirmButtonText: "ตกลง",
+                    }).then(() => {
+                        setIsLoad(false)
+                    })
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     const addItemToList = async (data) => {
         let filteredData = {
-            id: data.id,
             index: form.data.length,
             key: form.data.length + 1,
-            name: data.name,
-            type: data.type,
-            amount: data.amount,
-            pricePerUnit: data.pricePerUnit,
-            sumPrice: data.sumPrice.toFixed(2),
-            unit: 'กิโลกรัม',
+            productid: String(data.id),
+            productname: data.name,
+            typeid: String(data.typeId),
+            typename: data.type[0],
+            unit: data.amount,
+            productprice: Number(data.pricePerUnit).toFixed(2),
+            totalprice: data.sumPrice.toFixed(2),
+            unitdetail: data.unitDetail,
             management: <ButtonIcon type="primary" icon={<DeleteOutlined></DeleteOutlined>} onClick={() => { removeItemFromList(filteredData.index) }} danger></ButtonIcon>,
         }
+        setForm({ ...form, LastFee: data.lastFee })
         setCountTransaction(countTransaction + 1)
-        setSumPrice(sumPrice + data.sumPrice)
+        setNetPrice(Number(netPrice) + Number(filteredData.totalprice))
         setObjectList([...form.data, filteredData])
     }
 
@@ -222,35 +324,22 @@ function Deposit() {
             confirmButtonText: "ตกลง",
         }).then(async (result) => {
             if (result.value) {
-                const demoData = {
-                    memid: 2,
-                    placeby: 'Front-end',
-                    status: 'unpaid',
-                    empid: '1',
-                    product: [
-                        {
-                            productid: '99',
-                            weight: '99',
-                            totalprice: '999',
-                        },
-                        {
-                            productid: '100',
-                            weight: '99',
-                            totalprice: '999',
-                        }]
+                const dataToSave = {
+                    memid: form.ID,
+                    placeby: `${form.Firstname} ${form.Lastname}`,
+                    empid: `${ID}`,
+                    netprice: String(netPrice),
+                    product: form.data,
+                    lastFee: form.LastFee,
+                    type: "deposit",
+                    status: "unpaid",
                 }
                 try {
-                    const response = await API.addDeposit(demoData);
+                    setIsLoad(true)
+                    const response = await API.addDeposit(dataToSave);
                     if (response.status === 200) {
-                        setForm(initForm)
-                        clearDataTable()
                         //if success
-                        MySwal.fire({
-                            text: `บันทึกสำเร็จ`,
-                            icon: "success",
-                            confirmButtonText: "ตกลง",
-                            confirmButtonColor: '#96CC39',
-                        })
+                        sendReceipt()
                     } else {
                         //if success
                         MySwal.fire({
@@ -258,6 +347,8 @@ function Deposit() {
                             icon: "error",
                             confirmButtonText: "ตกลง",
                             confirmButtonColor: '#96CC39',
+                        }).then(() => {
+                            setIsLoad(false)
                         })
                     }
                 } catch (error) {
@@ -297,145 +388,146 @@ function Deposit() {
 
 
     return <div className='container'>
-        <div className="pt-3 mb-4">
-            <BoxCard title="ข้อมูลผู้ฝาก">
-                <Row gutter={[10, 10]} className='mb-4'>
-                    <Col span={8}>
-                        <InputText title="ค้นหาสมาชิก" type="text" idName="update-date"
-                            placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
-                            value={form.searchKeyword}
-                            handleChange={(value) => {
-                                setForm({ ...form, searchKeyword: value })
-                            }}
-                        />
-                    </Col>
-                    <Col>
-                        <div className='mt-1'>
-                            <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { toSearchMember() }}>ค้นหา</Button>
-                        </div>
-                    </Col>
-                    <Col>
-                        <div className='mt-1'>
-                            <Button className={'mr-2 mt-4'} bg={'#3C3C3C'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
-                        </div>
-                    </Col>
-
-                </Row>
-                <Row gutter={[30, 10]} className='mb-4'>
-                    <Col >
-                        <InputText title="รหัสสมาชิก" type="text" idName="user-id"
-                            placeholder="Text" classLabel="bold"
-                            disabled={true}
-                            value={form.ID}
-                            handleChange={(value) => {
-                                //
-                            }}
-                        />
-                    </Col>
-                    <Col >
-                        <InputText title="ชื่อ" type="text" idName="user-name"
-                            placeholder="Text" classLabel="bold"
-                            disabled={true}
-                            value={form.Firstname}
-                            handleChange={(value) => {
-                                //
-                            }}
-                        />
-                    </Col>
-                    <Col >
-                        <InputText title="สกุล" type="text" idName="user-lastname"
-                            placeholder="Text" classLabel="bold"
-                            disabled={true}
-                            value={form.Lastname}
-                            handleChange={(value) => {
-                                //
-                            }}
-                        />
-                    </Col>
-                    <Col >
-                        <InputText title="โทรศัพท์มือถือ" type="text" idName="user-tel"
-                            placeholder="Text" classLabel="bold"
-                            disabled={true}
-                            value={form.Phone_number ? form.Phone_number : "-"}
-                            handleChange={(value) => {
-                                //
-                            }}
-                        />
-                    </Col>
-                </Row>
-            </BoxCard>
-        </div>
-        <div>
-            <BoxCard title="รายการวัสดุที่ต้องการฝาก" headRight={buttonAdd()}>
-                <DataTable columns={columns} data={form.data} limitPositionLeft={true} option={{ "showLimitPage": true }}></DataTable>
-                <div>
-                    <hr />
-                    <Row className='mx-2 pt-3 d-flex justify-content-end' gutter={[40, 0]}>
-                        <Col>
-
-                            <h6>{`ยอดทั้งหมด:`}</h6>
-                            <hr />
-                            <h6>{`ยอดฝากสุทธิ:`}</h6>
+        <Spin tip="Loading..." spinning={isLoad}>
+            <div className="pt-3 mb-4">
+                <BoxCard title="ข้อมูลผู้ฝาก">
+                    <Row gutter={[10, 10]} className='mb-4'>
+                        <Col span={8}>
+                            <InputText title="ค้นหาสมาชิก" type="text" idName="update-date"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                                value={form.searchKeyword}
+                                handleChange={(value) => {
+                                    setForm({ ...form, searchKeyword: value })
+                                }}
+                            />
                         </Col>
                         <Col>
-                            <div className='w-100 text-end'>
-                                <h6>{`${countTransaction}`}</h6>
+                            <div className='mt-1'>
+                                <Button className={'mr-2 mt-4'} bg={'#96CC39'} color={'#fff'} onClick={() => { toSearchMember() }}>ค้นหา</Button>
                             </div>
-                            <hr />
-                            <div className='w-100 text-end'>
-                                <h6>{`${sumPrice.toFixed(2)}`}</h6>
-                            </div>
-
-                            <h6>{`(${converter.ArabicNumberToText(sumPrice.toFixed(2))})`}</h6>
                         </Col>
                         <Col>
-                            <h6>{`รายการ`}</h6>
-                            <hr />
-                            <h6>{`บาท`}</h6>
+                            <div className='mt-1'>
+                                <Button className={'mr-2 mt-4'} bg={'#3C3C3C'} color={'#fff'} onClick={() => { clearSearch() }}>ล้าง</Button>
+                            </div>
+                        </Col>
+
+                    </Row>
+                    <Row gutter={[30, 10]} className='mb-4'>
+                        <Col >
+                            <InputText title="รหัสสมาชิก" type="text" idName="user-id"
+                                placeholder="Text" classLabel="bold"
+                                disabled={true}
+                                value={form.ID}
+                                handleChange={(value) => {
+                                    //
+                                }}
+                            />
+                        </Col>
+                        <Col >
+                            <InputText title="ชื่อ" type="text" idName="user-name"
+                                placeholder="Text" classLabel="bold"
+                                disabled={true}
+                                value={form.Firstname}
+                                handleChange={(value) => {
+                                    //
+                                }}
+                            />
+                        </Col>
+                        <Col >
+                            <InputText title="สกุล" type="text" idName="user-lastname"
+                                placeholder="Text" classLabel="bold"
+                                disabled={true}
+                                value={form.Lastname}
+                                handleChange={(value) => {
+                                    //
+                                }}
+                            />
+                        </Col>
+                        <Col >
+                            <InputText title="โทรศัพท์มือถือ" type="text" idName="user-tel"
+                                placeholder="Text" classLabel="bold"
+                                disabled={true}
+                                value={form.Phone_number ? form.Phone_number : "-"}
+                                handleChange={(value) => {
+                                    //
+                                }}
+                            />
                         </Col>
                     </Row>
-                </div>
-                {form.data && form.data.length ?
+                </BoxCard>
+            </div>
+            <div>
+                <BoxCard title="รายการวัสดุที่ต้องการฝาก" headRight={buttonAdd()}>
+                    <DataTable columns={columns} data={form.data} limitPositionLeft={true} option={{ "showLimitPage": true }}></DataTable>
                     <div>
-                        <div className="my-5 d-flex justify-content-end">
-                            <Row gutter={[10, 0]}>
-                                <Col>
-                                    <Button color="white" bg="#96CC39" width={'auto'} className="cursor-p" onClick={() => { toSaveList() }}>บันทึกรายการ</Button>
-                                </Col>
-                                <Col>
-                                    <Button color="white" bg="#E72525" width={'auto'} className="cursor-p" onClick={() => { toClearList() }}>ล้างรายการ</Button>
-                                </Col>
-                            </Row>
-                        </div>
+                        <hr />
+                        <Row className='mx-2 pt-3 d-flex justify-content-end' gutter={[40, 0]}>
+                            <Col>
+
+                                <h6>{`ยอดทั้งหมด:`}</h6>
+                                <hr />
+                                <h6>{`ยอดฝากสุทธิ:`}</h6>
+                            </Col>
+                            <Col>
+                                <div className='w-100 text-end'>
+                                    <h6>{`${countTransaction}`}</h6>
+                                </div>
+                                <hr />
+                                <div className='w-100 text-end'>
+                                    <h6>{`${Number(netPrice).toFixed(2)}`}</h6>
+                                </div>
+
+                                <h6>{`(${converter.ArabicNumberToText(Number(netPrice).toFixed(2))})`}</h6>
+                            </Col>
+                            <Col>
+                                <h6>{`รายการ`}</h6>
+                                <hr />
+                                <h6>{`บาท`}</h6>
+                            </Col>
+                        </Row>
                     </div>
+                    {form.data && form.data.length ?
+                        <div>
+                            <div className="my-5 d-flex justify-content-end">
+                                <Row gutter={[10, 0]}>
+                                    <Col>
+                                        <Button color="white" bg="#96CC39" width={'auto'} onClick={() => { toSaveList() }}>บันทึกรายการ</Button>
+                                    </Col>
+                                    <Col>
+                                        <Button color="white" bg="#E72525" width={'auto'} onClick={() => { toClearList() }}>ล้างรายการ</Button>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </div>
 
-                    :
-                    null
-                }
-            </BoxCard>
-        </div>
+                        :
+                        null
+                    }
+                </BoxCard>
+            </div>
 
-        {showModalSearch &&
-            <ModalSearchMember
-                show={showModalSearch}
-                close={() => setShowModalSearch(false)}
-                mode={form.mode} idEdit={form.idEdit}
-                data={form.searchKeyword}
-                save={(dataMember) => { setMemberData(dataMember) }}
-            />
-        }
+            {showModalSearch &&
+                <ModalSearchMember
+                    show={showModalSearch}
+                    close={() => setShowModalSearch(false)}
+                    mode={form.mode} idEdit={form.idEdit}
+                    data={form.searchKeyword}
+                    save={(dataMember) => { setMemberData(dataMember) }}
+                />
+            }
 
-        {showModalAdd &&
-            <ModalDeposit
-                show={showModalAdd}
-                close={() => setShowModalAdd(false)}
-                mode={form.mode} idEdit={form.idEdit}
-                save={(value) => addItemToList(value)}
-            />
-        }
+            {showModalAdd &&
+                <ModalDeposit
+                    show={showModalAdd}
+                    close={() => setShowModalAdd(false)}
+                    mode={form.mode} idEdit={form.idEdit}
+                    save={(value) => addItemToList(value)}
+                />
+            }
 
-
-    </div>;
+        </Spin>
+    </div >;
 }
 
 export default Deposit

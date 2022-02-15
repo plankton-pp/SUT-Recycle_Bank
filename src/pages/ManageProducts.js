@@ -201,6 +201,8 @@ function ManageProducts() {
     ];
 
     useEffect(() => {
+        // console.log("filter: ", filteredGroup);
+        setTypeOptionList([])
         setContentTab([])
     }, [filteredGroup]);
 
@@ -223,9 +225,13 @@ function ManageProducts() {
             reIndexList = null
         }
 
-        if (contentTab && contentTab.length === 0) {
+        if (typeOptionList && typeOptionList.length === 0) {
             setForm({ ...form, data: [] })
-            getType().then(getProducts())
+            getType()
+        }
+
+        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
+            getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
 
@@ -254,38 +260,42 @@ function ManageProducts() {
         }
     }
 
-    const getProducts = async () => {
+    const getProducts = async (optionList) => {
         try {
             const response = await API.getProducts();
             const data = await response?.data.data;
             if (response.status === 200) {
-                let filteredDataProds = []
-                data.forEach((item, index) => {
-                    filteredDataProds.push({
-                        key: index + 1,
-                        id: item.Material_ID,
-                        name: item.Name,
-                        type: typeOptionList.filter(element => item.Type_ID === element.value)[0],
-                        typeOptionList: typeOptionList,
-                        detail: item.Detail,
-                        unit: item.Unit_Detail,
-                        pricePerUnit: Number(item.Price_per_unit).toFixed(2),
-                        createDate: helper.dateElement(item.Create_Date),
-                        updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
-                        createBy: item.Create_By,
-                        updateBy: item.Update_By.length > 0 ? item.Update_By : item.Create_By,
-                        disabled: true,
-                        status: 'query',
+                if (optionList && optionList.length > 0) {
+                    let filteredDataProds = []
+                    data.forEach((item, index) => {
+                        let check = optionList.filter(element => item.Type_ID === element.value)
+                        filteredDataProds.push({
+                            key: index + 1,
+                            id: item.Product_ID,
+                            name: item.Name,
+                            type: check[0],
+                            typeOptionList: optionList,
+                            detail: item.Detail,
+                            unit: item.Unit_Detail,
+                            pricePerUnit: Number(item.Price_per_unit).toFixed(2),
+                            feeId: item.Fee_ID,
+                            createDate: helper.dateElement(item.Create_Date),
+                            updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
+                            createBy: item.Create_By,
+                            updateBy: item.Update_By.length > 0 ? item.Update_By : item.Create_By,
+                            disabled: true,
+                            status: 'query',
+                        })
                     })
-                })
-                let container = []
-                if (filteredGroup.value !== "") {
-                    container = filteredDataProds.filter(element => element.type.value === filteredGroup.value);
-                } else {
-                    container = [...filteredDataProds]
+                    let container = []
+                    if (filteredGroup.value !== "") {
+                        container = filteredDataProds.filter(element => element.type.value === filteredGroup.value);
+                    } else {
+                        container = [...filteredDataProds]
+                    }
+                    setContentTab(container)
+                    setDefaultLenght(data.length)
                 }
-                setContentTab(container)
-                setDefaultLenght(data.length)
 
             }
         } catch (error) {
@@ -311,7 +321,9 @@ function ManageProducts() {
                     //init state
                     setChangedState(false)
                     setContentTab([])
+                    setTypeOptionList([])
                     setOnEditKey('')
+                    setCountChanged(0)
                 }
             })
         } else {
@@ -361,6 +373,7 @@ function ManageProducts() {
             detail: "",
             unit: "kg",
             pricePerUnit: 0.00,
+            feeid: '0'
         };
         setOnEditKey(contentTab.length + 1)
         setContentTab([...contentTab, newRecord])
@@ -384,7 +397,7 @@ function ManageProducts() {
                             if (item.status !== "query") {
                                 if (item.status === "edit") {
                                     let pack = {
-                                        matid: String(item.id),
+                                        productid: String(item.id),
                                         typeid: String(item.type.value),
                                         name: String(item.name),
                                         price: String(item.pricePerUnit),
@@ -401,6 +414,7 @@ function ManageProducts() {
                                         createby: String(item.createBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
+                                        feeid: String(item.feeid),
                                     }
                                     addProd(pack)
                                 }
@@ -427,6 +441,13 @@ function ManageProducts() {
                                 showCloseButton: true,
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
+                            }).then(() => {
+                                //init state
+                                setChangedState(false)
+                                setContentTab([])
+                                setTypeOptionList([])
+                                setOnEditKey('')
+                                setCountChanged(0)
                             })
                         }
                     } catch (error) {

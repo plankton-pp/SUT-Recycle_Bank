@@ -90,10 +90,8 @@ function Login() {
         password: form.password
       }
       try {
-        // console.log('dataUser',dataUser);
         const response = await API.login(dataUser);
         const data = await response?.data;
-        // console.log("response", response);
         if (response.status === 200) {
           if (data.auth) {
             setIsLoad(false)

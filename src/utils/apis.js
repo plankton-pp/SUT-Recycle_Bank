@@ -36,7 +36,7 @@ export const checkDuplicate = async (data) => {
   return await httpClient.post(`/api/v1/employee/checkDuplicate`, data);
 }
 
-//=================== API: Check Duplicate Username
+//=================== API: Check ResetPassword
 
 export const resetPassword = async (data) => {
   return await httpClient.put(`/api/v1/employee/resetPassword`, data);
@@ -48,37 +48,36 @@ export const sendValidateCode = async (data) => {
   return await httpClient.post(`/api/v1/email/validate`, data);
 }
 
-// export const getProfile = async (token) => {
-//   const getProfile = axios.create({
-//     baseURL: process.env.REACT_APP_API_ENDPOINT,
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization": token,
-//       "OAuth": "DLD"
-//     }
-//   });
-//   return await getProfile.get(`/user/profile`);
+//=================== API: Employee
+
+export const getEmployees = async () => {
+  return await httpClient.get(`/api/v1/employee/`);
+}
+
+export const getEmployeeById = async (id) => {
+  return await httpClient.get(`/api/v1/employee/${id}`);
+}
+
+export const updateEmployee = async (data) => {
+  return await httpClient.put(`/api/v1/employee/`, data);
+}
+
+// export const deleteBookById = async (id) => {
+//   return await httpClient.delete(`/api/v1/book/${id}`);
 // }
 
-//=================== Test Get API
-export const getBooks = async () => {
-  return await httpClient.get(`/api/v1/book/`);
+// export const addBook = async (data) => {
+//   return await httpClient.post(`/api/v1/book/`, data);
+// }
+
+
+//=================== API: Fee
+export const getLastFee = async () => {
+  return await httpClient.get(`/api/v1/fee/lastfee`);
 }
 
-export const getBookById = async (id) => {
-  return await httpClient.get(`/api/v1/book/${id}`);
-}
-
-export const deleteBookById = async (id) => {
-  return await httpClient.delete(`/api/v1/book/${id}`);
-}
-
-export const addBook = async (data) => {
-  return await httpClient.post(`/api/v1/book/`, data);
-}
-
-export const updateBook = async (data) => {
-  return await httpClient.put(`/api/v1/book/`, data);
+export const addFee = async (data) => {
+  return await httpClient.post(`/api/v1/fee`, data);
 }
 
 //=================== API: Type
@@ -135,4 +134,60 @@ export const searchMember = async (key) => {
 
 export const getMember = async () => {
   return await httpClient.get(`/api/v1/member`);
+}
+
+//=================== API: Report Document
+// export const getReport1 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+export const getReport2 = async (role) => {
+  return await httpClient.get(`/api/v1/report2/`, role);
+}
+
+// export const getReport3 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+
+// export const getReport4_1 = async () => {
+//   return await httpClient.get(`/api/v1/product/`);
+// }
+
+export const getReport5_1 = async (year) => {
+  return await httpClient.get(`/api/v1/report5-1/${year}`);
+}
+
+export const getReport5_2 = async (year) => {
+  return await httpClient.get(`/api/v1/report5-2/${year}`);
+}
+
+export const getReport5_3 = async (year) => {
+
+  return await httpClient.get(`/api/v1/report5-3/${year}`);
+}
+
+export const getReport5_4 = async (year) => {
+  return await httpClient.get(`/api/v1/report5-4/${year}`);
+}
+
+//=================== API: Emailing
+
+export const sendReceipt = async (data) => {
+  return await httpClient.post(`/api/v1/email/receipt`, data);
+}
+
+//=================== API: Transaction
+export const getTransaction = async () => {
+  return await httpClient.get(`/api/v1/transaction/`);
+}
+
+//=================== API: Wallet
+export const getWallets = async () => {
+  return await httpClient.get(`/api/v1/wallet/WWB`);
+}
+
+//=================== API: Withdraw
+export const withdrawBalance = async (data) => {
+  return await httpClient.post(`/api/v1/withdraw/`, data);
 }

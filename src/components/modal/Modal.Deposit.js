@@ -11,6 +11,10 @@ import { VerticalLine } from '../styles/veriticalLine';
 
 import * as API from '../../utils/apis'
 
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
+const MySwal = withReactContent(swal)
+
 function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
     const [objectId, setObjectId] = useState('');
@@ -19,6 +23,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
     const [objectTypeId, setObjectTypeId] = useState('');
     const [objectAmount, setObjectAmount] = useState('');
     const [pricePerUnit, setPricePerUnit] = useState('');
+    const [unitDetail, setUnitDetail] = useState('');
     const [sumPrice, setSumPrice] = useState(0);
     const [contentTab, setContentTab] = useState([]);
 
@@ -29,11 +34,14 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
         name: '',
         pricePerUnit: '',
         sumPrice: '',
+        unitDetail: '',
+        lastFee: '',
     }
     const [form, setForm] = useState(initForm);
 
     useEffect(() => {
         getTypeAPI()
+        getLastFee()
     }, []);
 
     useEffect(() => {
@@ -65,6 +73,7 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
             name: objectName,
             amount: objectAmount,
             pricePerUnit: pricePerUnit,
+            unitDetail: unitDetail,
             sumPrice: Number(objectAmount) * Number(pricePerUnit),
         })
     }, [objectAmount]);
@@ -80,10 +89,33 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
         setObjectType(data['type'])
         setObjectTypeId(data['typeId'])
         setPricePerUnit(data['pricePerUnit'])
+        setUnitDetail(data['unitDetail'])
     }
 
     const handleClose = () => {
         close()
+    }
+
+    const getLastFee = async () => {
+        try {
+            const respone = await API.getLastFee()
+            const data = await respone?.data.data[0]
+            if (respone.status === 200 && !respone?.data.error) {
+                setForm({
+                    ...form,
+                    lastFee: data.fee,
+                })
+            } else {
+                MySwal.fire({
+                    text: `ไม่พบข้อมูลสัดส่วน `,
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "ตกลง",
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const getTypeAPI = async () => {
@@ -91,7 +123,6 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
             const response = await API.getTypes();
             const data = await response?.data.data;
             if (response.status === 200) {
-                // console.log('dataAPI:', data);
 
                 let tabList = []
                 //loop
@@ -132,16 +163,9 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
                     }
                     item[itemKey].data = dataList
                 })
-                // let key = Object.keys(tabList[0])
-                // console.log();
-                // console.log(tabList[0][key]);
                 setContentTab(tabList)
             }
         } catch (error) {
-            // if (error.response && error.response.status === 401) {
-            //     dispatch(logout({ history }))
-
-            // }
             console.log(error)
         }
     }
