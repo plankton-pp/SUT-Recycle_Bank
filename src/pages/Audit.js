@@ -93,21 +93,30 @@ function Audit() {
     const [currentMonth, setCurrentMonth] = useState("กุมภาพันธ์");
 
     useEffect(() => {
-        getLastFee()
-        getBalance()
-    }, [])
-
+        if (contentTab && contentTab.length <= 0) {
+            getLastFee()
+            getBalance()
+            getToWithDraw(form.searchKeyword)
+            getToWithDraw("")
+        }
+    }, [contentTab])
 
     useEffect(() => {
         getToWithDraw(form.searchKeyword)
     }, [form.searchKeyword])
+
+    useEffect(() => {
+        if (clearSelectedRow) {
+            setClearSelectedRow(!clearSelectedRow)
+        }
+    }, [clearSelectedRow])
 
     const clearSearch = () => {
         if (form.data.length > 0) {
             MySwal.fire({
                 text: `ยืนยันการล้างข้อมูลสมาชิก `,
                 icon: "question",
-                showCloseButton: true,
+                 
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -164,9 +173,9 @@ function Audit() {
         let indexMonth = monthENArray.indexOf(date.toLocaleString('en-us', { month: 'long' }));
         let name = monthTHArray[indexMonth]
         try {
-            const respone = await API.getReport5_1(now)
-            const data = await respone?.data.data
-            if (respone.status === 200 && !respone?.data.error) {
+            const  response = await API.getReport5_1(now)
+            const data = await  response?.data.data
+            if ( response.status === 200 && ! response?.data.error) {
                 data.forEach((item) => {
                     if (String(item.Month).includes(String(month))) {
                         setTotalPrice(Number(item.Total_Price).toFixed(2))
@@ -195,9 +204,9 @@ function Audit() {
 
     const getLastFee = async () => {
         try {
-            const respone = await API.getLastFee()
-            const data = await respone?.data.data[0]
-            if (respone.status === 200 && !respone?.data.error) {
+            const  response = await API.getLastFee()
+            const data = await  response?.data.data[0]
+            if ( response.status === 200 && ! response?.data.error) {
                 setForm({
                     ...form,
                     memberFee: Number(100 - Number(data.fee)).toFixed(2),
@@ -254,7 +263,7 @@ function Audit() {
                 MySwal.fire({
                     text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                     icon: "error",
-                    showCloseButton: true,
+                     
                     showCancelButton: true,
                     confirmButtonText: "ยกเลิก",
                 })
@@ -263,7 +272,7 @@ function Audit() {
             MySwal.fire({
                 text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                 icon: "error",
-                showCloseButton: true,
+                 
                 showCancelButton: true,
                 confirmButtonText: "ยกเลิก",
             })
@@ -275,7 +284,7 @@ function Audit() {
         MySwal.fire({
             text: `ยืนยันการบันทึกรายการ `,
             icon: "question",
-            showCloseButton: true,
+             
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -290,23 +299,25 @@ function Audit() {
                                 empid: ID,
                                 netprice: item.balance
                             }
+                            console.log(dataToWithdraw);
                             const response = await API.withdrawBalance(dataToWithdraw)
                         })
                         MySwal.fire({
                             text: `บันทึกข้อมูลสำเร็จ`,
                             icon: "success",
-                            showCloseButton: true,
+                             
                             confirmButtonColor: '#96CC39',
                             confirmButtonText: "ตกลง",
                         }).then((value) => {
                             if (value.isConfirmed) {
                                 setForm(initForm)
-                                setClearSelectedRow([])
+                                setClearSelectedRow(true)
+                                setSelectedData([])
                                 setTotalPrice(0)
                                 setWaitingPrice(0)
-                                getToWithDraw("")
                                 getLastFee()
                                 getBalance()
+                                setContentTab([])
                             }
                         })
 
@@ -314,7 +325,7 @@ function Audit() {
                         MySwal.fire({
                             text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-                            showCloseButton: true,
+                             
                             showCancelButton: true,
                             confirmButtonText: "ยกเลิก",
                         })

@@ -254,7 +254,7 @@ function ManagePrice() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-                showCloseButton: true,
+                 
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -288,7 +288,7 @@ function ManagePrice() {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
                 icon: "question",
-                showCloseButton: true,
+                 
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -321,7 +321,7 @@ function ManagePrice() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                                 icon: "error",
-                                showCloseButton: true,
+                                 
                                 showCancelButton: true,
                                 confirmButtonText: "ยกเลิก",
                             })
@@ -329,7 +329,7 @@ function ManagePrice() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลสำเร็จ`,
                                 icon: "success",
-                                showCloseButton: true,
+                                 
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             }).then(() => {
@@ -345,7 +345,7 @@ function ManagePrice() {
                         MySwal.fire({
                             text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-                            showCloseButton: true,
+                             
                             showCancelButton: true,
                             confirmButtonText: "ยกเลิก",
                         })
@@ -386,7 +386,7 @@ function ManagePrice() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-                showCloseButton: true,
+                 
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",

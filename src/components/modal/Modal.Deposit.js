@@ -98,9 +98,9 @@ function ModalDeposit({ show, close, save, mode, idEdit, data }) {
 
     const getLastFee = async () => {
         try {
-            const respone = await API.getLastFee()
-            const data = await respone?.data.data[0]
-            if (respone.status === 200 && !respone?.data.error) {
+            const  response = await API.getLastFee()
+            const data = await  response?.data.data[0]
+            if ( response.status === 200 && ! response?.data.error) {
                 setForm({
                     ...form,
                     lastFee: data.fee,
