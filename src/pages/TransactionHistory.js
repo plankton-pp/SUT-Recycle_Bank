@@ -67,7 +67,7 @@ function TransactionHistory() {
         } else if (status === "deposit") {
             return "#96CC39"
         } else if (status === "sum") {
-            return "blue"
+            return "#395B64"
         } else {
             return "orange"
         }
@@ -79,7 +79,7 @@ function TransactionHistory() {
         } else if (status === "deposit") {
             return "ฝาก"
         } else if (status === "sum") {
-            return "อัพเดทยอดฝากทั้งหมด"
+            return "อัพเดทยอดเงินธนาคาร"
         } else {
             return "รอดำเนินการ"
         }

@@ -68,12 +68,12 @@ function Proportion() {
                 fee: form.fee,
                 createby: username
             }
-            const respone = await API.addFee(data)
-            if (respone.status === 200 && !respone?.data.error) {
+            const  response = await API.addFee(data)
+            if ( response.status === 200 && ! response?.data.error) {
                 MySwal.fire({
                     text: `บันทึกข้อมูลสำเร็จ`,
                     icon: "success",
-                    showCloseButton: true,
+                     
                     confirmButtonColor: '#96CC39',
                     confirmButtonText: "ตกลง",
                 }).then((value) => {

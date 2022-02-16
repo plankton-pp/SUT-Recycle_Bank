@@ -311,7 +311,7 @@ function ManageProducts() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-                showCloseButton: true,
+
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -384,7 +384,7 @@ function ManageProducts() {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
                 icon: "question",
-                showCloseButton: true,
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -430,7 +430,7 @@ function ManageProducts() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                                 icon: "error",
-                                showCloseButton: true,
+
                                 showCancelButton: true,
                                 confirmButtonText: "ยกเลิก",
                             })
@@ -438,7 +438,7 @@ function ManageProducts() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลสำเร็จ`,
                                 icon: "success",
-                                showCloseButton: true,
+
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             }).then(() => {
@@ -454,7 +454,7 @@ function ManageProducts() {
                         MySwal.fire({
                             text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-                            showCloseButton: true,
+
                             showCancelButton: true,
                             confirmButtonText: "ยกเลิก",
                         })
@@ -486,7 +486,7 @@ function ManageProducts() {
                     return MySwal.fire({
                         text: `กรุณากรอกข้อมูลชื่อวัสดุ `,
                         icon: "warning",
-                        showCloseButton: true,
+
                         confirmButtonColor: '#96CC39',
                         confirmButtonText: "ตกลง",
                     })
@@ -494,7 +494,7 @@ function ManageProducts() {
                     return MySwal.fire({
                         text: `กรุณาระบุประเภทของวัสดุ `,
                         icon: "warning",
-                        showCloseButton: true,
+
                         confirmButtonColor: '#96CC39',
                         confirmButtonText: "ตกลง",
                     })
@@ -519,7 +519,7 @@ function ManageProducts() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-                showCloseButton: true,
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -543,7 +543,7 @@ function ManageProducts() {
                             return MySwal.fire({
                                 text: `กรุณากรอกข้อมูลชื่อวัสดุ `,
                                 icon: "warning",
-                                showCloseButton: true,
+
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             })
@@ -551,7 +551,7 @@ function ManageProducts() {
                             return MySwal.fire({
                                 text: `กรุณาระบุประเภทของวัสดุ `,
                                 icon: "warning",
-                                showCloseButton: true,
+
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             })
@@ -600,7 +600,7 @@ function ManageProducts() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-                showCloseButton: true,
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",

@@ -103,6 +103,50 @@ function Register() {
         return validated;
     }
 
+    const checkIsEmployee = () => {
+        MySwal.fire({
+            text: `ยืนยันการสมัครบัญชีผู้ใช้สำหรับเจ้าหน้าที่ `,
+            icon: "question",
+
+            confirmButtonColor: '#96CC39',
+            showCancelButton: true,
+            cancelButtonText: "ยกเลิก",
+            confirmButtonText: "ตกลง",
+        }).then(async (value) => {
+            if (value.isConfirmed) {
+                try {
+                    const response = await API.getEmployeeByEmpId(form.empId)
+                    const data = await response?.data.data
+                    if (response.status === 200 && !response?.data.error) {
+                        if (data && data.length === 1) {
+                            if (data[0].Email === form.email && data[0].Employee_ID === form.empId && String(data[0].Firstname).length === 0) {
+                                toRegister()
+                            } else {
+                                throw data.error;
+                            }
+                        } else {
+                            throw data.error;
+                        }
+                    } else {
+                        throw response.status
+                    }
+                } catch (error) {
+                    MySwal.fire({
+                        text: `ข้อมูลเจ้าหน้าที่ไม่ถูกต้อง \nระบบไม่สามารถบันทึกข้อมูลได้` + error,
+                        icon: "error",
+                        showConfirmButton: true,
+                        confirmButtonText: "ตกลง",
+                    }).then((value) => {
+                        // if (value.isConfirmed) {
+                        //     history.push("/login")
+                        // }
+                    })
+                }
+            }
+        })
+
+    }
+
     const toLogin = async () => {
         let dataUser = {
             username: form.username,
@@ -122,23 +166,24 @@ function Register() {
         }
     }
 
-    const toRegister = async (e) => {
+    const toRegister = async () => {
         if (validate()) {
             try {
                 const responseCheckUser = await API.checkDuplicate({ username: form.username, email: form.email });
                 const dataCheckUser = await responseCheckUser?.data;
                 if (responseCheckUser.status === 200) {
-                    if (dataCheckUser.duplicateUsername) {
-                        addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้งานแล้ว");
-                    }
-                    
-                    if (dataCheckUser.duplicateEmail) {
-                        addInvalid('email', "อีเมลล์นี้มีคนใช้งานแล้ว");
-                    }
+                    if (dataCheckUser.resultsEmail.length > 1) {
+                        if (dataCheckUser.duplicateUsername) {
+                            addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้งานแล้ว");
+                        }
 
+                        if (dataCheckUser.duplicateEmail) {
+                            addInvalid('email', "อีเมลล์นี้มีคนใช้งานแล้ว");
+                        }
+                    }
                     if (!(dataCheckUser.duplicateUsername && dataCheckUser.duplicateEmail)) {
                         //register
-                        const response = await API.register({ ...form, role: 'employee' })
+                        const response = await API.register({ ...form })
                         if (response.status === 200) {
                             MySwal.fire({
                                 text: "ทำการสมัครสมาชิกเรียบร้อย",
@@ -167,12 +212,14 @@ function Register() {
 
             }
         } else {
-            // MySwal.fire({
-            //     text: "กรุณาลองใหม่อีกครั้ง",
-            //     icon: 'warning',
-            //     confirmButtonColor: '#96CC39',
-            //     confirmButtonText: 'ตกลง'
-            // })
+            MySwal.fire({
+                text: "ไม่สามารถบันทึกข้อมูลได้ในขณะนี้ \nกรุณาลองใหม่อีกครั้ง",
+                icon: 'warning',
+                confirmButtonColor: '#96CC39',
+                confirmButtonText: 'ตกลง'
+            }).then(() => {
+                history.push('/login')
+            })
         }
 
     }
@@ -243,7 +290,7 @@ function Register() {
                             <div className='mb-4'>
                                 <Row gutter={[20, 0]}>
                                     <Col>
-                                        <Button bg={'#96CC39'} color={'#fff'} onClick={() => { toRegister() }}>สมัครสมาชิก</Button>
+                                        <Button bg={'#96CC39'} color={'#fff'} onClick={() => { checkIsEmployee() }}>สมัครสมาชิก</Button>
                                     </Col>
                                 </Row>
                             </div>

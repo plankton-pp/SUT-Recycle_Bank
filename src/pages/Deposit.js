@@ -137,7 +137,7 @@ function Deposit() {
             MySwal.fire({
                 text: `ยืนยันการล้างข้อมูลสมาชิก `,
                 icon: "question",
-                showCloseButton: true,
+                 
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -317,7 +317,7 @@ function Deposit() {
         MySwal.fire({
             text: `ยืนยันการบันทึกรายการ `,
             icon: "question",
-            showCloseButton: true,
+             
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -362,7 +362,7 @@ function Deposit() {
         MySwal.fire({
             text: `ยืนยันที่จะลบ `,
             icon: "question",
-            showCloseButton: true,
+             
             confirmButtonColor: '#E72525',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",

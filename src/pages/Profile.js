@@ -38,9 +38,9 @@ function Profile() {
 
     const getEmployeeById = async () => {
         try {
-            const respone = await API.getEmployeeById(ID)
-            const data = await respone?.data.data[0]
-            if (respone.status === 200 && !respone?.data.error) {
+            const  response = await API.getEmployeeById(ID)
+            const data = await  response?.data.data[0]
+            if ( response.status === 200 && ! response?.data.error) {
                 setForm({
                     ...form,
                     username: data.Username,
@@ -80,7 +80,7 @@ function Profile() {
         MySwal.fire({
             text: `ยืนยันการบันทึกรายการ `,
             icon: "question",
-            showCloseButton: true,
+             
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -96,12 +96,12 @@ function Profile() {
                         phone: form.phone,
                         email: form.email,
                     }
-                    const respone = await API.updateEmployee(data)
-                    if (respone.status === 200 && !respone?.data.error) {
+                    const  response = await API.updateEmployee(data)
+                    if ( response.status === 200 && ! response?.data.error) {
                         MySwal.fire({
                             text: `บันทึกข้อมูลสำเร็จ`,
                             icon: "success",
-                            showCloseButton: true,
+                             
                             confirmButtonColor: '#96CC39',
                             showCancelButton: true,
                             confirmButtonText: "ตกลง",

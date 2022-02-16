@@ -24,11 +24,16 @@ export const userAuthenticated = async () => {
 }
 
 //=================== API: Register
-
-export const register = async (formData) => {
-  console.log(formData);
-  return await httpClient.post(`/api/v1/employee/register`, formData);
+export const addNewEmp = async (data) => {
+  console.log(data);
+  return await httpClient.post(`/api/v1/employee/addnewemployee`, data);
 }
+
+//=================== API: Update Register
+export const register = async (formData) => {
+  return await httpClient.put(`/api/v1/employee/register`, formData);
+}
+
 
 //=================== API: Check Duplicate Username
 
@@ -56,6 +61,10 @@ export const getEmployees = async () => {
 
 export const getEmployeeById = async (id) => {
   return await httpClient.get(`/api/v1/employee/${id}`);
+}
+
+export const getEmployeeByEmpId = async (empId) => {
+  return await httpClient.get(`/api/v1/employee/checkEmp/${empId}`);
 }
 
 export const updateEmployee = async (data) => {
