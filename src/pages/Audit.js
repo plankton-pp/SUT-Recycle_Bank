@@ -272,7 +272,7 @@ function Audit() {
                 text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                 icon: "error",
                 showConfirmButton: true,
-                confirmButtonText: "ยกเลิก",
+                confirmButtonText: "ตกลง",
             })
             console.log(error);
         }
@@ -324,7 +324,7 @@ function Audit() {
                             text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
                             showConfirmButton: true,
-                            confirmButtonText: "ยกเลิก",
+                            confirmButtonText: "ตกลง",
                         })
                         console.log(error);
                     }
