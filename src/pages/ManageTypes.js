@@ -306,6 +306,7 @@ function ManageTypes() {
                             }).then(() => {
                                 setChangedState(false)
                                 setContentTab([])
+                                getTypeAPI()
                             })
                         }
 

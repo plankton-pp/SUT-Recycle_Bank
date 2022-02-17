@@ -158,6 +158,7 @@ function ManagePrice() {
     }, [changedState]);
 
     useEffect(() => {
+        console.log("hook! contentab");
         if (contentTab && contentTab.length > 0) {
             let reIndexList = []
             contentTab.forEach((item, index) => {
