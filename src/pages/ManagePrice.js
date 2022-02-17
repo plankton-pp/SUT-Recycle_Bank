@@ -347,6 +347,7 @@ function ManagePrice() {
                                 setTypeOptionList([])
                                 setOnEditKey('')
                                 setCountChanged(0)
+                                getType()
                             })
                         }
                     } catch (error) {
