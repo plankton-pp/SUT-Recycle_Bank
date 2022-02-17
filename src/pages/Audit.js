@@ -116,7 +116,7 @@ function Audit() {
             MySwal.fire({
                 text: `ยืนยันการล้างข้อมูลสมาชิก `,
                 icon: "question",
-                 
+
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -173,9 +173,9 @@ function Audit() {
         let indexMonth = monthENArray.indexOf(date.toLocaleString('en-us', { month: 'long' }));
         let name = monthTHArray[indexMonth]
         try {
-            const  response = await API.getReport5_1(now)
-            const data = await  response?.data.data
-            if ( response.status === 200 && ! response?.data.error) {
+            const response = await API.getReport5_1(now)
+            const data = await response?.data.data
+            if (response.status === 200 && !response?.data.error) {
                 data.forEach((item) => {
                     if (String(item.Month).includes(String(month))) {
                         setTotalPrice(Number(item.Total_Price).toFixed(2))
@@ -204,9 +204,9 @@ function Audit() {
 
     const getLastFee = async () => {
         try {
-            const  response = await API.getLastFee()
-            const data = await  response?.data.data[0]
-            if ( response.status === 200 && ! response?.data.error) {
+            const response = await API.getLastFee()
+            const data = await response?.data.data[0]
+            if (response.status === 200 && !response?.data.error) {
                 setForm({
                     ...form,
                     memberFee: Number(100 - Number(data.fee)).toFixed(2),
@@ -263,8 +263,7 @@ function Audit() {
                 MySwal.fire({
                     text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                     icon: "error",
-                     
-                    showCancelButton: true,
+                    showConfirmButton: true,
                     confirmButtonText: "ยกเลิก",
                 })
             }
@@ -272,8 +271,7 @@ function Audit() {
             MySwal.fire({
                 text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                 icon: "error",
-                 
-                showCancelButton: true,
+                showConfirmButton: true,
                 confirmButtonText: "ยกเลิก",
             })
             console.log(error);
@@ -284,7 +282,7 @@ function Audit() {
         MySwal.fire({
             text: `ยืนยันการบันทึกรายการ `,
             icon: "question",
-             
+
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -305,7 +303,7 @@ function Audit() {
                         MySwal.fire({
                             text: `บันทึกข้อมูลสำเร็จ`,
                             icon: "success",
-                             
+
                             confirmButtonColor: '#96CC39',
                             confirmButtonText: "ตกลง",
                         }).then((value) => {
@@ -325,8 +323,7 @@ function Audit() {
                         MySwal.fire({
                             text: `ไม่สามารถโหลดข้อมูลได้ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-                             
-                            showCancelButton: true,
+                            showConfirmButton: true,
                             confirmButtonText: "ยกเลิก",
                         })
                         console.log(error);
