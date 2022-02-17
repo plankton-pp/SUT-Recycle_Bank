@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BoxCard from '../components/BoxCard';
-import { Row, Col } from 'antd'
+import { Row, Col, Spin } from 'antd'
 import * as API from '../utils/apis'
 import * as helper from '../utils/helper'
 import TabPaneMenu from '../components/TabPaneMenu';
@@ -10,7 +10,7 @@ import GraphBar from './GraphBar';
 function Home() {
 
     const [contentTab, setContentTab] = useState([]);
-    // const [showGraph, setShowGraph] = useState(false);
+    const [isLoad, setIsLoad] = useState(false)
     const columns = [
         {
             title: '#',
@@ -41,7 +41,6 @@ function Home() {
     ];
     useEffect(() => {
         getTypeAPI()
-        // setShowGraph(true)
     }, []);
 
     useEffect(() => {
@@ -59,6 +58,7 @@ function Home() {
     }, [contentTab]);
 
     const getTypeAPI = async () => {
+        setIsLoad(true)
         try {
             const response = await API.getTypes();
             const data = await response?.data.data;
@@ -95,6 +95,7 @@ function Home() {
                         })
                     })
                     setContentTab(tabList)
+                    setIsLoad(false)
                 }
 
             }
@@ -103,11 +104,13 @@ function Home() {
             //     dispatch(logout({ history }))
 
             // }
+            setIsLoad(false)
             console.log(error)
         }
     }
 
     const getProducts = async () => {
+        setIsLoad(true)
         try {
             const response = await API.getProducts();
             const data = await response?.data.data;
@@ -132,8 +135,10 @@ function Home() {
 
                 })
                 setContentTab(tabList)
+                setIsLoad(false)
             }
         } catch (error) {
+            setIsLoad(false)
             // if (error.response && error.response.status === 401) {
             //     dispatch(logout({ history }))
             // }
@@ -142,35 +147,37 @@ function Home() {
     }
     return (
         <div className='container pb-5'>
-            <div className='mb-3' style={{ width: '100%' }}>
-                <Row gutter={[20, 0]}>
-                    <Col span={12}>
-                        <BoxCard>
-                            <GraphDoughnut></GraphDoughnut>
-                            <div className='d-flex justify-content-center mt-3'>
-                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนการฝากจากแต่ละประเภท 5 อันดับสูงสุด'}</h6>
-                            </div>
-                        </BoxCard>
-                    </Col>
-                    <Col span={12}>
-                        <BoxCard>
-                            <GraphBar></GraphBar>
-                            <div className='d-flex justify-content-center mt-3'>
-                                <h6 style={{ color: '#87AAAA' }}>{'จำนวนข้อมูลวัสดุที่มีการนำฝากมากที่สุด 5 อันดับ'}</h6>
-                            </div>
-                        </BoxCard>
-                    </Col>
-                </Row>
-            </div>
-            <BoxCard title={<span className='' style={{ fontWeight: 'bolder', color: '#fff' }}>ราคารับซื้อปัจจุบัน</span>}>
-                <div>
-                    <TabPaneMenu
-                        content={contentTab}
-                        type={'data-table'}
-                        optional={{ columns: columns }}
-                    ></TabPaneMenu>
+            <Spin tip="Loading..." spinning={isLoad}>
+                <div className='mb-3' style={{ width: '100%' }}>
+                    <Row gutter={[20, 0]}>
+                        <Col span={12}>
+                            <BoxCard>
+                                <GraphDoughnut></GraphDoughnut>
+                                <div className='d-flex justify-content-center mt-3'>
+                                    <h6 style={{ color: '#87AAAA' }}>{'จำนวนการฝากจากแต่ละประเภท 5 อันดับสูงสุด'}</h6>
+                                </div>
+                            </BoxCard>
+                        </Col>
+                        <Col span={12}>
+                            <BoxCard>
+                                <GraphBar></GraphBar>
+                                <div className='d-flex justify-content-center mt-3'>
+                                    <h6 style={{ color: '#87AAAA' }}>{'จำนวนข้อมูลวัสดุที่มีการนำฝากมากที่สุด 5 อันดับ'}</h6>
+                                </div>
+                            </BoxCard>
+                        </Col>
+                    </Row>
                 </div>
-            </BoxCard>
+                <BoxCard title={<span className='' style={{ fontWeight: 'bolder', color: '#fff' }}>ราคารับซื้อปัจจุบัน</span>}>
+                    <div>
+                        <TabPaneMenu
+                            content={contentTab}
+                            type={'data-table'}
+                            optional={{ columns: columns }}
+                        ></TabPaneMenu>
+                    </div>
+                </BoxCard>
+            </Spin>
         </div>
     )
 }

@@ -150,6 +150,7 @@ function ManageTypes() {
 
     const getTypeAPI = async () => {
         try {
+            setIsLoad(true)
             const response = await API.getTypes();
             const data = await response?.data.data;
             if (response.status === 200) {
@@ -170,9 +171,11 @@ function ManageTypes() {
                         })
                     })
                     setContentTab(filteredDataType)
+                    setIsLoad(false)
                 }
             }
         } catch (error) {
+            setIsLoad(false)
             console.log(error)
         }
     }
@@ -200,25 +203,31 @@ function ManageTypes() {
 
     const updateType = async (data) => {
         try {
+            setIsLoad(true)
             const response = await API.updateType(data)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
 
     }
     const addType = async (data) => {
         try {
+            setIsLoad(true)
             const response = await API.addType(data)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
 
     const removeType = async (id) => {
         try {
+            setIsLoad(true)
             const response = await API.deleteTypeById(id)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
 

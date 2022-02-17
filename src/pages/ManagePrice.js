@@ -181,6 +181,7 @@ function ManagePrice() {
     }, [typeOptionList, contentTab]);
 
     const getType = async () => {
+        setIsLoad(true)
         try {
             const response = await API.getTypes();
             const data = await response?.data.data;
@@ -198,14 +199,17 @@ function ManagePrice() {
                     filterOption.unshift({ value: "", label: "ทั้งหมด" })
                     setFilterOptionList(filterOption)
                     setTypeOptionList(optionList)
+                    setIsLoad(false)
                 }
             }
         } catch (error) {
+            setIsLoad(false)
             console.log(error)
         }
     }
 
     const getProducts = async (optionList) => {
+        setIsLoad(true)
         try {
             const response = await API.getProducts();
             const data = await response?.data.data;
@@ -239,9 +243,10 @@ function ManagePrice() {
                 }
                 setContentTab(container)
                 setDefaultLenght(data.length)
-
+                setIsLoad(false)
             }
         } catch (error) {
+            setIsLoad(false)
             if (error.response && error.response.status === 401) {
                 dispatch(logout({ history }))
             }
@@ -277,9 +282,11 @@ function ManagePrice() {
     const updateProd = async (data) => {
         // console.log("update: ", data);
         try {
+            setIsLoad(true)
             const response = await API.updateProduct(data)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
 

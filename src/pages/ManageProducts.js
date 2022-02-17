@@ -236,7 +236,9 @@ function ManageProducts() {
     }, [typeOptionList, contentTab]);
 
     const getType = async () => {
+        
         try {
+            setIsLoad(true)
             const response = await API.getTypes();
             const data = await response?.data.data;
             let optionList = []
@@ -255,13 +257,17 @@ function ManageProducts() {
                     setTypeOptionList(optionList)
                 }
             }
+            setIsLoad(false)
         } catch (error) {
+            setIsLoad(false)
             console.log(error)
         }
     }
 
     const getProducts = async (optionList) => {
+        
         try {
+            setIsLoad(true)
             const response = await API.getProducts();
             const data = await response?.data.data;
             if (response.status === 200) {
@@ -295,10 +301,11 @@ function ManageProducts() {
                     }
                     setContentTab(container)
                     setDefaultLenght(data.length)
+                    setIsLoad(false)
                 }
-
             }
         } catch (error) {
+            setIsLoad(false)
             if (error.response && error.response.status === 401) {
                 dispatch(logout({ history }))
             }
@@ -333,24 +340,30 @@ function ManageProducts() {
 
     const updateProd = async (data) => {
         try {
+            setIsLoad(true)
             const response = await API.updateProduct(data)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
     const addProd = async (data) => {
         try {
+            setIsLoad(true)
             const response = await API.addProduct(data)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
 
     const removeProd = async (id) => {
         try {
+            setIsLoad(true)
             const response = await API.deleteProductById(id)
+            setIsLoad(false)
         } catch (error) {
-
+            setIsLoad(false)
         }
     }
 
