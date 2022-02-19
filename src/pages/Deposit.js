@@ -10,6 +10,7 @@ import InputText from '../components/InputText';
 import { Button } from '../components/styles/globalStyles';
 import ModalDeposit from '../components/modal/Modal.Deposit';
 import ModalSearchMember from '../components/modal/Modal.SearchMember';
+import ModalRegisterMember from '../components/modal/Modal.RegistMember';
 
 import * as converter from '../utils/converter'
 import * as API from '../utils/apis'
@@ -101,6 +102,7 @@ function Deposit() {
     const [form, setForm] = useState(initForm);
     const [showModalSearch, setShowModalSearch] = useState(false)
     const [showModalAdd, setShowModalAdd] = useState(false)
+    const [showRegisterMember, setShowRegisterMember] = useState(false)
     const [objectList, setObjectList] = useState([]);
     const [netPrice, setNetPrice] = useState(0);
     const [countTransaction, setCountTransaction] = useState(0);
@@ -123,11 +125,6 @@ function Deposit() {
         setObjectList(removedList)
     }, [removeItem]);
 
-    // useEffect(() => {
-    //     console.log(ID);
-    // }, []);
-
-
     const toSearchMember = () => {
         setShowModalSearch(true)
     }
@@ -137,7 +134,7 @@ function Deposit() {
             MySwal.fire({
                 text: `ยืนยันการล้างข้อมูลสมาชิก `,
                 icon: "question",
-                 
+
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -317,7 +314,7 @@ function Deposit() {
         MySwal.fire({
             text: `ยืนยันการบันทึกรายการ `,
             icon: "question",
-             
+
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -362,7 +359,7 @@ function Deposit() {
         MySwal.fire({
             text: `ยืนยันที่จะลบ `,
             icon: "question",
-             
+
             confirmButtonColor: '#E72525',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
@@ -514,6 +511,7 @@ function Deposit() {
                     mode={form.mode} idEdit={form.idEdit}
                     data={form.searchKeyword}
                     save={(dataMember) => { setMemberData(dataMember) }}
+                    showmodal={(bool) => { setShowRegisterMember(bool) }}
                 />
             }
 
@@ -524,6 +522,15 @@ function Deposit() {
                     mode={form.mode} idEdit={form.idEdit}
                     save={(value) => addItemToList(value)}
                 />
+            }
+
+            {showRegisterMember &&
+                <ModalRegisterMember
+                    show={showRegisterMember}
+                    close={() => setShowRegisterMember(false)}
+                    // data={form.searchKeyword}
+                    save={() => { }}
+                ></ModalRegisterMember>
             }
 
         </Spin>

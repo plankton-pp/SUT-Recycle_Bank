@@ -71,14 +71,24 @@ export const updateEmployee = async (data) => {
   return await httpClient.put(`/api/v1/employee/`, data);
 }
 
-// export const deleteBookById = async (id) => {
-//   return await httpClient.delete(`/api/v1/book/${id}`);
-// }
+//=================== API: Member
 
-// export const addBook = async (data) => {
-//   return await httpClient.post(`/api/v1/book/`, data);
-// }
+export const registerMember = async (formData) => {
+  console.log(formData);
+  return await httpClient.post(`/api/v1/member/register`, formData);
+}
 
+export const checkDuplicateMember = async (data) => {
+  return await httpClient.post(`/api/v1/member/checkDuplicate`, data);
+}
+
+export const searchMember = async (key) => {
+  return await httpClient.get(`/api/v1/member/key/${key}`);
+}
+
+export const getMember = async () => {
+  return await httpClient.get(`/api/v1/member`);
+}
 
 //=================== API: Fee
 export const getLastFee = async () => {
@@ -134,15 +144,6 @@ export const updateProduct = async (data) => {
 //=================== API: Deposit
 export const addDeposit = async (data) => {
   return await httpClient.post(`/api/v1/deposit/`, data);
-}
-
-//=================== API: Search Member
-export const searchMember = async (key) => {
-  return await httpClient.get(`/api/v1/member/key/${key}`);
-}
-
-export const getMember = async () => {
-  return await httpClient.get(`/api/v1/member`);
 }
 
 //=================== API: Report Document

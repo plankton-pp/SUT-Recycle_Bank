@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'
 import '../../assets/css/index.css'
 import { Modal } from 'react-bootstrap';
-import { Row, Col, Table } from 'antd';
+import { Row, Col } from 'antd';
 import { Button } from '../styles/globalStyles';
 import ModalHeader from '../ModalHeader'
 import InputText from '../InputText';
@@ -9,7 +10,9 @@ import DataTable from '../DataTable';
 import BoxCard from '../BoxCard';
 import * as API from '../../utils/apis';
 
-function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
+
+function ModalSearchMember({ show, close, save, data, showmodal }) {
+    const history = useHistory();
     const initMember = [
         {
             key: '',
@@ -123,7 +126,8 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
     }
 
     const toAddMember = () => {
-
+        showmodal(true)
+        handleClose()
     }
 
     const searchMember = async (keyword) => {
@@ -224,7 +228,6 @@ function ModalSearchMember({ show, close, save, mode, idEdit, data }) {
                     </Col>
                 </Row>
             </Modal.Body>
-
         </Modal>
     );
 }
