@@ -27,24 +27,24 @@ function ModalRegisterMember({ show, close, save, data }) {
     const initInvalidMsg = {
         username: "",
         bankaccount: "",
+        bank: "",
         phone: "",
         firstname: "",
         lastname: "",
         email: "",
         password: "",
-        confirmPassword: "",
     }
     const [invalid, setInvalid] = useState(initInvalidMsg);
 
     const initForm = {
         username: "",
         bankaccount: "",
+        bank: "",
         phone: "",
         firstname: "",
         lastname: "",
         email: "",
-        password: "",
-        confirmPassword: "",
+        password: "1234",
     }
     const [form, setForm] = useState(initForm);
 
@@ -83,6 +83,10 @@ function ModalRegisterMember({ show, close, save, data }) {
             addInvalid('username', "กรุณาระบุบัญชีผู้ใช้งาน");
             validated = false;
         }
+        if (form.bank === '') {
+            addInvalid('bank', "กรุณาระบุชื่อธนาคาร");
+            validated = false;
+        }
         if (form.firstname === '') {
             addInvalid('firstname', "กรุณาระบุชื่อจริงผู้ใช้งาน");
             validated = false;
@@ -103,13 +107,7 @@ function ModalRegisterMember({ show, close, save, data }) {
             addInvalid('password', "กรุณากรอกรหัสผ่าน");
             validated = false;
         }
-        if (form.confirmPassword === '') {
-            addInvalid('confirmPassword', "กรุณากรอกรหัสผ่านให้ตรงกัน");
-            validated = false;
-        }
-
         //check complicate data
-
         if (form.email && !helper.checkEmailFormat(form.email.trim())) {
             addInvalid('email', "กรุณาระบุอีเมลให้ถูกต้อง");
             validated = false;
@@ -136,12 +134,21 @@ function ModalRegisterMember({ show, close, save, data }) {
                             //find match lastname
                             let check = data.filter((item) => item.Firstname === form.firstname && item.Lastname === form.lastname)
                             if (check.length > 0) {
-                                addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้แล้ว");
+                                if (check[0].Username === form.username) {
+                                    addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้แล้ว");
+                                } else {
+                                    MySwal.fire({
+                                        text: `ไม่สามารถเพิ่มสมาชิกได้เนื่องจากพบข้อมูลซ้ำในฐานข้อมูล \nกรุณาลองใหม่`,
+                                        icon: "error",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "ตกลง",
+                                    })
+                                }
                             } else {
                                 toRegister()
                             }
                         } else {
-                            throw "data-lenght error"
+                            toRegister()
                         }
                     } else {
                         throw "status error"
@@ -247,6 +254,12 @@ function ModalRegisterMember({ show, close, save, data }) {
                                     </Col>
                                 </Row>
                                 <div className='mb-3'>
+                                    <InputText title="ธนาคาร" type="text" idName="bank" value={form.bank} star={true} classFormGroup="w-100"
+                                        placeholder="bank" handleChange={(value) => setForm({ ...form, bank: value })}
+                                        handleInvalid={() => removeInvalid("bank")} invalid={invalid.bank}
+                                    />
+                                </div>
+                                <div className='mb-3'>
                                     <InputText title="เลขบัญชีธนาคาร" type="text" idName="bank-account" value={form.bankaccount} star={true} classFormGroup="w-100"
                                         placeholder="bank account" handleChange={(value) => setForm({ ...form, bankaccount: value })}
                                         handleInvalid={() => removeInvalid("bankaccount")} invalid={invalid.bankaccount}
@@ -264,18 +277,6 @@ function ModalRegisterMember({ show, close, save, data }) {
                                         handleInvalid={() => {
                                             removeInvalid("username")
                                         }} invalid={invalid.email}
-                                    />
-                                </div>
-                                <div className='mb-4'>
-                                    <InputText title="รหัสผ่าน" type="password" idName="password" value={form.password} star={true} classFormGroup="w-100"
-                                        placeholder="password" handleChange={(value) => setForm({ ...form, password: value })}
-                                        handleInvalid={() => removeInvalid("password")} invalid={invalid.password}
-                                    />
-                                </div>
-                                <div className='mb-4'>
-                                    <InputText title="ยืนยันรหัสผ่าน" type="password" idName="confirmPassword" value={form.confirmPassword} star={true} classFormGroup="w-100"
-                                        placeholder="confirm password" handleChange={(value) => setForm({ ...form, confirmPassword: value })}
-                                        handleInvalid={() => removeInvalid("confirmPassword")} invalid={invalid.confirmPassword}
                                     />
                                 </div>
                                 <div className='mb-4 d-flex justify-content-end'>
