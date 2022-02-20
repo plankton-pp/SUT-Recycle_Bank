@@ -50,9 +50,11 @@ function ModalRegisterMember({ show, close, save, data }) {
 
     const roleList = [
         { value: 0, label: "แม่บ้าน" },
-        { value: 1, label: "อาคารทำการ" },
-        { value: 2, label: "บุคคลากร" },
-        { value: 3, label: "นักศึกษา" },
+        { value: 1, label: "หอพักนักศึกษา" },
+        { value: 2, label: "อาคารทำการ" },
+        { value: 3, label: "บุคคลากร" },
+        { value: 4, label: "นักศึกษา" },
+        { value: 5, label: "อื่น ๆ" },
     ]
     const [roleOptionList, setRoleOptionlist] = useState(roleList)
     const [isLoad, setIsLoad] = useState(false)
