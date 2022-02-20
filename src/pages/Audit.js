@@ -37,24 +37,35 @@ function Audit() {
                 compare: (a, b) => a.balance - b.balance,
                 multiple: 1,
             },
-            width: '200px',
+            width: '150px',
             align: 'right',
             render: ((_, record) => {
                 return (<h5 style={{ color: 'orange' }}>{record.balance}</h5>)
             })
         },
         {
+            title: 'ธนาคาร',
+            dataIndex: 'bank',
+            align: 'left',
+
+        },
+
+        {
+            title: 'เลขที่บัญชีธนาคาร',
+            dataIndex: 'accnumber',
+            align: 'left',
+
+        },
+        {
             title: 'ชื่อ',
             dataIndex: 'firstname',
             align: 'left',
-            width: '300px',
 
         },
         {
             title: 'นามสกุล',
             dataIndex: 'lastname',
             align: 'left',
-            width: '300px',
         },
         {
             title: 'วันที่ทำรายการฝาก',
@@ -248,6 +259,8 @@ function Audit() {
                             lastname: item.Lastname,
                             createDate: item.Create_Date,
                             balance: Number(item.Balance).toFixed(2),
+                            bank: item.Bank,
+                            accnumber: item.Acc_number,
                         })
                     })
                     setWaitingPrice(Number(sumBalance).toFixed(2))

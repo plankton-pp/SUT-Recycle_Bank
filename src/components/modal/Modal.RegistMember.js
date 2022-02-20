@@ -184,10 +184,10 @@ function ModalRegisterMember({ show, close, save, data }) {
                         confirmButtonColor: '#96CC39',
                         confirmButtonText: 'ตกลง'
                     }).then((value) => {
-
+                        handleClose()
                     })
                 } else {
-                    // throw response.status
+                    throw response.status
                 }
             } else {
                 throw 'error'
