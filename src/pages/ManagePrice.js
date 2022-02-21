@@ -317,7 +317,7 @@ function ManagePrice() {
                                         typeid: type[0].value,
                                         name: String(item.name),
                                         price: String(item.pricePerUnit),
-                                        updateby: String(item.updateBy),
+                                        updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
                                         feeid: String(item.feeId),

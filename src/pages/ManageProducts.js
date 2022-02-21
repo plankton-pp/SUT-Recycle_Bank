@@ -419,7 +419,7 @@ function ManageProducts() {
                                         typeid: String(item.type.value),
                                         name: String(item.name),
                                         price: String(item.pricePerUnit),
-                                        updateby: String(item.updateBy),
+                                        updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
                                     }
@@ -429,7 +429,7 @@ function ManageProducts() {
                                         typeid: String(item.type.value),
                                         name: String(item.name),
                                         price: String(item.pricePerUnit),
-                                        createby: String(item.createBy),
+                                        createby: Number(item.createBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
                                         feeid: String(item.feeid),
