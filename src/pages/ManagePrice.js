@@ -32,7 +32,7 @@ function ManagePrice() {
     const [filteredGroup, setFilteredGroup] = useState({ value: '', label: 'ทั้งหมด' })
     const [filterOptionList, setFilterOptionList] = useState([])
 
-    const { ID, Username } = JSON.parse(helper.sessionGet('login'))
+    const { ID, Firstname, Lastname } = JSON.parse(helper.sessionGet('login'))
 
     const initForm = {
         data: [],
