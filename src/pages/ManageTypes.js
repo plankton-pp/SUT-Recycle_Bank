@@ -356,6 +356,7 @@ function ManageTypes() {
                     status: checkChanged ? (dtlist[index].status === "add" ? 'add' : 'edit') : dtlist[index].status,
                 }
                 setContentTab(dtlist)
+                setChangedState('')
             } else {
                 console.log("array is empty");
             }
@@ -484,7 +485,10 @@ function ManageTypes() {
                         <Row gutter={[10, 0]}>
                             <Col>
                                 <Button color="white" bg="#96CC39" width={'80px'} className="cursor-p" disabled={!changedState} onClick={() => {
-                                    if (handleChange(onEditKey)) {
+                                    if (checkChanged) {
+                                        handleChange(onEditKey)
+                                        handleSave(form)
+                                    } else {
                                         handleSave(form)
                                     }
                                 }}>บันทึก</Button>
