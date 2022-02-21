@@ -382,7 +382,7 @@ function ManagePrice() {
                 formList[index] = {
                     ...formList[index],
                     disabled: true,
-                    updateByName: checkChanged ? (Firstname+' '+Lastname) : formList[index].updateByName,
+                    updateByName: checkChanged ? (Firstname + ' ' + Lastname) : formList[index].updateByName,
                     updateBy: checkChanged ? ID : formList[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
                     status: checkChanged ? (formList[index].status === "add" ? 'add' : 'edit') : formList[index].status,
@@ -417,7 +417,7 @@ function ManagePrice() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
-                            updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
+                            updateByName: checkChanged ? (Firstname + ' ' + Lastname) : onSavelist[onEditIndex].updateByName,
                             updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                             status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,
