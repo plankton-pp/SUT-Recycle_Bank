@@ -4,7 +4,7 @@ import axios from 'axios';
 const connectInstance = axios.create({
     baseURL: process.env.REACT_APP_API_ENDPOINT,
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/x-www-form-urlencoded"
     }
 });
 
