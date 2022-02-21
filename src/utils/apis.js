@@ -26,7 +26,7 @@ export const userAuthenticated = async () => {
 //=================== API: Register
 export const addNewEmp = async (data) => {
   console.log(data);
-  return await httpClient.post(`/api/v1/employee/addnewemployee`, data);
+  return await httpClient.post(`/employee/addnewemployee`, data);
 }
 
 //=================== API: Update Register
