@@ -415,7 +415,7 @@ function ManageProducts() {
                             if (item.status !== "query") {
                                 if (item.status === "edit") {
                                     let pack = {
-                                        productid: String(item.id),
+                                        productid: Number(item.id),
                                         typeid: Number(item.type.value),
                                         name: String(item.name),
                                         price: Number(item.pricePerUnit),
