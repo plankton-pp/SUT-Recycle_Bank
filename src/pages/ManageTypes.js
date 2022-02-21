@@ -165,8 +165,8 @@ function ManageTypes() {
                             disabled: true,
                             createDate: helper.dateElement(item.Create_Date),
                             updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
-                            createBy: item.Create_By,
-                            updateBy: item.Update_By.length > 0 ? item.Update_By : item.Create_By,
+                            createBy: String(item.Create_By),
+                            updateBy: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
                             status: 'query',
                         })
                     })
