@@ -294,6 +294,7 @@ function ManagePrice() {
     }
 
     const handleSave = (prodsForm) => {
+        handleChange(onEditKey)
         if (changedState || countChanged > 0) {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,

@@ -259,7 +259,6 @@ function ManageTypes() {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
                 icon: "question",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -335,6 +334,7 @@ function ManageTypes() {
     }
 
     const handleChange = (key) => {
+        handleChange(onEditKey)
         let index = key - 1
         if (onEditKey && onEditKey == key) {
             //save
@@ -366,7 +366,6 @@ function ManageTypes() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",

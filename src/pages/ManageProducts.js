@@ -380,8 +380,8 @@ function ManageProducts() {
             name: "",
             createDate: helper.dateElement(now),
             updateDate: helper.dateElement(now),
-            createByName: (Firstname+' '+Lastname),
-            updateByName: (Firstname+' '+Lastname),
+            createByName: (Firstname + ' ' + Lastname),
+            updateByName: (Firstname + ' ' + Lastname),
             createBy: ID,
             updateBy: ID,
             disabled: false,
@@ -398,6 +398,7 @@ function ManageProducts() {
     }
 
     const handleSave = (prodsForm) => {
+        handleChange(onEditKey)
         if (changedState || countChanged > 0) {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
@@ -519,8 +520,8 @@ function ManageProducts() {
                     formList[index] = {
                         ...formList[index],
                         disabled: true,
-                        createByName: formList[index].status === "add" ? (Firstname+' '+Lastname) : formList[index].createByName,
-                        updateByName: checkChanged ? (Firstname+' '+Lastname) : formList[index].updateByName,
+                        createByName: formList[index].status === "add" ? (Firstname + ' ' + Lastname) : formList[index].createByName,
+                        updateByName: checkChanged ? (Firstname + ' ' + Lastname) : formList[index].updateByName,
                         updateBy: checkChanged ? ID : formList[index].updateBy,
                         updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
                         status: checkChanged ? (formList[index].status === "add" ? 'add' : 'edit') : formList[index].status,
@@ -577,8 +578,8 @@ function ManageProducts() {
                             onSavelist[onEditIndex] = {
                                 ...onSavelist[onEditIndex],
                                 disabled: true,
-                                createByName: onSavelist[index].status === "add" ? (Firstname+' '+Lastname) : onSavelist[onEditIndex].createByName,
-                                updateByName: checkChanged ? (Firstname+' '+Lastname) : onSavelist[onEditIndex].updateByName,
+                                createByName: onSavelist[index].status === "add" ? (Firstname + ' ' + Lastname) : onSavelist[onEditIndex].createByName,
+                                updateByName: checkChanged ? (Firstname + ' ' + Lastname) : onSavelist[onEditIndex].updateByName,
                                 updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                                 updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                                 status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,
