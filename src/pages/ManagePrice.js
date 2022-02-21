@@ -32,7 +32,7 @@ function ManagePrice() {
     const [filteredGroup, setFilteredGroup] = useState({ value: '', label: 'ทั้งหมด' })
     const [filterOptionList, setFilterOptionList] = useState([])
 
-    const username = JSON.parse(helper.sessionGet('login')).Username
+    const { ID, Username } = JSON.parse(helper.sessionGet('login'))
 
     const initForm = {
         data: [],
@@ -110,7 +110,7 @@ function ManagePrice() {
         },
         {
             title: 'Update By',
-            dataIndex: 'updateBy',
+            dataIndex: 'updateByName',
         },
         {
             title: 'การจัดการ',
@@ -230,8 +230,10 @@ function ManagePrice() {
                         feeId: item.Fee_ID,
                         createDate: helper.dateElement(item.Create_Date),
                         updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
-                        createBy: String(item.Create_By),
-                        updateBy: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
+                        createByName: String(item.Create_By),
+                        updateByName: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
+                        createBy: String(item.CreateBy),
+                        updateBy: String(item.UpdateBy).length > 0 ? String(item.UpdateBy) : String(item.CreateBy),
                         disabled: true,
                         status: 'query',
                     })
@@ -380,7 +382,8 @@ function ManagePrice() {
                 formList[index] = {
                     ...formList[index],
                     disabled: true,
-                    updateBy: checkChanged ? username : formList[index].updateBy,
+                    updateByName: checkChanged ? Username : formList[index].updateByName,
+                    updateBy: checkChanged ? ID : formList[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
                     status: checkChanged ? (formList[index].status === "add" ? 'add' : 'edit') : formList[index].status,
                 }
@@ -414,7 +417,8 @@ function ManagePrice() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
-                            updateBy: checkChanged ? username : onSavelist[onEditIndex].updateBy,
+                            updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
+                            updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                             status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,
                         }

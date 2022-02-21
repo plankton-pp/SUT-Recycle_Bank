@@ -172,6 +172,7 @@ function ManageTypes() {
                             status: 'query',
                         })
                     })
+                    console.log("ft: ", filteredDataType);
                     setContentTab(filteredDataType)
                     setIsLoad(false)
                 }
@@ -347,7 +348,8 @@ function ManageTypes() {
                 dtlist[index] = {
                     ...dtlist[index],
                     disabled: true,
-                    updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
+                    createByName: dtlist[index].status === "add" ? Username : dtlist[index].updateByName,
+                    updateByName: checkChanged ? Username : dtlist[index].updateByName,
                     updateBy: checkChanged ? ID : dtlist[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : dtlist[index].updateDate,
                     status: checkChanged ? (dtlist[index].status === "add" ? 'add' : 'edit') : dtlist[index].status,
@@ -380,6 +382,7 @@ function ManageTypes() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
+                            createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].updateByName,
                             updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
                             updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
