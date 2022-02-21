@@ -348,7 +348,7 @@ function ManageTypes() {
                 dtlist[index] = {
                     ...dtlist[index],
                     disabled: true,
-                    createByName: dtlist[index].status === "add" ? Username : dtlist[index].updateByName,
+                    createByName: dtlist[index].status === "add" ? Username : dtlist[index].createByName,
                     updateByName: checkChanged ? Username : dtlist[index].updateByName,
                     updateBy: checkChanged ? ID : dtlist[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : dtlist[index].updateDate,
@@ -382,7 +382,7 @@ function ManageTypes() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
-                            createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].updateByName,
+                            createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].createByName,
                             updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
                             updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,

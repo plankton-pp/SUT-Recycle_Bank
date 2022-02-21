@@ -519,7 +519,7 @@ function ManageProducts() {
                     formList[index] = {
                         ...formList[index],
                         disabled: true,
-                        createByName: formList[index].status === "add" ? Username : formList[index].updateByName,
+                        createByName: formList[index].status === "add" ? Username : formList[index].createByName,
                         updateByName: checkChanged ? Username : formList[index].updateByName,
                         updateBy: checkChanged ? ID : formList[index].updateBy,
                         updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
@@ -577,7 +577,7 @@ function ManageProducts() {
                             onSavelist[onEditIndex] = {
                                 ...onSavelist[onEditIndex],
                                 disabled: true,
-                                createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].updateByName,
+                                createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].createByName,
                                 updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
                                 updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                                 updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
