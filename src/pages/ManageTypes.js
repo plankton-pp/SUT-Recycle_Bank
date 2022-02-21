@@ -20,8 +20,8 @@ function ManageTypes() {
     const [isLoad, setIsLoad] = useState(false)
     const [changedState, setChangedState] = useState(false);
     const [onEditKey, setOnEditKey] = useState('');
-    
-    const username = JSON.parse(helper.sessionGet('login')).Username
+
+    const { ID } = JSON.parse(helper.sessionGet('login'))
 
 
 
@@ -90,11 +90,11 @@ function ManageTypes() {
         },
         {
             title: 'Create By',
-            dataIndex: 'createBy',
+            dataIndex: 'createByName',
         },
         {
             title: 'Update By',
-            dataIndex: 'updateBy',
+            dataIndex: 'updateByName',
         },
         {
             title: 'การจัดการ',
@@ -165,8 +165,10 @@ function ManageTypes() {
                             disabled: true,
                             createDate: helper.dateElement(item.Create_Date),
                             updateDate: helper.dateElement(item.Update_Date.length > 0 ? item.Update_Date : item.Create_Date),
-                            createBy: String(item.Create_By),
-                            updateBy: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
+                            createByName: String(item.Create_By),
+                            updateByName: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
+                            createBy: String(item.CreateBy),
+                            updateBy: String(item.UpdateBy).length > 4 ? String(item.UpdateBy) : String(item.CreateBy),
                             status: 'query',
                         })
                     })
@@ -185,7 +187,7 @@ function ManageTypes() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-                 
+
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -240,8 +242,8 @@ function ManageTypes() {
             name: "",
             createDate: helper.dateElement(now),
             updateDate: helper.dateElement(now),
-            createBy: username,
-            updateBy: username,
+            createBy: ID,
+            updateBy: ID,
             disabled: false,
             status: 'add',
         };
@@ -254,7 +256,7 @@ function ManageTypes() {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
                 icon: "question",
-                 
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -269,13 +271,13 @@ function ManageTypes() {
                                     let pack = {
                                         id: item.id,
                                         name: item.name,
-                                        updateby: item.updateBy,
+                                        updateby: ID,
                                     }
                                     updateType(pack)
                                 } else {
                                     let pack = {
                                         name: item.name,
-                                        createby: item.createBy
+                                        createby: ID
                                     }
                                     addType(pack)
                                 }
@@ -291,7 +293,7 @@ function ManageTypes() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                                 icon: "error",
-                                 
+
                                 showCancelButton: true,
                                 confirmButtonText: "ยกเลิก",
                             })
@@ -299,7 +301,7 @@ function ManageTypes() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลสำเร็จ`,
                                 icon: "success",
-                                 
+
                                 confirmButtonColor: '#96CC39',
                                 showCancelButton: true,
                                 confirmButtonText: "ตกลง",
@@ -316,7 +318,7 @@ function ManageTypes() {
                         MySwal.fire({
                             text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-                             
+
                             showCancelButton: true,
                             confirmButtonText: "ยกเลิก",
                         })
@@ -359,7 +361,7 @@ function ManageTypes() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-                 
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -417,7 +419,7 @@ function ManageTypes() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-                 
+
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
