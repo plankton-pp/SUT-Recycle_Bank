@@ -236,7 +236,7 @@ function ManageProducts() {
     }, [typeOptionList, contentTab]);
 
     const getType = async () => {
-        
+
         try {
             setIsLoad(true)
             const response = await API.getTypes();
@@ -265,7 +265,7 @@ function ManageProducts() {
     }
 
     const getProducts = async (optionList) => {
-        
+
         try {
             setIsLoad(true)
             const response = await API.getProducts();
@@ -273,6 +273,7 @@ function ManageProducts() {
             if (response.status === 200) {
                 if (optionList && optionList.length > 0) {
                     let filteredDataProds = []
+                    console.log("query: ", data);
                     data.forEach((item, index) => {
                         let check = optionList.filter(element => item.Type_ID === element.value)
                         filteredDataProds.push({
