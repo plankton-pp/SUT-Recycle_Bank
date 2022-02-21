@@ -382,7 +382,7 @@ function ManagePrice() {
                 formList[index] = {
                     ...formList[index],
                     disabled: true,
-                    updateByName: checkChanged ? Username : formList[index].updateByName,
+                    updateByName: checkChanged ? (Firstname+' '+Lastname) : formList[index].updateByName,
                     updateBy: checkChanged ? ID : formList[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
                     status: checkChanged ? (formList[index].status === "add" ? 'add' : 'edit') : formList[index].status,

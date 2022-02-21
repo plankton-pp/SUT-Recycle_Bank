@@ -32,7 +32,7 @@ function ManageProducts() {
     const [filteredGroup, setFilteredGroup] = useState({ value: '', label: 'ทั้งหมด' })
     const [filterOptionList, setFilterOptionList] = useState([])
 
-    const { ID, Username } = JSON.parse(helper.sessionGet('login'))
+    const { ID, Firstname, Lastname } = JSON.parse(helper.sessionGet('login'))
 
     const initForm = {
         data: [],
@@ -380,8 +380,8 @@ function ManageProducts() {
             name: "",
             createDate: helper.dateElement(now),
             updateDate: helper.dateElement(now),
-            createByName: Username,
-            updateByName: Username,
+            createByName: (Firstname+' '+Lastname),
+            updateByName: (Firstname+' '+Lastname),
             createBy: ID,
             updateBy: ID,
             disabled: false,
@@ -519,8 +519,8 @@ function ManageProducts() {
                     formList[index] = {
                         ...formList[index],
                         disabled: true,
-                        createByName: formList[index].status === "add" ? Username : formList[index].createByName,
-                        updateByName: checkChanged ? Username : formList[index].updateByName,
+                        createByName: formList[index].status === "add" ? (Firstname+' '+Lastname) : formList[index].createByName,
+                        updateByName: checkChanged ? (Firstname+' '+Lastname) : formList[index].updateByName,
                         updateBy: checkChanged ? ID : formList[index].updateBy,
                         updateDate: checkChanged ? helper.dateElement(now) : formList[index].updateDate,
                         status: checkChanged ? (formList[index].status === "add" ? 'add' : 'edit') : formList[index].status,
@@ -577,8 +577,8 @@ function ManageProducts() {
                             onSavelist[onEditIndex] = {
                                 ...onSavelist[onEditIndex],
                                 disabled: true,
-                                createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].createByName,
-                                updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
+                                createByName: onSavelist[index].status === "add" ? (Firstname+' '+Lastname) : onSavelist[onEditIndex].createByName,
+                                updateByName: checkChanged ? (Firstname+' '+Lastname) : onSavelist[onEditIndex].updateByName,
                                 updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                                 updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                                 status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,

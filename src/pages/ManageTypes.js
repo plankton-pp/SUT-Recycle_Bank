@@ -21,7 +21,7 @@ function ManageTypes() {
     const [changedState, setChangedState] = useState(false);
     const [onEditKey, setOnEditKey] = useState('');
 
-    const { ID, Username } = JSON.parse(helper.sessionGet('login'))
+    const { ID, Firstname, Lastname } = JSON.parse(helper.sessionGet('login'))
 
 
 
@@ -245,6 +245,8 @@ function ManageTypes() {
             updateDate: helper.dateElement(now),
             createBy: ID,
             updateBy: ID,
+            createByName: (Firstname + ' ' + Lastname),
+            updateByName: (Firstname + ' ' + Lastname),
             disabled: false,
             status: 'add',
         };
@@ -348,8 +350,8 @@ function ManageTypes() {
                 dtlist[index] = {
                     ...dtlist[index],
                     disabled: true,
-                    createByName: dtlist[index].status === "add" ? Username : dtlist[index].createByName,
-                    updateByName: checkChanged ? Username : dtlist[index].updateByName,
+                    createByName: dtlist[index].status === "add" ? (Firstname + ' ' + Lastname) : dtlist[index].createByName,
+                    updateByName: checkChanged ? (Firstname + ' ' + Lastname) : dtlist[index].updateByName,
                     updateBy: checkChanged ? ID : dtlist[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : dtlist[index].updateDate,
                     status: checkChanged ? (dtlist[index].status === "add" ? 'add' : 'edit') : dtlist[index].status,
@@ -382,8 +384,8 @@ function ManageTypes() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
-                            createByName: onSavelist[index].status === "add" ? Username : onSavelist[onEditIndex].createByName,
-                            updateByName: checkChanged ? Username : onSavelist[onEditIndex].updateByName,
+                            createByName: onSavelist[index].status === "add" ? (Firstname + ' ' + Lastname) : onSavelist[onEditIndex].createByName,
+                            updateByName: checkChanged ? (Firstname + ' ' + Lastname) : onSavelist[onEditIndex].updateByName,
                             updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                             status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,
