@@ -294,10 +294,9 @@ function ManagePrice() {
     }
 
     const handleSave = (prodsForm) => {
-        handleChange(onEditKey)
         if (changedState || countChanged > 0) {
             MySwal.fire({
-                text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
+                text: `ยืนยันบันทึกการเปลี่ยนแปลง`,
                 icon: "question",
 
                 confirmButtonColor: '#96CC39',
@@ -314,14 +313,14 @@ function ManagePrice() {
                             if (item.status !== "query") {
                                 if (item.status === "edit") {
                                     let pack = {
-                                        productid: String(item.id),
-                                        typeid: type[0].value,
+                                        productid: Number(item.id),
+                                        typeid: Number(type[0].value),
                                         name: String(item.name),
-                                        price: String(item.pricePerUnit),
+                                        price: Number(item.pricePerUnit),
                                         updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
-                                        feeid: String(item.feeId),
+                                        feeid: Number(item.feeId),
                                     }
                                     // console.log("pack: ", pack);
                                     updateProd(pack)
@@ -332,7 +331,6 @@ function ManagePrice() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                                 icon: "error",
-
                                 showCancelButton: true,
                                 confirmButtonText: "ยกเลิก",
                             })
@@ -340,7 +338,6 @@ function ManagePrice() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลสำเร็จ`,
                                 icon: "success",
-
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             }).then(() => {
@@ -394,12 +391,12 @@ function ManagePrice() {
                 console.log("array is empty");
             }
             setOnEditKey('')
+            return true
         } else if (onEditKey !== "") {
             //swap
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -434,6 +431,7 @@ function ManagePrice() {
                     }
                     setOnEditKey(key)
                 }
+                return true
             })
         } else {
             //edit
@@ -448,8 +446,10 @@ function ManagePrice() {
                     disabled: false,
                 }
                 setContentTab(dtlist)
+                return true
             } else {
                 console.log("array is empty");
+                return true
             }
         }
     };
@@ -491,7 +491,11 @@ function ManagePrice() {
                         <div className="d-flex justify-content-end" >
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => { handleSave(form) }}>บันทึก</Button>
+                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => {
+                                        if (handleChange(onEditKey)) {
+                                            handleSave(form)
+                                        }
+                                    }}>บันทึก</Button>
                                 </Col>
                                 <Col>
                                     <Button color="white" bg="#E72525" width={'80px'} className="cursor-p" onClick={() => { handleCancel() }}>ยกเลิก</Button>

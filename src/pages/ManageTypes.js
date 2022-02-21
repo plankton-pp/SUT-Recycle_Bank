@@ -334,7 +334,6 @@ function ManageTypes() {
     }
 
     const handleChange = (key) => {
-        handleChange(onEditKey)
         let index = key - 1
         if (onEditKey && onEditKey == key) {
             //save
@@ -361,6 +360,7 @@ function ManageTypes() {
                 console.log("array is empty");
             }
             setOnEditKey('')
+            return true
         } else if (onEditKey !== "") {
             //swap
             MySwal.fire({
@@ -399,6 +399,9 @@ function ManageTypes() {
                         console.log("array is empty");
                     }
                     setOnEditKey(key)
+                    return true
+                } else {
+                    return false
                 }
             })
         } else {
@@ -414,8 +417,10 @@ function ManageTypes() {
                     disabled: false,
                 }
                 setContentTab(dtlist)
+                return true
             } else {
                 console.log("array is empty");
+                return true
             }
         }
     };
@@ -478,7 +483,11 @@ function ManageTypes() {
                     <div className="d-flex justify-content-end" >
                         <Row gutter={[10, 0]}>
                             <Col>
-                                <Button color="white" bg="#96CC39" width={'80px'} className="cursor-p" disabled={!changedState} onClick={() => { handleSave(form) }}>บันทึก</Button>
+                                <Button color="white" bg="#96CC39" width={'80px'} className="cursor-p" disabled={!changedState} onClick={() => {
+                                    if (handleChange(onEditKey)) {
+                                        handleSave(form)
+                                    }
+                                }}>บันทึก</Button>
                             </Col>
                             <Col>
                                 <Button color="white" bg="#E72525" width={'80px'} className="cursor-p" onClick={() => { handleCancel() }}>ยกเลิก</Button>

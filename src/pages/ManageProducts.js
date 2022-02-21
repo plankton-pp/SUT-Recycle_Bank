@@ -321,7 +321,6 @@ function ManageProducts() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-
                 confirmButtonColor: '#E72525',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -398,12 +397,10 @@ function ManageProducts() {
     }
 
     const handleSave = (prodsForm) => {
-        handleChange(onEditKey)
         if (changedState || countChanged > 0) {
             MySwal.fire({
                 text: `ยืนยันบันทึกการเปลี่ยนแปลง `,
                 icon: "question",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -423,6 +420,7 @@ function ManageProducts() {
                                         updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
+                                        feeid: Number(item.feeid),
                                     }
                                     updateProd(pack)
                                 } else {
@@ -431,9 +429,10 @@ function ManageProducts() {
                                         name: String(item.name),
                                         price: Number(item.pricePerUnit),
                                         createby: Number(item.createBy),
-                                        detail: String(item.detail),
+                                        updateBy: Number(item.createBy),
+                                        detail: item.detail ? String(item.detail) : "",
                                         unitdetail: String(item.unit),
-                                        feeid: String(item.feeid),
+                                        feeid: Number(item.feeid),
                                     }
                                     addProd(pack)
                                 }
@@ -449,7 +448,6 @@ function ManageProducts() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                                 icon: "error",
-
                                 showCancelButton: true,
                                 confirmButtonText: "ยกเลิก",
                             })
@@ -457,7 +455,6 @@ function ManageProducts() {
                             MySwal.fire({
                                 text: `บันทึกข้อมูลสำเร็จ`,
                                 icon: "success",
-
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             }).then(() => {
@@ -473,7 +470,6 @@ function ManageProducts() {
                         MySwal.fire({
                             text: `บันทึกข้อมูลไม่สำเร็จ \nกรุณาทำรายการอีกครั้ง`,
                             icon: "error",
-
                             showCancelButton: true,
                             confirmButtonText: "ยกเลิก",
                         })
@@ -533,12 +529,12 @@ function ManageProducts() {
                 console.log("array is empty");
             }
             setOnEditKey('')
+            return true
         } else if (onEditKey !== "") {
             //swap
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -562,7 +558,6 @@ function ManageProducts() {
                             return MySwal.fire({
                                 text: `กรุณากรอกข้อมูลชื่อวัสดุ `,
                                 icon: "warning",
-
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             })
@@ -570,7 +565,6 @@ function ManageProducts() {
                             return MySwal.fire({
                                 text: `กรุณาระบุประเภทของวัสดุ `,
                                 icon: "warning",
-
                                 confirmButtonColor: '#96CC39',
                                 confirmButtonText: "ตกลง",
                             })
@@ -595,6 +589,7 @@ function ManageProducts() {
                         console.log("array is empty");
                     }
                     setOnEditKey(key)
+                    return true
                 }
             })
         } else {
@@ -610,8 +605,10 @@ function ManageProducts() {
                     disabled: false,
                 }
                 setContentTab(dtlist)
+                return true
             } else {
                 console.log("array is empty");
+                return false
             }
         }
     };
@@ -621,7 +618,6 @@ function ManageProducts() {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
                 icon: "warning",
-
                 confirmButtonColor: '#96CC39',
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
@@ -697,7 +693,11 @@ function ManageProducts() {
                         <div className="d-flex justify-content-end" >
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => { handleSave(form) }}>บันทึก</Button>
+                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => {
+                                        if (handleChange(onEditKey)) {
+                                            handleSave(form)
+                                        }
+                                    }}>บันทึก</Button>
                                 </Col>
                                 <Col>
                                     <Button color="white" bg="#E72525" width={'80px'} className="cursor-p" onClick={() => { handleCancel() }}>ยกเลิก</Button>
