@@ -416,9 +416,9 @@ function ManageProducts() {
                                 if (item.status === "edit") {
                                     let pack = {
                                         productid: String(item.id),
-                                        typeid: String(item.type.value),
+                                        typeid: Number(item.type.value),
                                         name: String(item.name),
-                                        price: String(item.pricePerUnit),
+                                        price: Number(item.pricePerUnit),
                                         updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
@@ -426,9 +426,9 @@ function ManageProducts() {
                                     updateProd(pack)
                                 } else {
                                     let pack = {
-                                        typeid: String(item.type.value),
+                                        typeid: Number(item.type.value),
                                         name: String(item.name),
-                                        price: String(item.pricePerUnit),
+                                        price: Number(item.pricePerUnit),
                                         createby: Number(item.createBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
