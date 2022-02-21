@@ -21,7 +21,7 @@ function ManageTypes() {
     const [changedState, setChangedState] = useState(false);
     const [onEditKey, setOnEditKey] = useState('');
 
-    const { ID } = JSON.parse(helper.sessionGet('login'))
+    const { ID, Username } = JSON.parse(helper.sessionGet('login'))
 
 
 
@@ -168,7 +168,7 @@ function ManageTypes() {
                             createByName: String(item.Create_By),
                             updateByName: String(item.Update_By).length > 4 ? String(item.Update_By) : String(item.Create_By),
                             createBy: String(item.CreateBy),
-                            updateBy: String(item.UpdateBy).length > 4 ? String(item.UpdateBy) : String(item.CreateBy),
+                            updateBy: String(item.UpdateBy).length > 0 ? String(item.UpdateBy) : String(item.CreateBy),
                             status: 'query',
                         })
                     })
@@ -347,7 +347,7 @@ function ManageTypes() {
                 dtlist[index] = {
                     ...dtlist[index],
                     disabled: true,
-                    updateBy: checkChanged ? username : dtlist[index].updateBy,
+                    updateBy: checkChanged ? ID : dtlist[index].updateBy,
                     updateDate: checkChanged ? helper.dateElement(now) : dtlist[index].updateDate,
                     status: checkChanged ? (dtlist[index].status === "add" ? 'add' : 'edit') : dtlist[index].status,
                 }
@@ -379,7 +379,7 @@ function ManageTypes() {
                         onSavelist[onEditIndex] = {
                             ...onSavelist[onEditIndex],
                             disabled: true,
-                            updateBy: checkChanged ? username : onSavelist[onEditIndex].updateBy,
+                            updateBy: checkChanged ? ID : onSavelist[onEditIndex].updateBy,
                             updateDate: checkChanged ? helper.dateElement(now) : onSavelist[onEditIndex].updateDate,
                             status: checkChanged ? onSavelist[index].status === "add" ? "add" : 'edit' : onSavelist[index].status,
                         }
