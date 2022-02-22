@@ -83,6 +83,7 @@ function UserManagement() {
               Empid: form.empId
             }
             const response = await API.addNewEmp(data)
+            console.log(response.status);
             if (response.status === 200) {
               setForm(initForm)
               setIsLoad(false)
@@ -91,39 +92,39 @@ function UserManagement() {
                 icon: "success",
                 confirmButtonColor: '#96CC39',
                 confirmButtonText: "ตกลง",
-              }).then((value) => {
-                if (value.isConfirmed) {
-
-                }
               })
-            } else if (response.status === 400 && response.duplicate === true) {
+            } else if (response.status === 400) {
               setIsLoad(false)
-              MySwal.fire({
-                text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonText: "ตกลง",
-              }).then((value) => {
-                if (value.isConfirmed) {
-                  history.push("/index")
-                }
-              })
+              if (response.duplicate === true) {
+                MySwal.fire({
+                  text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
+                  icon: "error",
+                  showConfirmButton: true,
+                  confirmButtonText: "ตกลง",
+                }).then((value) => {
+                  if (value.isConfirmed) {
+                    history.push("/index")
+                  }
+                })
+              } else {
+                throw response.status
+              }
             } else {
-              setIsLoad(false)
-              MySwal.fire({
-                text: `ระบบไม่สามารถบันทึกข้อมูลได้`,
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonText: "ตกลง",
-              }).then((value) => {
-                if (value.isConfirmed) {
-                  history.push("/index")
-                }
-              })
+              throw response.status
             }
           } catch (error) {
             setIsLoad(false)
             console.log(error);
+            MySwal.fire({
+              text: `ระบบไม่สามารถบันทึกข้อมูลได้`,
+              icon: "error",
+              showConfirmButton: true,
+              confirmButtonText: "ตกลง",
+            }).then((value) => {
+              if (value.isConfirmed) {
+                history.push("/index")
+              }
+            })
           }
         }
       })

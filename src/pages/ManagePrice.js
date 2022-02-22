@@ -176,7 +176,7 @@ function ManagePrice() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
+        if (typeOptionList && typeOptionList.length > 0) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
