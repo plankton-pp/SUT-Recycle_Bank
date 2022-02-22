@@ -92,22 +92,18 @@ function UserManagement() {
                 confirmButtonColor: '#96CC39',
                 confirmButtonText: "ตกลง",
               })
-            } else if (response.error === true) {
+            } else if (response.duplicate === true) {
               setIsLoad(false)
-              if (response.duplicate === true) {
-                MySwal.fire({
-                  text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
-                  icon: "error",
-                  showConfirmButton: true,
-                  confirmButtonText: "ตกลง",
-                }).then((value) => {
-                  if (value.isConfirmed) {
-                    history.push("/index")
-                  }
-                })
-              } else {
-                throw response.status
-              }
+              MySwal.fire({
+                text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
+                icon: "error",
+                showConfirmButton: true,
+                confirmButtonText: "ตกลง",
+              }).then((value) => {
+                if (value.isConfirmed) {
+                  history.push("/index")
+                }
+              })
             } else {
               throw response.status
             }
