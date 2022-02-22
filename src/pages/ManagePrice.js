@@ -149,6 +149,7 @@ function ManagePrice() {
     ];
 
     useEffect(() => {
+        setTypeOptionList([])
         setContentTab([])
     }, [filteredGroup]);
 
