@@ -14,7 +14,6 @@ const MySwal = withReactContent(swal)
 
 function UserManagement() {
   const history = useHistory()
-  const username = JSON.parse(helper.sessionGet('login')).Username
 
   const initInvalidMsg = {
     empId: "",
@@ -62,6 +61,8 @@ function UserManagement() {
 
     return validated;
   }
+
+  
 
   const toAddNewEmp = () => {
     if (validate()) {
