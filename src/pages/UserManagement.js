@@ -62,7 +62,7 @@ function UserManagement() {
     return validated;
   }
 
-  
+
 
   const toAddNewEmp = () => {
     if (validate()) {
@@ -93,7 +93,19 @@ function UserManagement() {
                 confirmButtonText: "ตกลง",
               }).then((value) => {
                 if (value.isConfirmed) {
-                  
+
+                }
+              })
+            } else if (response.status === 401) {
+              setIsLoad(false)
+              MySwal.fire({
+                text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
+                icon: "error",
+                showConfirmButton: true,
+                confirmButtonText: "ตกลง",
+              }).then((value) => {
+                if (value.isConfirmed) {
+                  history.push("/index")
                 }
               })
             } else {
