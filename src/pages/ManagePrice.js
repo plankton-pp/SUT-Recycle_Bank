@@ -244,6 +244,7 @@ function ManagePrice() {
                 } else {
                     container = [...filteredDataProds]
                 }
+                console.log("content: ", container, filteredGroup.label);
                 setContentTab(container.length === 0 ? [0] : container)
                 setDefaultLenght(data.length)
                 setIsLoad(false)
