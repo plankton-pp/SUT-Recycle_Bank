@@ -235,7 +235,7 @@ function ManageProducts() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
+        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0 && defaultLenght === 0) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
@@ -300,7 +300,6 @@ function ManageProducts() {
             if (response.status === 200) {
                 if (optionList && optionList.length > 0) {
                     let filteredDataProds = []
-                    console.log("query: ", data);
                     data.forEach((item, index) => {
                         let check = optionList.filter(element => item.Type_ID === element.value)
                         filteredDataProds.push({
@@ -329,7 +328,7 @@ function ManageProducts() {
                     } else {
                         container = [...filteredDataProds]
                     }
-                    setContentTab(container.length === 0 ? [0] : container)
+                    setContentTab(container)
                     setDefaultLenght(data.length)
                     setIsLoad(false)
                 }
@@ -490,6 +489,7 @@ function ManageProducts() {
                                 setTypeOptionList([])
                                 setOnEditKey('')
                                 setCountChanged(0)
+                                setDefaultLenght(0)
                             })
                         }
                     } catch (error) {

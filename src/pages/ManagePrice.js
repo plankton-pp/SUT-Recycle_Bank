@@ -176,7 +176,7 @@ function ManagePrice() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
+        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0 && defaultLenght === 0) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
@@ -244,8 +244,7 @@ function ManagePrice() {
                 } else {
                     container = [...filteredDataProds]
                 }
-                console.log("content: ", container, filteredGroup.label);
-                setContentTab(container.length === 0 ? [0] : container)
+                setContentTab(container)
                 setDefaultLenght(data.length)
                 setIsLoad(false)
             }
@@ -345,7 +344,8 @@ function ManagePrice() {
                                 setTypeOptionList([])
                                 setOnEditKey('')
                                 setCountChanged(0)
-                                getType()
+                                setDefaultLenght(0)
+                                
                             })
                         }
                     } catch (error) {
