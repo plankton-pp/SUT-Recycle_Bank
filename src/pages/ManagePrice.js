@@ -461,6 +461,7 @@ function ManagePrice() {
                             optionsList={filterOptionList}
                             selectValue={filteredGroup}
                             handleChange={(value) => {
+                                setDefaultLenght(0)
                                 setFilteredGroup(value)
                             }}
                         />

@@ -675,7 +675,7 @@ function ManageProducts() {
         }
     }
 
-    const buttonAdd = () => {
+    const buttonFilter = () => {
         return (
             <div>
                 <Row gutter={[10, 0]}>
@@ -685,6 +685,7 @@ function ManageProducts() {
                             optionsList={filterOptionList}
                             selectValue={filteredGroup}
                             handleChange={(value) => {
+                                setDefaultLenght(0)
                                 setFilteredGroup(value)
                             }}
                         />
@@ -699,7 +700,7 @@ function ManageProducts() {
     return (
         <Spin tip="Loading..." spinning={isLoad}>
             <div>
-                <BoxCard title={"รายการวัสดุ"} headRight={buttonAdd()}>
+                <BoxCard title={"รายการวัสดุ"} headRight={buttonFilter()}>
                     <Row gutter={[10, 0]}>
                         <Col>
                             <h6 style={{ color: 'red' }}>{"*หมายเหตุ : ไม่สามารถปรับราคารับซื้อได้ในเมนูนี้"}</h6>
