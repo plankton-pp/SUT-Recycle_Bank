@@ -695,7 +695,7 @@ function ManageProducts() {
                             <Row gutter={[10, 0]}>
                                 <Col>
                                     <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => {
-                                        if (checkChanged) {
+                                        if (checkChanged !== '') {
                                             handleChange(onEditKey)
                                             handleSave(form)
                                         }else{
