@@ -329,7 +329,7 @@ function ManageProducts() {
                     } else {
                         container = [...filteredDataProds]
                     }
-                    setContentTab(data.length === 0 ? [0] : container)
+                    setContentTab(container.length === 0 ? [0] : container)
                     setDefaultLenght(data.length)
                     setIsLoad(false)
                 }
