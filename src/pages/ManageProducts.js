@@ -201,6 +201,11 @@ function ManageProducts() {
     ];
 
     useEffect(() => {
+        getLastFee()
+    }, [])
+
+
+    useEffect(() => {
         // console.log("filter: ", filteredGroup);
         setTypeOptionList([])
         setContentTab([])
@@ -234,6 +239,28 @@ function ManageProducts() {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
+
+    const getLastFee = async () => {
+        try {
+            const response = await API.getLastFee()
+            const data = await response?.data.data[0]
+            if (response.status === 200 && !response?.data.error) {
+                setForm({
+                    ...form,
+                    lastFeeId: data.ID,
+                })
+            } else {
+                MySwal.fire({
+                    text: `ไม่พบข้อมูลสัดส่วน `,
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "ตกลง",
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const getType = async () => {
 
@@ -420,7 +447,6 @@ function ManageProducts() {
                                         updateby: Number(item.updateBy),
                                         detail: String(item.detail),
                                         unitdetail: String(item.unit),
-                                        feeid: Number(item.feeid),
                                     }
                                     updateProd(pack)
                                 } else {
@@ -432,7 +458,7 @@ function ManageProducts() {
                                         updateBy: Number(item.createBy),
                                         detail: item.detail ? String(item.detail) : "",
                                         unitdetail: String(item.unit),
-                                        feeid: Number(item.feeid),
+                                        feeid: Number(form.lastFeeId),
                                     }
                                     addProd(pack)
                                 }
