@@ -614,6 +614,7 @@ function ManageProducts() {
     };
 
     const handleAdd = () => {
+        setCountChanged(Number(countChanged) + 1)
         if (onEditKey !== "") {
             MySwal.fire({
                 text: `บันทึกการเปลี่ยนแปลงก่อนหน้า `,
@@ -693,11 +694,11 @@ function ManageProducts() {
                         <div className="d-flex justify-content-end" >
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged === 0} className="cursor-p" onClick={() => {
+                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState && countChanged > 0} className="cursor-p" onClick={() => {
                                         if (onEditKey !== '') {
                                             handleChange(onEditKey)
                                             handleSave(form)
-                                        }else{
+                                        } else {
                                             handleSave(form)
                                         }
                                     }}>บันทึก</Button>
