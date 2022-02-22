@@ -238,15 +238,13 @@ function ManagePrice() {
                         status: 'query',
                     })
                 })
-                if (data.length === 0) {
-                    form.checkTypeNoProduct = false
-                }
                 let container = []
                 if (filteredGroup.value !== "") {
                     container = filteredDataProds.filter(element => element.type === filteredGroup.label);
                 } else {
                     container = [...filteredDataProds]
                 }
+                form.checkTypeNoProduct = false
                 setContentTab(container)
                 setDefaultLenght(data.length)
                 setIsLoad(false)
