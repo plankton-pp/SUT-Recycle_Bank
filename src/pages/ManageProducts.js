@@ -38,6 +38,7 @@ function ManageProducts() {
         data: [],
         removedDataId: [],
         typename: [],
+        checkTypeNoProduct: true,
     }
 
     const [form, setForm] = useState(initForm);
@@ -206,7 +207,6 @@ function ManageProducts() {
 
 
     useEffect(() => {
-        // console.log("filter: ", filteredGroup);
         setTypeOptionList([])
         setContentTab([])
     }, [filteredGroup]);
@@ -235,7 +235,7 @@ function ManageProducts() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0) {
+        if (typeOptionList && typeOptionList.length > 0 && form.checkTypeNoProduct) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
@@ -323,6 +323,9 @@ function ManageProducts() {
                             status: 'query',
                         })
                     })
+                    if (data.length === 0) {
+                        form.checkTypeNoProduct = false
+                    }
                     let container = []
                     if (filteredGroup.value !== "") {
                         container = filteredDataProds.filter(element => element.type.value === filteredGroup.value);

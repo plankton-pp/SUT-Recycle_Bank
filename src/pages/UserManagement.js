@@ -83,7 +83,6 @@ function UserManagement() {
               Empid: form.empId
             }
             const response = await API.addNewEmp(data)
-            console.log(response.status);
             if (response.status === 200) {
               setForm(initForm)
               setIsLoad(false)
@@ -93,7 +92,7 @@ function UserManagement() {
                 confirmButtonColor: '#96CC39',
                 confirmButtonText: "ตกลง",
               })
-            } else if (response.status === 400) {
+            } else if (response.error === true) {
               setIsLoad(false)
               if (response.duplicate === true) {
                 MySwal.fire({

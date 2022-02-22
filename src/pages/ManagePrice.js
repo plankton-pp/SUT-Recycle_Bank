@@ -38,6 +38,7 @@ function ManagePrice() {
         data: [],
         removedDataId: [],
         typename: [],
+        checkTypeNoProduct: true,
     }
 
     const [form, setForm] = useState(initForm);
@@ -158,7 +159,6 @@ function ManagePrice() {
     }, [changedState]);
 
     useEffect(() => {
-        console.log("hook! contentab");
         if (contentTab && contentTab.length > 0) {
             let reIndexList = []
             contentTab.forEach((item, index) => {
@@ -176,7 +176,7 @@ function ManagePrice() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0) {
+        if (typeOptionList && typeOptionList.length > 0 && form.checkTypeNoProduct) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
@@ -238,6 +238,9 @@ function ManagePrice() {
                         status: 'query',
                     })
                 })
+                if (data.length === 0) {
+                    form.checkTypeNoProduct = false
+                }
                 let container = []
                 if (filteredGroup.value !== "") {
                     container = filteredDataProds.filter(element => element.type === filteredGroup.label);
@@ -283,7 +286,6 @@ function ManagePrice() {
     }
 
     const updateProd = async (data) => {
-        // console.log("update: ", data);
         try {
             setIsLoad(true)
             const response = await API.updateProduct(data)
@@ -309,7 +311,6 @@ function ManagePrice() {
                         let validator = false
                         prodsForm.data.forEach(async (item) => {
                             let type = typeOptionList.filter((element) => { return item.type === element.label })
-                            // console.log("type", type[0].value);
                             if (item.status !== "query") {
                                 if (item.status === "edit") {
                                     let pack = {
@@ -322,7 +323,6 @@ function ManagePrice() {
                                         unitdetail: String(item.unit),
                                         feeid: Number(item.feeId),
                                     }
-                                    // console.log("pack: ", pack);
                                     updateProd(pack)
                                 }
                             }
