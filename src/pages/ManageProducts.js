@@ -235,7 +235,7 @@ function ManageProducts() {
             getType()
         }
 
-        if (typeOptionList && typeOptionList.length > 0 && form.checkTypeNoProduct) {
+        if (typeOptionList && typeOptionList.length > 0 && contentTab.length === 0) {
             getProducts(typeOptionList)
         }
     }, [typeOptionList, contentTab]);
@@ -329,8 +329,7 @@ function ManageProducts() {
                     } else {
                         container = [...filteredDataProds]
                     }
-                    form.checkTypeNoProduct = false
-                    setContentTab(container)
+                    setContentTab(data.length === 0 ? [0] : container)
                     setDefaultLenght(data.length)
                     setIsLoad(false)
                 }
