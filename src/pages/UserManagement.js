@@ -83,7 +83,7 @@ function UserManagement() {
               Empid: form.empId
             }
             const response = await API.addNewEmp(data)
-            if (response.status === 200 && !response?.data.error) {
+            if (response.status === 200) {
               setForm(initForm)
               setIsLoad(false)
               MySwal.fire({
@@ -96,9 +96,7 @@ function UserManagement() {
 
                 }
               })
-            }
-
-            if (response.status === 400 && response.duplicate === true) {
+            } else if (response.status === 400 && response.duplicate === true) {
               setIsLoad(false)
               MySwal.fire({
                 text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
