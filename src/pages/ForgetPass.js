@@ -86,15 +86,17 @@ function ForgetPass() {
                 const response = await API.getEmployeeByEmpIdViaEmail(form.email)
                 const data = await response?.data.data
                 if (response.status === 200) {
-                    console.log(response);
-
-                    //sendValidateCode()
+                    if (data.length === 1) {
+                        sendValidateCode()
+                    } else {
+                        throw "ไม่พบ Email นี้ในระบบ"
+                    }
                 } else {
-                    throw response.status
+                    throw "ไม่สามารถตรวจสอบข้อมูลได้ในขณะนี้"
                 }
             } catch (error) {
                 MySwal.fire({
-                    text: "ไม่สามารถตรวจสอบข้อมูลได้ในขณะนี้\nกรุณาทำรายการอีกครั้ง",
+                    text: `${error}\nกรุณาทำรายการอีกครั้ง`,
                     icon: 'error',
                     confirmButtonText: 'ตกลง'
                 })

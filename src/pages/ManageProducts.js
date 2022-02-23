@@ -721,7 +721,7 @@ function ManageProducts() {
                         <div className="d-flex justify-content-end" >
                             <Row gutter={[10, 0]}>
                                 <Col>
-                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={!changedState} className="cursor-p" onClick={() => {
+                                    <Button color="white" bg="#96CC39" width={'80px'} disabled={false} className="cursor-p" onClick={() => {
                                         if (onEditKey !== '') {
                                             handleChange(onEditKey)
                                             handleSave(form)

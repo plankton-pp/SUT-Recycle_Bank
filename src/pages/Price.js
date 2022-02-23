@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { Spin } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/actions/logoutAction';
@@ -19,6 +20,7 @@ function Price() {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [isLoad, setIsLoad] = useState(false)
     const [contentTab, setContentTab] = useState([]);
     const columns = [
         {
@@ -69,11 +71,11 @@ function Price() {
 
     const getTypeAPI = async () => {
         try {
+            setIsLoad(true)
             const response = await API.getTypes();
             const data = await response?.data.data;
             if (response.status === 200) {
                 // console.log('dataAPI:', data);
-
                 let tabList = []
                 let filteredDataType = []
                 let optionList = []
@@ -104,20 +106,20 @@ function Price() {
                         })
                     })
                     setContentTab(tabList)
+                    setIsLoad(false)
                 }
-
+            } else {
+                throw response.status
             }
         } catch (error) {
-            // if (error.response && error.response.status === 401) {
-            //     dispatch(logout({ history }))
-
-            // }
+            setIsLoad(false)
             console.log(error)
         }
     }
 
     const getProducts = async () => {
         try {
+            setIsLoad(true)
             const response = await API.getProducts();
             const data = await response?.data.data;
             if (response.status === 200) {
@@ -141,8 +143,12 @@ function Price() {
 
                 })
                 setContentTab(tabList)
+                setIsLoad(false)
+            } else {
+                throw response.status
             }
         } catch (error) {
+            setIsLoad(false)
             if (error.response && error.response.status === 401) {
                 dispatch(logout({ history }))
             }
