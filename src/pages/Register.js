@@ -122,10 +122,10 @@ function Register() {
                             if (data[0].Email === form.email && data[0].Employee_ID === form.empId && String(data[0].Firstname).length === 0) {
                                 toRegister()
                             } else {
-                                throw data.error;
+                                throw "not match";
                             }
                         } else {
-                            throw data.error;
+                            throw "lenght > 1";
                         }
                     } else {
                         throw response.status
@@ -195,7 +195,6 @@ function Register() {
                             MySwal.fire({
                                 text: "ระบบไม่สามารถทำการสมัครสมาชิกได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
                                 icon: 'warning',
-                                confirmButtonColor: '#96CC39',
                                 confirmButtonText: 'ตกลง'
                             })
                         }
@@ -204,7 +203,6 @@ function Register() {
                     MySwal.fire({
                         text: "ระบบไม่สามารถทำการสมัครสมาชิกได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
                         icon: 'warning',
-                        confirmButtonColor: '#96CC39',
                         confirmButtonText: 'ตกลง'
                     })
                 }
@@ -215,7 +213,6 @@ function Register() {
             MySwal.fire({
                 text: "ไม่สามารถบันทึกข้อมูลได้ในขณะนี้ \nกรุณาลองใหม่อีกครั้ง",
                 icon: 'warning',
-                confirmButtonColor: '#96CC39',
                 confirmButtonText: 'ตกลง'
             }).then(() => {
                 history.push('/login')

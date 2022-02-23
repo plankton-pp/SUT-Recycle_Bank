@@ -65,9 +65,7 @@ function UserManagement() {
 
 
   const toAddNewEmp = () => {
-    let check = validate()
-    console.log("check: ", check);
-    if (check === true) {
+    if (validate()) {
       MySwal.fire({
         text: `ยืนยันการบันทึกรายการ `,
         icon: "question",
@@ -94,7 +92,7 @@ function UserManagement() {
                 confirmButtonColor: '#96CC39',
                 confirmButtonText: "ตกลง",
               })
-            } else if (response.duplicate === true) {
+            } else if (response.duplicate) {
               setIsLoad(false)
               MySwal.fire({
                 text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,

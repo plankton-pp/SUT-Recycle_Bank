@@ -89,7 +89,6 @@ function GraphLine() {
                         }]
 
                     }
-                    console.log(graphInfo);
                     setDataPerform(graphInfo)
                 }
             } else {
