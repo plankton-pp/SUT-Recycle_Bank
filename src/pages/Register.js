@@ -119,9 +119,10 @@ function Register() {
                     const data = await response?.data.data
                     if (response.status === 200 && !response?.data.error) {
                         if (data && data.length === 1) {
-                            if (data[0].Email === form.email && data[0].Employee_ID === form.empId && String(data[0].Firstname).length === 0) {
+                            if (data[0].Email === form.email && data[0].Employee_ID === form.empId && String(data[0].Firstname).length === 1) {
                                 toRegister()
                             } else {
+                                console.log(data, form);
                                 throw "not match";
                             }
                         } else {
@@ -132,7 +133,7 @@ function Register() {
                     }
                 } catch (error) {
                     MySwal.fire({
-                        text: `ข้อมูลเจ้าหน้าที่ไม่ถูกต้อง \nระบบไม่สามารถบันทึกข้อมูลได้` + error,
+                        text: `ข้อมูลเจ้าหน้าที่ไม่ถูกต้อง \nระบบไม่สามารถบันทึกข้อมูลได้\n` + error,
                         icon: "error",
                         showConfirmButton: true,
                         confirmButtonText: "ตกลง",
