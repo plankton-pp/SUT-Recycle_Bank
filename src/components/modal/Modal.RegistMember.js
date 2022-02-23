@@ -73,7 +73,7 @@ function ModalRegisterMember({ show, close, save, data }) {
         setInvalid({ ...invalid });
     }
 
-    const validate = async () => {
+    const validate = () => {
         let validated = true;
 
         //check empty

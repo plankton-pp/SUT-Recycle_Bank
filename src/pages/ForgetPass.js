@@ -49,7 +49,7 @@ function ForgetPass() {
         setInvalid({ ...invalid });
     }
 
-    const validate = async () => {
+    const validate = () => {
         let validated = true;
 
         //check complicate data
