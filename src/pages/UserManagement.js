@@ -65,7 +65,9 @@ function UserManagement() {
 
 
   const toAddNewEmp = () => {
-    if (validate()) {
+    let check = validate()
+    console.log("check: ", check);
+    if (check === true) {
       MySwal.fire({
         text: `ยืนยันการบันทึกรายการ `,
         icon: "question",

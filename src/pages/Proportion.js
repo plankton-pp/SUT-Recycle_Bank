@@ -201,7 +201,9 @@ function Proportion() {
                                         if (value < 0) {
                                             setForm({ ...form, fee: 0 })
                                         } else {
-                                            setForm({ ...form, fee: value })
+                                            if (value > 100) {
+                                                setForm({ ...form, fee: value })
+                                            }
                                         }
                                     }}
                                 />
