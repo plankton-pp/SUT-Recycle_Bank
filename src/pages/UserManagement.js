@@ -40,7 +40,7 @@ function UserManagement() {
     setInvalid({ ...invalid });
   }
 
-  const validate = async () => {
+  const validate = () => {
     let validated = true;
 
     if (form.empId === "") {
