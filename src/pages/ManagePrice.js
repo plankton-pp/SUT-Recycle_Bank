@@ -263,8 +263,7 @@ function ManagePrice() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-
-                confirmButtonColor: '#E72525',
+                showConfirmButton: true,
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
                 confirmButtonText: "ตกลง",
@@ -276,6 +275,7 @@ function ManagePrice() {
                     setTypeOptionList([])
                     setOnEditKey('')
                     setCountChanged(0)
+                    setDefaultLenght(0)
                 }
             })
         } else {
@@ -346,7 +346,7 @@ function ManagePrice() {
                                 setOnEditKey('')
                                 setCountChanged(0)
                                 setDefaultLenght(0)
-                                
+
                             })
                         }
                     } catch (error) {

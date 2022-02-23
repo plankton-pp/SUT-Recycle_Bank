@@ -178,7 +178,6 @@ function ManageProducts() {
                                 style={{ backgroundColor: 'orange', borderColor: 'orange', color: 'white', marginRight: '10px' }}
                                 icon={<EditOutlined />}
                                 onClick={() => {
-                                    setChangedState(true)
                                     handleChange(record.key)
                                 }}
                                 danger>
@@ -347,7 +346,7 @@ function ManageProducts() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-                confirmButtonColor: '#E72525',
+                showConfirmButton: true,
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
                 confirmButtonText: "ตกลง",
@@ -359,6 +358,7 @@ function ManageProducts() {
                     setTypeOptionList([])
                     setOnEditKey('')
                     setCountChanged(0)
+                    setDefaultLenght(0)
                 }
             })
         } else {

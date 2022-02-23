@@ -188,14 +188,15 @@ function ManageTypes() {
             MySwal.fire({
                 text: `ยกเลิกการเปลี่ยนแปลงทั้งหมด `,
                 icon: "question",
-
-                confirmButtonColor: '#E72525',
+                showConfirmButton: true,
                 showCancelButton: true,
                 cancelButtonText: "ยกเลิก",
                 confirmButtonText: "ตกลง",
             }).then((value) => {
                 if (value.isConfirmed) {
+                    setChangedState(false)
                     setContentTab([])
+                    getTypeAPI()
                 }
             })
         } else {
