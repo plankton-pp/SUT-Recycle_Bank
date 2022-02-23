@@ -67,6 +67,10 @@ export const getEmployeeByEmpId = async (empId) => {
   return await httpClient.get(`/api/v1/employee/checkEmp/${empId}`);
 }
 
+export const getEmployeeByEmpIdViaEmail = async (email) => {
+  return await httpClient.get(`/api/v1/employee/checkEmpViaEmail/${email}`);
+}
+
 export const updateEmployee = async (data) => {
   return await httpClient.put(`/api/v1/employee/`, data);
 }

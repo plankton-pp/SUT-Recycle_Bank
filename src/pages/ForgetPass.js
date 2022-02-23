@@ -80,28 +80,47 @@ function ForgetPass() {
         return String(Math.floor(100000 + Math.random() * 900000))
     }
 
-    const sendValidateCode = async () => {
+    const checkExistEmail = async () => {
         if (validate()) {
-            setIsLoad(true)
-            let randCode = randomValidateCode()
-            setWithExpiry("validateCode", String(randCode), 15)
-            //send randCode to email
             try {
-                const response = await API.sendValidateCode({ sendto: form.email, validateCode: randCode })
+                const response = await API.getEmployeeByEmpIdViaEmail(form.email)
+                const data = await response?.data.data
                 if (response.status === 200) {
-                    setIsLoad(false)
-                    setShowModalValidateCode(true)
+                    console.log(response);
+
+                    //sendValidateCode()
+                } else {
+                    throw response.status
                 }
             } catch (error) {
                 MySwal.fire({
-                    text: "ไม่สามารถส่งรหัสยืนยันได้",
-                    icon: 'warning',
-                    confirmButtonColor: '#96CC39',
+                    text: "ไม่สามารถตรวจสอบข้อมูลได้ในขณะนี้\nกรุณาทำรายการอีกครั้ง",
+                    icon: 'error',
                     confirmButtonText: 'ตกลง'
-                }).then(() => {
-                    history.push('/login')
                 })
             }
+        }
+    }
+
+    const sendValidateCode = async () => {
+        setIsLoad(true)
+        let randCode = randomValidateCode()
+        setWithExpiry("validateCode", String(randCode), 15)
+        //send randCode to email
+        try {
+            const response = await API.sendValidateCode({ sendto: form.email, validateCode: randCode })
+            if (response.status === 200) {
+                setIsLoad(false)
+                setShowModalValidateCode(true)
+            }
+        } catch (error) {
+            MySwal.fire({
+                text: "ไม่สามารถส่งรหัสยืนยันได้",
+                icon: 'warning',
+                confirmButtonText: 'ตกลง'
+            }).then(() => {
+                history.push('/login')
+            })
         }
     }
 
@@ -124,7 +143,7 @@ function ForgetPass() {
                                 <div className='mb-4'>
                                     <Row gutter={[20, 0]}>
                                         <Col>
-                                            <Button bg={'#96CC39'} color={'#fff'} onClick={() => { sendValidateCode() }}>ส่งรหัสยืนยัน</Button>
+                                            <Button bg={'#96CC39'} color={'#fff'} onClick={() => { checkExistEmail() }}>ส่งรหัสยืนยัน</Button>
                                         </Col>
                                     </Row>
                                 </div>
