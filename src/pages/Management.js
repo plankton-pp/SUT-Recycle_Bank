@@ -7,6 +7,7 @@ import ManageProducts from './ManageProducts';
 import ManagePrice from './ManagePrice'
 import Proportion from './Proportion';
 import UserManagement from './UserManagement'
+import MemberManagement from './MemberManagement';
 import TransactionHistory from './TransactionHistory';
 import {
     HomeOutlined,
@@ -15,6 +16,7 @@ import {
     DollarOutlined,
     PercentageOutlined,
     UserAddOutlined,
+    UsergroupAddOutlined,
     HistoryOutlined
 } from '@ant-design/icons';
 
@@ -32,6 +34,7 @@ function Management() {
                         <ManagePrice />,
                         <Proportion />,
                         <UserManagement />,
+                        <MemberManagement />,
                         <TransactionHistory />
                     ]}
                     mainIcon={<HomeOutlined />}
@@ -41,9 +44,10 @@ function Management() {
                         <DollarOutlined />,
                         <PercentageOutlined />,
                         <UserAddOutlined />,
+                        <UsergroupAddOutlined />,
                         <HistoryOutlined />]}
                     mainTitle={"ภาพรวม"}
-                    title={["จัดการรายการประเภท", "จัดการรายการวัสดุ", "ปรับเปลี่ยนราคารับซื้อ", "ปรับสัดส่วนค่าฝากวัสดุ", "เจ้าหน้าที่", "ประวัติการทำรายการ"]}
+                    title={["จัดการรายการประเภท", "จัดการรายการวัสดุ", "ปรับเปลี่ยนราคารับซื้อ", "ปรับสัดส่วนค่าฝากวัสดุ", "เจ้าหน้าที่", "สมาชิก", "ประวัติการทำรายการ"]}
                 />
             </BoxCard>
         </div >

@@ -4,7 +4,6 @@ import { Row, Col, Spin } from 'antd'
 
 import { useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/actions/loginAction';
 
 import { Modal } from 'react-bootstrap';
 import { Button } from '../styles/globalStyles';
