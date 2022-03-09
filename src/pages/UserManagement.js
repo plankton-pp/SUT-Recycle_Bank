@@ -22,18 +22,22 @@ function UserManagement() {
     {
       title: 'รหัสเจ้าหน้าที่',
       dataIndex: 'employeeId',
+      width: '120px'
     },
     {
       title: 'ชื่อ',
-      dataIndex: 'firsname',
+      dataIndex: 'firstname',
+      width: '150px'
     },
     {
       title: 'นามสกุล',
       dataIndex: 'lastname',
+      width: '150px'
     },
     {
       title: 'เบอร์โทร',
       dataIndex: 'phone',
+      width: '150px'
     },
     {
       title: 'อีเมลล์',
@@ -69,9 +73,9 @@ function UserManagement() {
               role: item.Role
             }
             if (emp.role === '-') {
-              newEmpArray.push({ ...emp, key: userUnregist.length + 1, })
+              newEmpArray.push({ ...emp, key: newEmpArray.length + 1, })
             } else {
-              empArray.push({ ...emp, key: userRegisted.length + 1, })
+              empArray.push({ ...emp, key: empArray.length + 1, })
             }
           })
           setUserUnregist(newEmpArray)
@@ -101,8 +105,7 @@ function UserManagement() {
       MySwal.fire({
         text: `ยืนยันการบันทึกรายการ `,
         icon: "question",
-
-        confirmButtonColor: '#96CC39',
+        confirmButtonColor: '#E72525',
         showCancelButton: true,
         cancelButtonText: "ยกเลิก",
         confirmButtonText: "ตกลง",
@@ -146,7 +149,7 @@ function UserManagement() {
     <div>
       <Spin tip="Loading..." spinning={isLoad}>
         <BoxCard title={"จัดการข้อมูลเจ้าหน้าที่"} headRight={buttonAdd()}>
-          <h3>ข้อมูลเจ้าหน้าที่</h3>
+          {/* <h4>ข้อมูลเจ้าหน้าที่</h4> */}
           <div className='mt-3'>
             <h5 className='w-100 py-2 px-2' style={{ background: '#FFD365', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#FF9F45', borderRadius: '10px' }}>ยังไม่ทำการสมัครเข้าใช้งาน</span></h5>
             <DataTable
