@@ -44,11 +44,13 @@ function ModalRegisterMember({ show, close, save, data }) {
         lastname: "",
         email: "",
         password: "1234",
+        remark: "",
     }
     const [form, setForm] = useState(initForm);
 
     const [roleOptionList, setRoleOptionlist] = useState([])
     const [isLoad, setIsLoad] = useState(false)
+    const [remarkLenght, setRemarkLenght] = useState(50)
 
     useEffect(() => {
         getMemberType()
@@ -98,7 +100,7 @@ function ModalRegisterMember({ show, close, save, data }) {
             validated = false;
         }
         if (form.email === '') {
-            addInvalid('email', "กรุณาระบุอีเมลล์");
+            addInvalid('email', "กรุณาระบุอีเมล");
             validated = false;
         }
         if (form.password === '') {
@@ -204,7 +206,7 @@ function ModalRegisterMember({ show, close, save, data }) {
             if (validate()) {
                 setIsLoad(true)
                 //register
-                const response = await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount, remark: "" })
+                const response = await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount })
                 //status 200
                 if (response.status === 200) {
                     setIsLoad(false)
@@ -236,7 +238,7 @@ function ModalRegisterMember({ show, close, save, data }) {
         <Spin tip="Loading..." spinning={isLoad}>
             <Modal
                 show={show}
-                size="l"
+                size="lg"
                 onHide={() => { handleClose() }}
                 centered
             >
@@ -250,7 +252,7 @@ function ModalRegisterMember({ show, close, save, data }) {
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
                                         <InputText title="ชื่อบัญชีผู้ใช้" type="text" idName="username" value={form.username} star={true} classFormGroup="w-100"
-                                            placeholder="username" handleChange={(value) => setForm({ ...form, username: value })}
+                                            placeholder="ชื่อบัญชีผู้ใช้" handleChange={(value) => setForm({ ...form, username: value })}
                                             handleInvalid={() => {
                                                 removeInvalid("username")
                                                 removeInvalid("email")
@@ -272,41 +274,56 @@ function ModalRegisterMember({ show, close, save, data }) {
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
                                         <InputText title="ชื่อ" type="text" idName="firstname" value={form.firstname} star={true} classFormGroup="w-100"
-                                            placeholder="firstname" handleChange={(value) => setForm({ ...form, firstname: value })}
+                                            placeholder="ชื่อ" handleChange={(value) => setForm({ ...form, firstname: value })}
                                             handleInvalid={() => removeInvalid("firstname")} invalid={invalid.firstname}
                                         />
                                     </Col>
                                     <Col span={12}>
                                         <InputText title="นามสกุล" type="text" idName="lastname" value={form.lastname} star={true} classFormGroup="w-100"
-                                            placeholder="lastname" handleChange={(value) => setForm({ ...form, lastname: value })}
+                                            placeholder="นามสกุล" handleChange={(value) => setForm({ ...form, lastname: value })}
                                             handleInvalid={() => removeInvalid("lastname")} invalid={invalid.lastname}
                                         />
                                     </Col>
                                 </Row>
+                                <Row gutter={[10, 0]} className='mb-3'>
+                                    <Col span={12}>
+                                        <InputText title="ธนาคาร" type="text" idName="bank" value={form.bank} star={true} classFormGroup="w-100"
+                                            placeholder="ธนาคาร" handleChange={(value) => setForm({ ...form, bank: value })}
+                                            handleInvalid={() => removeInvalid("bank")} invalid={invalid.bank}
+                                        />
+                                    </Col>
+                                    <Col span={12}>
+                                        <InputText title="เลขบัญชีธนาคาร" type="text" idName="bank-account" value={form.bankaccount} star={true} classFormGroup="w-100"
+                                            placeholder="เลขบัญชีธนาคาร" handleChange={(value) => setForm({ ...form, bankaccount: value })}
+                                            handleInvalid={() => removeInvalid("bankaccount")} invalid={invalid.bankaccount}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row gutter={[10, 0]} className='mb-3'>
+                                    <Col span={12}>
+                                        <InputText title="โทรศัพท์มือถือ" type="text" idName="phone" value={form.phone} star={true} classFormGroup="w-100"
+                                            placeholder="โทรศัพท์มือถือ" handleChange={(value) => setForm({ ...form, phone: value })}
+                                            handleInvalid={() => removeInvalid("phone")} invalid={invalid.phone}
+                                        />
+                                    </Col>
+                                    <Col span={12}>
+                                        <InputText title="อีเมล" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
+                                            placeholder="อีเมล" handleChange={(value) => setForm({ ...form, email: value })}
+                                            handleInvalid={() => {
+                                                removeInvalid("username")
+                                            }} invalid={invalid.email}
+                                        />
+                                    </Col>
+                                </Row>
                                 <div className='mb-3'>
-                                    <InputText title="ธนาคาร" type="text" idName="bank" value={form.bank} star={true} classFormGroup="w-100"
-                                        placeholder="bank" handleChange={(value) => setForm({ ...form, bank: value })}
-                                        handleInvalid={() => removeInvalid("bank")} invalid={invalid.bank}
-                                    />
-                                </div>
-                                <div className='mb-3'>
-                                    <InputText title="เลขบัญชีธนาคาร" type="text" idName="bank-account" value={form.bankaccount} star={true} classFormGroup="w-100"
-                                        placeholder="bank account" handleChange={(value) => setForm({ ...form, bankaccount: value })}
-                                        handleInvalid={() => removeInvalid("bankaccount")} invalid={invalid.bankaccount}
-                                    />
-                                </div>
-                                <div className='mb-3'>
-                                    <InputText title="โทรศัพท์มือถือ" type="text" idName="phone" value={form.phone} star={true} classFormGroup="w-100"
-                                        placeholder="phone" handleChange={(value) => setForm({ ...form, phone: value })}
-                                        handleInvalid={() => removeInvalid("phone")} invalid={invalid.phone}
-                                    />
-                                </div>
-                                <div className='mb-3'>
-                                    <InputText title="อีเมลล์" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
-                                        placeholder="email" handleChange={(value) => setForm({ ...form, email: value })}
-                                        handleInvalid={() => {
-                                            removeInvalid("username")
-                                        }} invalid={invalid.email}
+                                    < InputText
+                                        title={`หมายเหตุ (${form.remark.length}/${remarkLenght})`} idName="remark"
+                                        type="text"
+                                        as={"textarea"} rows={2}
+                                        placeholder="หมายเหตุ" value={form.remark}
+                                        handleChange={(value) => {
+                                            setForm({ ...form, remark: String(value).slice(0, remarkLenght) })
+                                        }}
                                     />
                                 </div>
                                 <div className='mb-4 d-flex justify-content-end'>

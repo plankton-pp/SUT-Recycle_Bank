@@ -391,7 +391,7 @@ function Deposit() {
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col span={8}>
                             <InputText title="ค้นหาสมาชิก" type="text" idName="update-date"
-                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
                                 value={form.searchKeyword}
                                 handleChange={(value) => {
                                     setForm({ ...form, searchKeyword: value })

@@ -137,7 +137,7 @@ function ForgetPass() {
                                 <SUTLogo style={{ fontSize: '52px' }} />
                                 <h1 className='logo mt-3'>ลืมรหัสผ่าน</h1>
                                 <div className='mb-3'>
-                                    <InputText title="อีเมลล์" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
+                                    <InputText title="อีเมล" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
                                         placeholder="email" handleChange={(value) => setForm({ ...form, email: value })}
                                         handleInvalid={() => removeInvalid("email")} invalid={invalid.email}
                                     />
