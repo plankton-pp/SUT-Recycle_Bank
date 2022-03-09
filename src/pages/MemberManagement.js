@@ -1,213 +1,274 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Spin } from 'antd'
-import { Table } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom'
+import { Spin, Button as ButtonIcon, Checkbox, Row, Col } from 'antd'
+import { DeleteOutlined, } from '@ant-design/icons'
 import DataTable from '../components/DataTable'
 import BoxCard from '../components/BoxCard'
-import InputText from '../components/InputText'
 import { Button } from '../components/styles/globalStyles'
+import ModalAddEmployee from '../components/modal/Modal.AddEmployee'
 import * as API from '../utils/apis'
-import * as helper from '../utils/helper'
 
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
 
 function MemberManagement() {
-    const history = useHistory()
 
-    const columns = [
-        {
-            title: '#',
-            dataIndex: 'key',
-            width: '50px'
-        },
-    ]
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'key',
+      width: '50px'
+    },
+    {
+      title: 'รหัสสมาชิก',
+      dataIndex: 'memberId',
+      width: '120px'
+    },
+    {
+      title: 'ประเภท',
+      dataIndex: 'role',
+      width: '150px'
+    },
+    {
+      title: 'ชื่อ',
+      dataIndex: 'firstname',
+      width: '150px'
+    },
+    {
+      title: 'นามสกุล',
+      dataIndex: 'lastname',
+      width: '150px'
+    },
+    {
+      title: 'เบอร์โทร 1',
+      dataIndex: 'phone1',
+      width: '150px'
+    },
+    {
+      title: 'เบอร์โทร 2',
+      dataIndex: 'phone2',
+      width: '150px'
+    },
+    {
+      title: 'อีเมลล์',
+      dataIndex: 'email',
+    },
+    {
+      title: <div><span style={{ color: 'red' }}>*</span>หมายเหตุ</div>,
+      dataIndex: 'remark',
+    },
+  ]
+  const [typeOptionList, setTypeOptionList] = useState([])
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(true);
+  const [checkedList, setCheckedList] = useState([]);
 
-    const initInvalidMsg = {
-        empId: "",
-        email: "",
-    }
+  const [isLoad, setIsLoad] = useState(false)
+  const [userRegisted, setUserRegistered] = useState([])
+  const [showModalAdd, setShowModalAdd] = useState(false)
 
-    const [invalid, setInvalid] = useState(initInvalidMsg);
+  useEffect(() => {
+    getMemberType()
+    getMemberInformation()
+  }, [])
 
-    const initForm = {
-        empId: "",
-        email: "",
-    }
+  const onChangeCheckbox = (list) => {
+    setCheckedList(list);
+    setIndeterminate(!Boolean(list.lenght) && list.length < typeOptionList.length);
+    setCheckAll(list.length === typeOptionList.length);
+    getMemberInformation()
+  };
 
-    const [form, setForm] = useState(initForm)
-    const [isLoad, setIsLoad] = useState(false)
+  const onCheckAllChange = (e) => {
+    setCheckedList(e.target.checked ? typeOptionList : []);
+    setIndeterminate(false);
+    setCheckAll(e.target.checked);
+    getMemberInformation()
+  };
 
-    const addInvalid = (element, message) => {
-        invalid[element] = message;
-        setInvalid({ ...invalid });
-    }
-
-    const removeInvalid = (element) => {
-        invalid[element] = "";
-        setInvalid({ ...invalid });
-    }
-
-    const validate = () => {
-        let validated = true;
-
-        if (form.empId === "") {
-            addInvalid('empId', "กรุณาระบุรหัสเจ้าหน้าที่");
-            validated = false;
+  const getMemberType = async () => {
+    try {
+      setIsLoad(true)
+      const response = await API.getMemberType()
+      const data = response?.data.data
+      if (response.status === 200) {
+        if (data && data.length > 0) {
+          let typeArray = []
+          data.forEach((item) => {
+            typeArray.push(item.MemberType)
+          })
+          setTypeOptionList(typeArray)
+          setCheckedList(typeArray)
         }
-
-        if (form.email === "") {
-            addInvalid('email', "กรุณาระบุอีเมล");
-            validated = false;
-        }
-
-        //check complicate data
-        if (form.email && !helper.checkEmailFormat(form.email.trim())) {
-            addInvalid('email', "กรุณาระบุอีเมลให้ถูกต้อง");
-            validated = false;
-        }
-
-        return validated;
+      } else {
+        throw response.status
+      }
+      setIsLoad(false)
+    } catch (error) {
+      setIsLoad(false)
+      console.log(error);
+      MySwal.fire({
+        text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+        icon: "error",
+        showConfirmButton: true,
+        confirmButtonText: "ตกลง",
+      })
     }
+  }
 
+  const getMemberInformation = async () => {
+    try {
+      setIsLoad(true)
+      const response = await API.getMember();
+      const data = await response?.data.data
+      if (response.status === 200) {
+        if (data && data.lenght !== 0) {
+          let memberArray = []
+          data.forEach((item) => {
+            let emp = {
+              id: item.ID,
+              memberId: item.ID,
+              firstname: item.Firstname,
+              lastname: item.Lastname,
+              phone1: item.Phone_number,
+              phone2: item.Phone_number2,
+              email: item.Email,
+              role: item.Role,
+              remark: item.Remark,
+            }
+            memberArray.push({ ...emp, key: memberArray.length + 1, })
+          })
+          let filteredData = memberArray.filter(item => {
+            return checkedList.includes(item.role)
+          })
+          console.log("cheLis: ", checkedList);
+          // console.log("fd: ", filteredData);
+          setUserRegistered(memberArray)
+          setIsLoad(false)
+        } else {
+          throw 'empty data'
+        }
+      } else {
+        throw 'status 400'
+      }
+    } catch (error) {
+      setIsLoad(false)
+      console.log(error);
+      MySwal.fire({
+        text: `ไม่สามารถแสดงข้อมูลเจ้าหน้าที่ได้\n${String(error)}`,
+        icon: "error",
+        showConfirmButton: true,
+        confirmButtonText: "ตกลง",
+      })
+    }
+  }
 
+  const handleRemove = async (removeId) => {
+    try {
+      setIsLoad(true)
+      MySwal.fire({
+        text: `ยืนยันการบันทึกรายการ `,
+        icon: "question",
 
-    const toAddNewEmp = () => {
-        if (validate()) {
+        confirmButtonColor: '#96CC39',
+        showCancelButton: true,
+        cancelButtonText: "ยกเลิก",
+        confirmButtonText: "ตกลง",
+      }).then(async (value) => {
+        if (value.isConfirmed) {
+          const response = await API.deleteEmployee(removeId)
+          if (response.status === 200) {
             MySwal.fire({
-                text: `ยืนยันการบันทึกรายการ `,
-                icon: "question",
-
-                confirmButtonColor: '#96CC39',
-                showCancelButton: true,
-                cancelButtonText: "ยกเลิก",
-                confirmButtonText: "ตกลง",
-            }).then(async (value) => {
-                if (value.isConfirmed) {
-                    try {
-                        setIsLoad(true)
-                        const data = {
-                            Email: form.email,
-                            Empid: form.empId
-                        }
-                        const response = await API.addNewEmp(data)
-                        if (response.status === 200) {
-                            setForm(initForm)
-                            setIsLoad(false)
-                            MySwal.fire({
-                                text: `บันทึกข้อมูลสำเร็จ`,
-                                icon: "success",
-                                confirmButtonColor: '#96CC39',
-                                confirmButtonText: "ตกลง",
-                            })
-                        } else if (response.duplicate) {
-                            setIsLoad(false)
-                            MySwal.fire({
-                                text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
-                                icon: "error",
-                                showConfirmButton: true,
-                                confirmButtonText: "ตกลง",
-                            }).then((value) => {
-                                if (value.isConfirmed) {
-                                    history.push("/index")
-                                }
-                            })
-                        } else {
-                            throw response.status
-                        }
-                    } catch (error) {
-                        setIsLoad(false)
-                        console.log(error);
-                        MySwal.fire({
-                            text: `ระบบไม่สามารถบันทึกข้อมูลได้`,
-                            icon: "error",
-                            showConfirmButton: true,
-                            confirmButtonText: "ตกลง",
-                        }).then((value) => {
-                            if (value.isConfirmed) {
-                                history.push("/index")
-                            }
-                        })
-                    }
-                }
+              text: `แก้ไขข้อมูลสำเร็จ`,
+              icon: "success",
+              confirmButtonColor: '#96CC39',
+              confirmButtonText: "ตกลง",
+            }).then(() => {
+              setUserRegistered([])
+              getMemberInformation()
             })
-
+          } else {
+            throw 'status 400'
+          }
         }
+      })
+      setIsLoad(false)
+    } catch (error) {
+      setIsLoad(false)
+      console.log(error);
+      MySwal.fire({
+        text: `ระบบไม่สามารถแก้ไขข้อมูลได้ \n กรุณาทำรายการอีกครั้งในภายหลัง`,
+        icon: "error",
+        showConfirmButton: true,
+        confirmButtonText: "ตกลง",
+      })
     }
+  }
+
+  const renderCheckBoxType = () => {
+    //options={typeOptionList}
+    //value={checkedList}
     return (
-        <div>
-            <Spin tip="Loading..." spinning={isLoad}>
-                <BoxCard title={"เพิ่มข้อมูลผู้ใช้งาน"}>
-                    <div className='p-4'>
-                        <h5>ข้อมูลเจ้าหน้าที่</h5>
-                        <div className='mx-3 my-3'>
-
-                            <Table hover style={{ width: '50%' }}>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ width: '25%' }}><h6 className='pt-2' >{`ID สมาชิก: `}</h6></td>
-                                        <td >
-                                            <div>
-                                                <InputText
-                                                    type="text"
-                                                    idName="emp-id" value={form.empId}
-                                                    placeholder="employee id"
-                                                    handleChange={(value) => {
-                                                        setForm({ ...form, empId: value })
-                                                    }}
-                                                    handleInvalid={() => removeInvalid("empId")} invalid={invalid.empId}
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ width: '20%' }}><h6 className='pt-2' >{`E-mail: `}</h6></td>
-                                        <td>
-                                            <div className={'pt-2'}>
-                                                <InputText
-                                                    type="text"
-                                                    idName="emp-email"
-                                                    value={form.email}
-                                                    placeholder="email"
-                                                    handleChange={(value) => {
-                                                        setForm({ ...form, email: value })
-                                                    }}
-                                                    handleInvalid={() => removeInvalid("email")} invalid={invalid.email}
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </Table>
-                        </div>
-                    </div>
-                    <div style={{ height: '200px' }} className='px-5'>
-                        <Row gutter={[10, 0]}>
-                            <Col className='pt-4 mt-1'>
-                                <Button bg={'#96CC39'} width={'120px'} color={'#fff'} onClick={() => { toAddNewEmp() }}>เพิ่มเจ้าหน้าที่</Button>
-                            </Col>
-                            <Col className='pt-4 mt-1'>
-                                <Button bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { setForm({ ...form, empId: '', email: '' }) }}>ล้าง</Button>
-                            </Col>
-                        </Row>
-                    </div>
-                    <div>
-                        <DataTable
-                            columns={columns}
-                            data={[]}
-                            limitPositionLeft={true}
-                            option={{
-                                "showLimitPage": true,
-                                "rowClassname": "editable-row"
-                            }}>
-                        </DataTable>
-                    </div>
-                </BoxCard>
-            </Spin>
-        </div>
+      <div>
+        <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+          ทั้งหมด
+        </Checkbox>
+        <Checkbox.Group value={checkedList} onChange={(value) => { onChangeCheckbox(value) }}>
+          <Row>
+            {typeOptionList && typeOptionList.length > 0 && typeOptionList.map(item => {
+              return (<>
+                <Col span={8}>
+                  <Checkbox value={String(item)}>{item}</Checkbox>
+                </Col>
+              </>)
+            })}
+          </Row>
+        </Checkbox.Group>
+      </div>
     )
+  }
+
+  const renderButtonAdd = () => {
+    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มเจ้าหน้าที่</Button>)
+  }
+
+  return (
+    <div>
+      <Spin tip="Loading..." spinning={isLoad}>
+        <BoxCard title={"จัดการข้อมูลสมาชิก"} headRight={renderButtonAdd()}>
+          <div className='mt-3'>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ประเภทสมาชิก</span></h5>
+            <div style={{ width: '50%' }}>
+              {renderCheckBoxType()}
+            </div>
+
+          </div>
+          <div className='mt-3'>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span></h5>
+            <DataTable
+              columns={columns}
+              data={userRegisted}
+              limitPositionLeft={true}
+              option={{
+                "showLimitPage": true,
+                "rowClassname": "editable-row"
+              }}>
+            </DataTable>
+          </div>
+        </BoxCard>
+      </Spin>
+
+      {showModalAdd &&
+        <ModalAddEmployee
+          show={showModalAdd}
+          close={() => {
+            setShowModalAdd(false)
+            setUserRegistered([])
+            getMemberInformation()
+          }}
+        ></ModalAddEmployee>}
+    </div>
+  )
 }
 
 export default MemberManagement

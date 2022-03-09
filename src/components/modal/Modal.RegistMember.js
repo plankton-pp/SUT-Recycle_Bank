@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Row, Col, Spin } from 'antd'
 
@@ -47,16 +47,13 @@ function ModalRegisterMember({ show, close, save, data }) {
     }
     const [form, setForm] = useState(initForm);
 
-    const roleList = [
-        { value: 0, label: "แม่บ้าน" },
-        { value: 1, label: "หอพักนักศึกษา" },
-        { value: 2, label: "อาคารทำการ" },
-        { value: 3, label: "บุคคลากร" },
-        { value: 4, label: "นักศึกษา" },
-        { value: 5, label: "อื่น ๆ" },
-    ]
-    const [roleOptionList, setRoleOptionlist] = useState(roleList)
+    const [roleOptionList, setRoleOptionlist] = useState([])
     const [isLoad, setIsLoad] = useState(false)
+
+    useEffect(() => {
+        getMemberType()
+    }, [])
+
 
     const handleClose = () => {
         close()
@@ -115,6 +112,38 @@ function ModalRegisterMember({ show, close, save, data }) {
         }
 
         return validated;
+    }
+
+    const getMemberType = async () => {
+        try {
+            setIsLoad(true)
+            const response = await API.getMemberType()
+            const data = response?.data.data
+            if (response.status === 200) {
+                if (data && data.length > 0) {
+                    let typeArray = []
+                    data.forEach((item) => {
+                        typeArray.push({
+                            value: item.Type_Short,
+                            label: item.MemberType,
+                        })
+                    })
+                    setRoleOptionlist(typeArray)
+                }
+            } else {
+                throw response.status
+            }
+            setIsLoad(false)
+        } catch (error) {
+            setIsLoad(false)
+            console.log(error);
+            MySwal.fire({
+                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+                icon: "error",
+                showConfirmButton: true,
+                confirmButtonText: "ตกลง",
+            })
+        }
     }
 
     const checkMember = () => {

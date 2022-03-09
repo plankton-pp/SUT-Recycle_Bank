@@ -98,6 +98,10 @@ export const getMember = async () => {
   return await httpClient.get(`/api/v1/member`);
 }
 
+export const getMemberType = async () => {
+  return await httpClient.get(`/api/v1/membertype`);
+}
+
 //=================== API: Fee
 export const getLastFee = async () => {
   return await httpClient.get(`/api/v1/fee/lastfee`);
