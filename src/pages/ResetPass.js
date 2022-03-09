@@ -87,6 +87,7 @@ function ResetPass() {
                         confirmButtonColor: '#96CC39',
                         confirmButtonText: 'ตกลง'
                     }).then(() => {
+                        localStorage.removeItem('validateCode')
                         history.push('/login')
                     })
                 } else {

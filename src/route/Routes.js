@@ -32,9 +32,8 @@ const Routes = (props) => {
     const location = useLocation();
     const dispatch = useDispatch();
 
-    // const login = useSelector(state => state.login);
+    const login = useSelector(state => state.login);
     const [isAuthen, setIsAuthen] = useState(useSelector(state => state.login));
-    const [oldPath, setOldPath] = useState(location.pathname);
     // const { loading } = useSelector((state) => state.loading);
 
     const checkPath = (location) => {
@@ -48,15 +47,16 @@ const Routes = (props) => {
             const response = await API.userAuthenticated();
             const data = await response?.data;
             if (response.status == 200) {
-                if (!data.auth && checkPath(location)) {
+                if (sessionStorage.length !== 0 && !data.auth && checkPath(location)) {
                     MySwal.fire({
                         text: "หมดเวลาในการเชื่อมต่อกรุณาเข้าสู่ระบบอีกครั้ง",
                         icon: 'warning',
-                        confirmButtonColor: '#96CC39',
                         confirmButtonText: 'ตกลง'
                     }).then(() => {
                         dispatch(logout({ history }))
                     })
+                } else {
+                    // user authenticated
                 }
             } else {
                 dispatch(logout({ history }))

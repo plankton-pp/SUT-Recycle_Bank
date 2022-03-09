@@ -71,6 +71,10 @@ export const getEmployeeByEmpIdViaEmail = async (email) => {
   return await httpClient.get(`/api/v1/employee/checkEmpViaEmail/${email}`);
 }
 
+export const deleteEmployee = async (id) => {
+  return await httpClient.delete(`/api/v1/employee/${id}`);
+}
+
 export const updateEmployee = async (data) => {
   return await httpClient.put(`/api/v1/employee/`, data);
 }
@@ -92,6 +96,10 @@ export const searchMember = async (key) => {
 
 export const getMember = async () => {
   return await httpClient.get(`/api/v1/member`);
+}
+
+export const getMemberType = async () => {
+  return await httpClient.get(`/api/v1/membertype`);
 }
 
 //=================== API: Fee

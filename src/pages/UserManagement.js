@@ -1,191 +1,203 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Spin } from 'antd'
-import { Table } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom'
+import { Spin, Button as ButtonIcon, } from 'antd'
+import { DeleteOutlined, } from '@ant-design/icons'
+import DataTable from '../components/DataTable'
 import BoxCard from '../components/BoxCard'
-import InputText from '../components/InputText'
 import { Button } from '../components/styles/globalStyles'
+import ModalAddEmployee from '../components/modal/Modal.AddEmployee'
 import * as API from '../utils/apis'
-import * as helper from '../utils/helper'
 
 import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
 
 function UserManagement() {
-  const history = useHistory()
 
-  const initInvalidMsg = {
-    empId: "",
-    email: "",
-  }
-
-  const [invalid, setInvalid] = useState(initInvalidMsg);
-
-  const initForm = {
-    empId: "",
-    email: "",
-  }
-
-  const [form, setForm] = useState(initForm)
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'key',
+      width: '50px'
+    },
+    {
+      title: 'รหัสเจ้าหน้าที่',
+      dataIndex: 'employeeId',
+      width: '120px'
+    },
+    {
+      title: 'ชื่อ',
+      dataIndex: 'firstname',
+      width: '150px'
+    },
+    {
+      title: 'นามสกุล',
+      dataIndex: 'lastname',
+      width: '150px'
+    },
+    {
+      title: 'เบอร์โทร',
+      dataIndex: 'phone',
+      width: '150px'
+    },
+    {
+      title: 'อีเมลล์',
+      dataIndex: 'email',
+    },
+  ]
   const [isLoad, setIsLoad] = useState(false)
+  const [userUnregist, setUserUnregist] = useState([])
+  const [userRegisted, setUserRegistered] = useState([])
+  const [showModalAdd, setShowModalAdd] = useState(false)
 
-  const addInvalid = (element, message) => {
-    invalid[element] = message;
-    setInvalid({ ...invalid });
+  useEffect(() => {
+    getEmpInformation()
+  }, [])
+
+  const getEmpInformation = async () => {
+    try {
+      setIsLoad(true)
+      const response = await API.getEmployees();
+      const data = await response?.data.data
+      if (response.status === 200) {
+        if (data && data.lenght !== 0) {
+          let empArray = []
+          let newEmpArray = []
+          data.forEach((item) => {
+            let emp = {
+              id: item.ID,
+              employeeId: item.Employee_ID,
+              firstname: item.Firstname,
+              lastname: item.Lastname,
+              phone: item.Phone,
+              email: item.Email,
+              role: item.Role
+            }
+            if (emp.role === '-') {
+              newEmpArray.push({ ...emp, key: newEmpArray.length + 1, })
+            } else {
+              empArray.push({ ...emp, key: empArray.length + 1, })
+            }
+          })
+          setUserUnregist(newEmpArray)
+          setUserRegistered(empArray)
+          setIsLoad(false)
+        } else {
+          throw 'empty data'
+        }
+      } else {
+        throw 'status 400'
+      }
+    } catch (error) {
+      setIsLoad(false)
+      console.log(error);
+      MySwal.fire({
+        text: `ไม่สามารถแสดงข้อมูลเจ้าหน้าที่ได้\n${String(error)}`,
+        icon: "error",
+        showConfirmButton: true,
+        confirmButtonText: "ตกลง",
+      })
+    }
   }
 
-  const removeInvalid = (element) => {
-    invalid[element] = "";
-    setInvalid({ ...invalid });
-  }
-
-  const validate = () => {
-    let validated = true;
-
-    if (form.empId === "") {
-      addInvalid('empId', "กรุณาระบุรหัสเจ้าหน้าที่");
-      validated = false;
-    }
-
-    if (form.email === "") {
-      addInvalid('email', "กรุณาระบุอีเมล");
-      validated = false;
-    }
-
-    //check complicate data
-    if (form.email && !helper.checkEmailFormat(form.email.trim())) {
-      addInvalid('email', "กรุณาระบุอีเมลให้ถูกต้อง");
-      validated = false;
-    }
-
-    return validated;
-  }
-
-
-
-  const toAddNewEmp = () => {
-    if (validate()) {
+  const handleRemove = async (removeId) => {
+    try {
+      setIsLoad(true)
       MySwal.fire({
         text: `ยืนยันการบันทึกรายการ `,
         icon: "question",
-
-        confirmButtonColor: '#96CC39',
+        confirmButtonColor: '#E72525',
         showCancelButton: true,
         cancelButtonText: "ยกเลิก",
         confirmButtonText: "ตกลง",
       }).then(async (value) => {
         if (value.isConfirmed) {
-          try {
-            setIsLoad(true)
-            const data = {
-              Email: form.email,
-              Empid: form.empId
-            }
-            const response = await API.addNewEmp(data)
-            if (response.status === 200) {
-              setForm(initForm)
-              setIsLoad(false)
-              MySwal.fire({
-                text: `บันทึกข้อมูลสำเร็จ`,
-                icon: "success",
-                confirmButtonColor: '#96CC39',
-                confirmButtonText: "ตกลง",
-              })
-            } else if (response.duplicate) {
-              setIsLoad(false)
-              MySwal.fire({
-                text: `ระบบไม่สามารถบันทึกข้อมูลได้ \n Email หรือ Employee ID ถูกใข้งานแล้ว`,
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonText: "ตกลง",
-              }).then((value) => {
-                if (value.isConfirmed) {
-                  history.push("/index")
-                }
-              })
-            } else {
-              throw response.status
-            }
-          } catch (error) {
-            setIsLoad(false)
-            console.log(error);
+          const response = await API.deleteEmployee(removeId)
+          if (response.status === 200) {
             MySwal.fire({
-              text: `ระบบไม่สามารถบันทึกข้อมูลได้`,
-              icon: "error",
-              showConfirmButton: true,
+              text: `แก้ไขข้อมูลสำเร็จ`,
+              icon: "success",
+              confirmButtonColor: '#96CC39',
               confirmButtonText: "ตกลง",
-            }).then((value) => {
-              if (value.isConfirmed) {
-                history.push("/index")
-              }
+            }).then(() => {
+              setUserRegistered([])
+              setUserUnregist([])
+              getEmpInformation()
             })
+          } else {
+            throw 'status 400'
           }
         }
       })
-
+      setIsLoad(false)
+    } catch (error) {
+      setIsLoad(false)
+      console.log(error);
+      MySwal.fire({
+        text: `ระบบไม่สามารถแก้ไขข้อมูลได้ \n กรุณาทำรายการอีกครั้งในภายหลัง`,
+        icon: "error",
+        showConfirmButton: true,
+        confirmButtonText: "ตกลง",
+      })
     }
   }
+
+  const buttonAdd = () => {
+    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มเจ้าหน้าที่</Button>)
+  }
+
   return (
     <div>
       <Spin tip="Loading..." spinning={isLoad}>
-        <BoxCard title={"เพิ่มข้อมูลผู้ใช้งาน"}>
-          <div className='p-4'>
-            <h5>ข้อมูลเจ้าหน้าที่</h5>
-            <div className='mx-3 my-3'>
-
-              <Table hover style={{ width: '50%' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ width: '25%' }}><h6 className='pt-2' >{`ID สมาชิก: `}</h6></td>
-                    <td >
-                      <div>
-                        <InputText
-                          type="text"
-                          idName="emp-id" value={form.empId}
-                          placeholder="employee id"
-                          handleChange={(value) => {
-                            setForm({ ...form, empId: value })
-                          }}
-                          handleInvalid={() => removeInvalid("empId")} invalid={invalid.empId}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ width: '20%' }}><h6 className='pt-2' >{`E-mail: `}</h6></td>
-                    <td>
-                      <div className={'pt-2'}>
-                        <InputText
-                          type="text"
-                          idName="emp-email"
-                          value={form.email}
-                          placeholder="email"
-                          handleChange={(value) => {
-                            setForm({ ...form, email: value })
-                          }}
-                          handleInvalid={() => removeInvalid("email")} invalid={invalid.email}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-
-                </tbody>
-              </Table>
-            </div>
+        <BoxCard title={"จัดการข้อมูลเจ้าหน้าที่"} headRight={buttonAdd()}>
+          {/* <h4>ข้อมูลเจ้าหน้าที่</h4> */}
+          <div className='mt-3'>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#FFD365', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#FF9F45', borderRadius: '10px' }}>ยังไม่ทำการสมัครเข้าใช้งาน</span></h5>
+            <DataTable
+              columns={[...columns,
+              {
+                title: 'การจัดการ',
+                dataIndex: 'management',
+                align: 'center',
+                render: (_, record) => {
+                  return (<div className='d-flex justify-content-center'>
+                    <ButtonIcon type="primary" icon={<DeleteOutlined />} onClick={() => { handleRemove(record.id) }} danger></ButtonIcon>
+                  </div>)
+                }
+              },
+              ]}
+              data={userUnregist}
+              limitPositionLeft={true}
+              option={{
+                "showLimitPage": true,
+                "rowClassname": "editable-row"
+              }}>
+            </DataTable>
           </div>
-          <div style={{ height: '200px' }} className='px-5'>
-            <Row gutter={[10, 0]}>
-              <Col className='pt-4 mt-1'>
-                <Button bg={'#96CC39'} width={'120px'} color={'#fff'} onClick={() => { toAddNewEmp() }}>เพิ่มเจ้าหน้าที่</Button>
-              </Col>
-              <Col className='pt-4 mt-1'>
-                <Button bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { setForm({ ...form, empId: '', email: '' }) }}>ล้าง</Button>
-              </Col>
-            </Row>
+          <div className='mt-3'>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>สมัครเข้าใช้งานแล้ว</span></h5>
+            <DataTable
+              columns={columns}
+              data={userRegisted}
+              limitPositionLeft={true}
+              option={{
+                "showLimitPage": true,
+                "rowClassname": "editable-row"
+              }}>
+            </DataTable>
           </div>
         </BoxCard>
       </Spin>
+
+      {showModalAdd &&
+        <ModalAddEmployee
+          show={showModalAdd}
+          close={() => {
+            setShowModalAdd(false)
+            setUserRegistered([])
+            setUserUnregist([])
+            getEmpInformation()
+          }}
+        ></ModalAddEmployee>}
     </div>
   )
 }

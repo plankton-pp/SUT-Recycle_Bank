@@ -51,25 +51,31 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
                 compare: (a, b) => a.ID - b.ID,
                 multiple: 1,
             },
+            width: '120px',
         },
         {
             title: 'ชื่อ',
             dataIndex: 'Firstname',
+            width: '200px',
         },
         {
             title: 'นามสกุล',
             dataIndex: 'Lastname',
-
+            width: '200px',
         },
         {
             title: 'เบอร์โทร',
             dataIndex: 'Phone_number',
-
+            width: '150px',
         },
         {
             title: 'อีเมล',
             dataIndex: 'Email',
-
+        },
+        {
+            title: 'หมายเหตุ',
+            dataIndex: 'Remark',
+            width: '200px',
         },
     ];
 
