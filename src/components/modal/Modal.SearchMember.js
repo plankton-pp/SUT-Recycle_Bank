@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom'
 import '../../assets/css/index.css'
 import { Modal } from 'react-bootstrap';
-import { Row, Col } from 'antd';
+import { Row, Col, Checkbox } from 'antd';
 import { Button } from '../styles/globalStyles';
 import ModalHeader from '../ModalHeader'
 import InputText from '../InputText';
@@ -10,6 +10,9 @@ import DataTable from '../DataTable';
 import BoxCard from '../BoxCard';
 import * as API from '../../utils/apis';
 
+import withReactContent from 'sweetalert2-react-content';
+import swal from 'sweetalert2';
+const MySwal = withReactContent(swal)
 
 function ModalSearchMember({ show, close, save, data, showmodal }) {
     const history = useHistory();
@@ -38,10 +41,17 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
     const [selectedData, setSelectedData] = useState([]);
     const [onChangeSearch, setOnChangeSearch] = useState(false)
     const [memberData, setMemberData] = useState(initMember);
+
+    const [isLoad, setIsLoad] = useState(false)
+    const [typeOptionList, setTypeOptionList] = useState([])
+    const [indeterminate, setIndeterminate] = useState(false);
+    const [checkAll, setCheckAll] = useState(true);
+    const [checkedList, setCheckedList] = useState([]);
+
     const columns = [
         {
             title: '#',
-            dataIndex: 'index',
+            dataIndex: 'key',
             width: '50px'
         },
         {
@@ -79,8 +89,10 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
         },
     ];
 
+
     useEffect(() => {
         searchMember(searchKeyword)
+        getMemberType()
     }, []);
 
 
@@ -102,7 +114,55 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
         searchMember(searchKeyword)
     }, [clearSelectedRow, searchKeyword, onChangeSearch]);
 
-    const getMemberData = () => {
+    useEffect(() => {
+        // console.log(searchKeyword, checkedList);
+        searchMember(searchKeyword)
+    }, [checkedList])
+
+    const onChangeCheckbox = (list) => {
+        setCheckedList(list);
+        setIndeterminate(!Boolean(list.lenght) && list.length < typeOptionList.length);
+        setCheckAll(list.length === typeOptionList.length);
+    };
+
+    const onCheckAllChange = (e) => {
+        setCheckedList(e.target.checked ? typeOptionList : []);
+        setIndeterminate(false);
+        setCheckAll(e.target.checked);
+    };
+
+    const getMemberType = async () => {
+        try {
+            setIsLoad(true)
+            const response = await API.getMemberType()
+            const data = response?.data.data
+            if (response.status === 200) {
+                if (data && data.length > 0) {
+                    let typeArray = []
+                    data.forEach((item) => {
+                        typeArray.push(item.MemberType)
+                    })
+                    setTypeOptionList(typeArray)
+                    setCheckedList(typeArray)
+                }
+            } else {
+                throw response.status
+            }
+            setIsLoad(false)
+        } catch (error) {
+            setIsLoad(false)
+            console.log(error);
+            MySwal.fire({
+                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+                icon: "error",
+                showConfirmButton: true,
+                confirmButtonText: "ตกลง",
+            })
+        }
+    }
+
+    const getMemberInformation = () => {
+        console.log(memberData);
         let filteredMember = memberData.filter((item, index) => {
             let textSearch = String(searchKeyword).toLowerCase();
             let checkMemId = String(item.ID).toLowerCase().includes(textSearch)
@@ -110,10 +170,14 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
             let checkLastname = String(item.Lastname).toLowerCase().includes(textSearch)
             let checkTel = String(item.Phone_number).toLowerCase().includes(textSearch)
             let checkEmail = String(item.Email).toLowerCase().includes(textSearch)
-
+            //check data contain search
             let checkTrue = (checkMemId || checkName || checkLastname || checkTel || checkEmail)
-
+            //then return item to array
             return checkTrue
+        })
+
+        filteredMember.forEach((item, index) => {
+            item['key'] = index + 1
         })
         return filteredMember
     }
@@ -142,10 +206,10 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
             const data = await response?.data.data;
             if (response.status === 200) {
                 if (data.length > 0) {
-                    data.forEach((item, index) => {
-                        item['key'] = index
-                    });
-                    setMemberData(data)
+                    let filteredData = data.filter((item) => {
+                        return checkedList.includes(String(item.Role))
+                    })
+                    setMemberData(filteredData)
                 }
             }
         } catch (error) {
@@ -155,6 +219,29 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
 
     const buttonAdd = () => {
         return (<Button onClick={() => toAddMember()} >เพิ่มสมาชิก</Button>)
+    }
+
+    const renderCheckBoxType = () => {
+        //options={typeOptionList}
+        //value={checkedList}
+        return (
+            <div>
+                <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                    ทั้งหมด
+                </Checkbox>
+                <Checkbox.Group value={checkedList} onChange={(value) => { onChangeCheckbox(value) }}>
+                    <Row>
+                        {typeOptionList && typeOptionList.length > 0 && typeOptionList.map(item => {
+                            return (<>
+                                <Col span={8}>
+                                    <Checkbox value={String(item)}>{item}</Checkbox>
+                                </Col>
+                            </>)
+                        })}
+                    </Row>
+                </Checkbox.Group>
+            </div>
+        )
     }
 
     return (
@@ -179,7 +266,7 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
                         </Col>
                         <Col span={12}>
                             <InputText type="text" idName="search-keyword"
-                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมลล์" classLabel="bold"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
                                 value={searchKeyword}
                                 handleChange={(value) => {
                                     setOnChangeSearch(true)
@@ -194,12 +281,25 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
                 </div>
 
                 <BoxCard title={'รายชื่อสมาชิก'} headRight={buttonAdd()}>
+                    <div className='mt-3'>
+                        <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
+                            <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ประเภทสมาชิก</span>
+                        </h5>
+                        <div className='mx-5' style={{ width: '50%' }}>
+                            {renderCheckBoxType()}
+                        </div>
+                    </div>
                     <div>
                         <Row>
                             <Col className='w-100'>
+                                <div className='mt-5'>
+                                    <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
+                                        <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span>
+                                    </h5>
+                                </div>
                                 <DataTable
                                     columns={columns}
-                                    data={getMemberData()}
+                                    data={getMemberInformation()}
                                     option={
                                         {
                                             "selectionType": "radio",

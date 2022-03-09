@@ -40,7 +40,7 @@ function UserManagement() {
       width: '150px'
     },
     {
-      title: 'อีเมลล์',
+      title: 'อีเมล',
       dataIndex: 'email',
     },
   ]

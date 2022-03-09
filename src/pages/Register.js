@@ -81,7 +81,7 @@ function Register() {
             validated = false;
         }
         if (form.email === '') {
-            addInvalid('email', "กรุณาระบุอีเมลล์");
+            addInvalid('email', "กรุณาระบุอีเมล");
             validated = false;
         }
         if (form.password === '') {
@@ -179,7 +179,7 @@ function Register() {
                         }
 
                         if (dataCheckUser.duplicateEmail) {
-                            addInvalid('email', "อีเมลล์นี้มีคนใช้งานแล้ว");
+                            addInvalid('email', "อีเมลนี้มีคนใช้งานแล้ว");
                         }
                     }
                     if (!(dataCheckUser.duplicateUsername && dataCheckUser.duplicateEmail)) {
@@ -266,7 +266,7 @@ function Register() {
                                 />
                             </div>
                             <div className='mb-3'>
-                                <InputText title="อีเมลล์" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
+                                <InputText title="อีเมล" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
                                     placeholder="email" handleChange={(value) => setForm({ ...form, email: value })}
                                     handleInvalid={() => {
                                         removeInvalid("username")

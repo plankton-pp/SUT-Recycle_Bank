@@ -4,7 +4,7 @@ import { DeleteOutlined, } from '@ant-design/icons'
 import DataTable from '../components/DataTable'
 import BoxCard from '../components/BoxCard'
 import { Button } from '../components/styles/globalStyles'
-import ModalAddEmployee from '../components/modal/Modal.AddEmployee'
+import ModalAddMember from '../components/modal/Modal.RegistMember'
 import * as API from '../utils/apis'
 
 import withReactContent from 'sweetalert2-react-content';
@@ -50,7 +50,7 @@ function MemberManagement() {
       width: '150px'
     },
     {
-      title: 'อีเมลล์',
+      title: 'อีเมล',
       dataIndex: 'email',
     },
     {
@@ -72,18 +72,20 @@ function MemberManagement() {
     getMemberInformation()
   }, [])
 
+  useEffect(() => {
+    getMemberInformation()
+  }, [checkedList])
+
   const onChangeCheckbox = (list) => {
     setCheckedList(list);
     setIndeterminate(!Boolean(list.lenght) && list.length < typeOptionList.length);
     setCheckAll(list.length === typeOptionList.length);
-    getMemberInformation()
   };
 
   const onCheckAllChange = (e) => {
     setCheckedList(e.target.checked ? typeOptionList : []);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
-    getMemberInformation()
   };
 
   const getMemberType = async () => {
@@ -141,9 +143,7 @@ function MemberManagement() {
           let filteredData = memberArray.filter(item => {
             return checkedList.includes(item.role)
           })
-          console.log("cheLis: ", checkedList);
-          // console.log("fd: ", filteredData);
-          setUserRegistered(memberArray)
+          setUserRegistered(filteredData)
           setIsLoad(false)
         } else {
           throw 'empty data'
@@ -229,7 +229,7 @@ function MemberManagement() {
   }
 
   const renderButtonAdd = () => {
-    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มเจ้าหน้าที่</Button>)
+    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มสมาชิก</Button>)
   }
 
   return (
@@ -237,14 +237,17 @@ function MemberManagement() {
       <Spin tip="Loading..." spinning={isLoad}>
         <BoxCard title={"จัดการข้อมูลสมาชิก"} headRight={renderButtonAdd()}>
           <div className='mt-3'>
-            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ประเภทสมาชิก</span></h5>
-            <div style={{ width: '50%' }}>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
+              <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ประเภทสมาชิก</span>
+            </h5>
+            <div className='mx-5' style={{ width: '50%' }}>
               {renderCheckBoxType()}
             </div>
-
           </div>
           <div className='mt-3'>
-            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span></h5>
+            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
+              <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span>
+            </h5>
             <DataTable
               columns={columns}
               data={userRegisted}
@@ -259,14 +262,14 @@ function MemberManagement() {
       </Spin>
 
       {showModalAdd &&
-        <ModalAddEmployee
+        <ModalAddMember
           show={showModalAdd}
           close={() => {
             setShowModalAdd(false)
             setUserRegistered([])
             getMemberInformation()
           }}
-        ></ModalAddEmployee>}
+        ></ModalAddMember>}
     </div>
   )
 }
