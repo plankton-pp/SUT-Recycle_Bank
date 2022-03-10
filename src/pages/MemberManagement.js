@@ -34,6 +34,7 @@ function MemberManagement() {
   ]
 
   const [showModalAdd, setShowModalAdd] = useState(false)
+  const [showModalManage, setShowModalManage] = useState(false)
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [clearSelectedRow, setClearSelectedRow] = useState(false);
@@ -154,7 +155,6 @@ function MemberManagement() {
   }
 
   const getMemberInformation = () => {
-    console.log(memberData);
     let filteredMember = memberData.filter((item, index) => {
       let textSearch = String(searchKeyword).toLowerCase();
       let checkMemId = String(item.ID).toLowerCase().includes(textSearch)
@@ -180,8 +180,7 @@ function MemberManagement() {
 
 
   const onSelected = () => {
-    // save(selectedData[1][0])
-    // handleClose()
+    alert(JSON.stringify(selectedData[1][0]))
   }
 
   const searchMember = async (keyword) => {
@@ -206,8 +205,6 @@ function MemberManagement() {
   }
 
   const renderCheckBoxType = () => {
-    //options={typeOptionList}
-    //value={checkedList}
     return (
       <div>
         <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
@@ -286,6 +283,17 @@ function MemberManagement() {
               </Col>
             </Row>
           </div>
+          <Row className="mt-3 d-flex justify-content-end" gutter={[10, 0]}>
+            <Col>
+              <Button
+                className={'mr-2'}
+                bg={'#96CC39'}
+                width={'80px'}
+                color={'#fff'}
+                disabled={(selectedData.length <= 0)}
+                onClick={() => { onSelected() }}>เลือก</Button>
+            </Col>
+          </Row>
         </BoxCard>
       </Spin>
 
@@ -295,6 +303,17 @@ function MemberManagement() {
           close={() => {
             setShowModalAdd(false)
             getMemberInformation()
+            searchMember(searchKeyword)
+          }}
+        ></ModalAddMember>}
+
+      {showModalManage &&
+        <ModalAddMember
+          show={showModalManage}
+          close={() => {
+            setShowModalManage(false)
+            getMemberInformation()
+            searchMember(searchKeyword)
           }}
         ></ModalAddMember>}
     </div>

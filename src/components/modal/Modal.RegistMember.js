@@ -99,10 +99,10 @@ function ModalRegisterMember({ show, close, save, data }) {
             addInvalid('phone', "กรุณากรอกข้อมูลติดต่อ");
             validated = false;
         }
-        if (form.email === '') {
-            addInvalid('email', "กรุณาระบุอีเมล");
-            validated = false;
-        }
+        // if (form.email === '') {
+        //     addInvalid('email', "กรุณาระบุอีเมล");
+        //     validated = false;
+        // }
         if (form.password === '') {
             addInvalid('password', "กรุณากรอกรหัสผ่าน");
             validated = false;
@@ -206,7 +206,7 @@ function ModalRegisterMember({ show, close, save, data }) {
             if (validate()) {
                 setIsLoad(true)
                 //register
-                const response = await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount })
+                const response = await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount, email: String(form.email).length > 0 ? form.email : '-' })
                 //status 200
                 if (response.status === 200) {
                     setIsLoad(false)
@@ -239,7 +239,7 @@ function ModalRegisterMember({ show, close, save, data }) {
             <Modal
                 show={show}
                 size="lg"
-                onHide={() => { handleClose() }}
+                // onHide={() => { handleClose() }}
                 centered
             >
                 <Modal.Body>
@@ -307,7 +307,7 @@ function ModalRegisterMember({ show, close, save, data }) {
                                         />
                                     </Col>
                                     <Col span={12}>
-                                        <InputText title="อีเมล" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
+                                        <InputText title="อีเมล" type="text" idName="email" value={form.email} star={false} classFormGroup="w-100"
                                             placeholder="อีเมล" handleChange={(value) => setForm({ ...form, email: value })}
                                             handleInvalid={() => {
                                                 removeInvalid("username")
