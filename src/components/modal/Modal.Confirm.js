@@ -18,7 +18,7 @@ function ModalConfirm({ show, close, confirm, size, text, textBody, mode }) {
         <Modal
             show={show}
             size={size}
-            onHide={() => handleClose()}
+            // onHide={() => handleClose()}
             centered
         >
             <ModalHeader closeButton className="pb-4">

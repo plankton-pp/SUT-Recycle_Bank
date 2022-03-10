@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Spin, Button as ButtonIcon, Checkbox, Row, Col } from 'antd'
-import { DeleteOutlined, } from '@ant-design/icons'
+import { Spin, Checkbox, Row, Col } from 'antd'
+import InputText from '../components/InputText'
 import DataTable from '../components/DataTable'
 import BoxCard from '../components/BoxCard'
 import { Button } from '../components/styles/globalStyles'
@@ -13,6 +13,41 @@ const MySwal = withReactContent(swal)
 
 function MemberManagement() {
 
+  const initMember = [
+    {
+      key: '',
+      Acc_number: "",
+      Bank: "",
+      Email: "",
+      Firstname: "",
+      ID: "",
+      Lastname: "",
+      No_members: "",
+      Password: "",
+      Phone_number: "",
+      Phone_number2: "",
+      Remark: "",
+      Role: "",
+      Username: "",
+    },
+
+  ]
+
+  const [showModalAdd, setShowModalAdd] = useState(false)
+  const [showModalManage, setShowModalManage] = useState(false)
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [clearSelectedRow, setClearSelectedRow] = useState(false);
+  const [selectedData, setSelectedData] = useState([]);
+  const [onChangeSearch, setOnChangeSearch] = useState(false)
+  const [memberData, setMemberData] = useState(initMember);
+
+  const [isLoad, setIsLoad] = useState(false)
+  const [typeOptionList, setTypeOptionList] = useState([])
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(true);
+  const [checkedList, setCheckedList] = useState([]);
+
   const columns = [
     {
       title: '#',
@@ -21,59 +56,60 @@ function MemberManagement() {
     },
     {
       title: 'รหัสสมาชิก',
-      dataIndex: 'memberId',
-      width: '120px'
-    },
-    {
-      title: 'ประเภท',
-      dataIndex: 'role',
-      width: '150px'
+      dataIndex: 'ID',
+      sorter: {
+        compare: (a, b) => a.ID - b.ID,
+        multiple: 1,
+      },
+      width: '120px',
     },
     {
       title: 'ชื่อ',
-      dataIndex: 'firstname',
-      width: '150px'
+      dataIndex: 'Firstname',
+      width: '200px',
     },
     {
       title: 'นามสกุล',
-      dataIndex: 'lastname',
-      width: '150px'
+      dataIndex: 'Lastname',
+      width: '200px',
     },
     {
-      title: 'เบอร์โทร 1',
-      dataIndex: 'phone1',
-      width: '150px'
-    },
-    {
-      title: 'เบอร์โทร 2',
-      dataIndex: 'phone2',
-      width: '150px'
+      title: 'เบอร์โทร',
+      dataIndex: 'Phone_number',
+      width: '150px',
     },
     {
       title: 'อีเมล',
-      dataIndex: 'email',
+      dataIndex: 'Email',
     },
     {
-      title: <div><span style={{ color: 'red' }}>*</span>หมายเหตุ</div>,
-      dataIndex: 'remark',
+      title: 'หมายเหตุ',
+      dataIndex: 'Remark',
+      width: '200px',
     },
-  ]
-  const [typeOptionList, setTypeOptionList] = useState([])
-  const [indeterminate, setIndeterminate] = useState(false);
-  const [checkAll, setCheckAll] = useState(true);
-  const [checkedList, setCheckedList] = useState([]);
+  ];
 
-  const [isLoad, setIsLoad] = useState(false)
-  const [userRegisted, setUserRegistered] = useState([])
-  const [showModalAdd, setShowModalAdd] = useState(false)
 
   useEffect(() => {
+    searchMember(searchKeyword)
     getMemberType()
-    getMemberInformation()
-  }, [])
+  }, []);
 
   useEffect(() => {
-    getMemberInformation()
+    if (clearSelectedRow === true) {
+      setSearchKeyword('')
+      setClearSelectedRow(false)
+    } else {
+      if (!onChangeSearch) {
+        setSearchKeyword(searchKeyword)
+      }
+    }
+    searchMember(searchKeyword)
+  }, [clearSelectedRow, searchKeyword, onChangeSearch]);
+
+  useEffect(() => {
+    // console.log(searchKeyword, checkedList);
+    searchMember(searchKeyword)
   }, [checkedList])
 
   const onChangeCheckbox = (list) => {
@@ -118,96 +154,57 @@ function MemberManagement() {
     }
   }
 
-  const getMemberInformation = async () => {
+  const getMemberInformation = () => {
+    let filteredMember = memberData.filter((item, index) => {
+      let textSearch = String(searchKeyword).toLowerCase();
+      let checkMemId = String(item.ID).toLowerCase().includes(textSearch)
+      let checkName = String(item.Firstname).toLowerCase().includes(textSearch)
+      let checkLastname = String(item.Lastname).toLowerCase().includes(textSearch)
+      let checkTel = String(item.Phone_number).toLowerCase().includes(textSearch)
+      let checkEmail = String(item.Email).toLowerCase().includes(textSearch)
+      //check data contain search
+      let checkTrue = (checkMemId || checkName || checkLastname || checkTel || checkEmail)
+      //then return item to array
+      return checkTrue
+    })
+
+    filteredMember.forEach((item, index) => {
+      item['key'] = index + 1
+    })
+    return filteredMember
+  }
+
+  const refreshRowMember = () => {
+    setClearSelectedRow(!clearSelectedRow)
+  }
+
+
+  const onSelected = () => {
+    alert(JSON.stringify(selectedData[1][0]))
+  }
+
+  const searchMember = async (keyword) => {
     try {
-      setIsLoad(true)
-      const response = await API.getMember();
-      const data = await response?.data.data
+      const response = searchKeyword.length > 0 ? await API.searchMember(searchKeyword) : await API.getMember();
+      const data = await response?.data.data;
       if (response.status === 200) {
-        if (data && data.lenght !== 0) {
-          let memberArray = []
-          data.forEach((item) => {
-            let emp = {
-              id: item.ID,
-              memberId: item.ID,
-              firstname: item.Firstname,
-              lastname: item.Lastname,
-              phone1: item.Phone_number,
-              phone2: item.Phone_number2,
-              email: item.Email,
-              role: item.Role,
-              remark: item.Remark,
-            }
-            memberArray.push({ ...emp, key: memberArray.length + 1, })
+        if (data.length > 0) {
+          let filteredData = data.filter((item) => {
+            return checkedList.includes(String(item.Role))
           })
-          let filteredData = memberArray.filter(item => {
-            return checkedList.includes(item.role)
-          })
-          setUserRegistered(filteredData)
-          setIsLoad(false)
-        } else {
-          throw 'empty data'
+          setMemberData(filteredData)
         }
-      } else {
-        throw 'status 400'
       }
     } catch (error) {
-      setIsLoad(false)
-      console.log(error);
-      MySwal.fire({
-        text: `ไม่สามารถแสดงข้อมูลเจ้าหน้าที่ได้\n${String(error)}`,
-        icon: "error",
-        showConfirmButton: true,
-        confirmButtonText: "ตกลง",
-      })
+      console.log(error)
     }
   }
 
-  const handleRemove = async (removeId) => {
-    try {
-      setIsLoad(true)
-      MySwal.fire({
-        text: `ยืนยันการบันทึกรายการ `,
-        icon: "question",
-
-        confirmButtonColor: '#96CC39',
-        showCancelButton: true,
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ตกลง",
-      }).then(async (value) => {
-        if (value.isConfirmed) {
-          const response = await API.deleteEmployee(removeId)
-          if (response.status === 200) {
-            MySwal.fire({
-              text: `แก้ไขข้อมูลสำเร็จ`,
-              icon: "success",
-              confirmButtonColor: '#96CC39',
-              confirmButtonText: "ตกลง",
-            }).then(() => {
-              setUserRegistered([])
-              getMemberInformation()
-            })
-          } else {
-            throw 'status 400'
-          }
-        }
-      })
-      setIsLoad(false)
-    } catch (error) {
-      setIsLoad(false)
-      console.log(error);
-      MySwal.fire({
-        text: `ระบบไม่สามารถแก้ไขข้อมูลได้ \n กรุณาทำรายการอีกครั้งในภายหลัง`,
-        icon: "error",
-        showConfirmButton: true,
-        confirmButtonText: "ตกลง",
-      })
-    }
+  const renderButtonAdd = () => {
+    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มสมาชิก</Button>)
   }
 
   const renderCheckBoxType = () => {
-    //options={typeOptionList}
-    //value={checkedList}
     return (
       <div>
         <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
@@ -228,14 +225,32 @@ function MemberManagement() {
     )
   }
 
-  const renderButtonAdd = () => {
-    return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มสมาชิก</Button>)
-  }
-
   return (
     <div>
       <Spin tip="Loading..." spinning={isLoad}>
         <BoxCard title={"จัดการข้อมูลสมาชิก"} headRight={renderButtonAdd()}>
+          <div>
+            <Row gutter={[10, 10]} className='mb-4'>
+              <Col>
+                <div className='pt-2'>
+                  <h5>{`คำค้นหา:`}</h5>
+                </div>
+              </Col>
+              <Col span={12}>
+                <InputText type="text" idName="search-keyword"
+                  placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
+                  value={searchKeyword}
+                  handleChange={(value) => {
+                    setOnChangeSearch(true)
+                    setSearchKeyword(value)
+                  }}
+                />
+              </Col>
+              <Col>
+                <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshRowMember() }}>ล้าง</Button>
+              </Col>
+            </Row>
+          </div>
           <div className='mt-3'>
             <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
               <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ประเภทสมาชิก</span>
@@ -244,20 +259,41 @@ function MemberManagement() {
               {renderCheckBoxType()}
             </div>
           </div>
-          <div className='mt-3'>
-            <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
-              <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span>
-            </h5>
-            <DataTable
-              columns={columns}
-              data={userRegisted}
-              limitPositionLeft={true}
-              option={{
-                "showLimitPage": true,
-                "rowClassname": "editable-row"
-              }}>
-            </DataTable>
+          <div>
+            <Row>
+              <Col className='w-100'>
+                <div className='mt-5'>
+                  <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}>
+                    <span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>ข้อมูลสมาชิก</span>
+                  </h5>
+                </div>
+                <DataTable
+                  columns={columns}
+                  data={getMemberInformation()}
+                  option={
+                    {
+                      "selectionType": "radio",
+                      "type": 'selection',
+                      "clearSelectedRow": clearSelectedRow,
+                      "select": (data) => { setSelectedData(data) }
+                    }
+                  }
+                >
+                </DataTable>
+              </Col>
+            </Row>
           </div>
+          <Row className="mt-3 d-flex justify-content-end" gutter={[10, 0]}>
+            <Col>
+              <Button
+                className={'mr-2'}
+                bg={'#96CC39'}
+                width={'80px'}
+                color={'#fff'}
+                disabled={(selectedData.length <= 0)}
+                onClick={() => { onSelected() }}>เลือก</Button>
+            </Col>
+          </Row>
         </BoxCard>
       </Spin>
 
@@ -266,8 +302,18 @@ function MemberManagement() {
           show={showModalAdd}
           close={() => {
             setShowModalAdd(false)
-            setUserRegistered([])
             getMemberInformation()
+            searchMember(searchKeyword)
+          }}
+        ></ModalAddMember>}
+
+      {showModalManage &&
+        <ModalAddMember
+          show={showModalManage}
+          close={() => {
+            setShowModalManage(false)
+            getMemberInformation()
+            searchMember(searchKeyword)
           }}
         ></ModalAddMember>}
     </div>
