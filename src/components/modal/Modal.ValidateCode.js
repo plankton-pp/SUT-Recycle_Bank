@@ -39,10 +39,6 @@ function ModalValidateCode({ show, close, save, mode, idEdit, data }) {
         setCheckInvalid(false)
         setOTP(value)
         const validateCode = getWithExpiry('validateCode')
-        if (String(value) === String(validateCode)) {
-            console.log("correct");
-        }
-
     }
 
     const checkValidateCode = () => {
@@ -53,7 +49,6 @@ function ModalValidateCode({ show, close, save, mode, idEdit, data }) {
             setTimeout(() => { history.push(redirectTo) }, 2000);
         } else {
             setIsLoad(false)
-            console.log("incorrect");
             setCheckInvalid(true)
         }
 

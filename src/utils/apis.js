@@ -25,7 +25,6 @@ export const userAuthenticated = async () => {
 
 //=================== API: Register
 export const addNewEmp = async (data) => {
-  console.log(data);
   return await httpClient.post(`/api/v1/employee/addnewemployee`, data);
 }
 
@@ -82,7 +81,6 @@ export const updateEmployee = async (data) => {
 //=================== API: Member
 
 export const registerMember = async (formData) => {
-  console.log(formData);
   return await httpClient.post(`/api/v1/member/register`, formData);
 }
 
@@ -98,8 +96,16 @@ export const getMember = async () => {
   return await httpClient.get(`/api/v1/member`);
 }
 
+export const getMemberById = async (id) => {
+  return await httpClient.get(`/api/v1/member/${id}`);
+}
+
 export const getMemberType = async () => {
   return await httpClient.get(`/api/v1/membertype`);
+}
+
+export const updateMemberById = async (data) => {
+  return await httpClient.put(`/api/v1/member/`, data);
 }
 
 //=================== API: Fee

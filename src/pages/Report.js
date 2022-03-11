@@ -128,7 +128,7 @@ function Report() {
         if (catagory == 5) {
             try {
                 const report = await Docs.getReportType5(2565)
-                console.log("Report.js: ", report);
+                // console.log("Report.js: ", report);
                 setForm({ ...form, data: report })
             } catch (error) {
 
@@ -137,7 +137,7 @@ function Report() {
     }
 
     const convertListToExcelTable = (docId, objArray) => {
-        console.log("objArray: ", objArray);
+        // console.log("objArray: ", objArray);
         let excelTable = [];
         if (docId === "doc_5-2") {
             //columns width
@@ -304,7 +304,7 @@ function Report() {
                     <Row gutter={[10, 10]} className='mb-4'>
                         <Col span={8}>
                             <InputText title="กรองรายการ" type="text" idName="update-date"
-                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, โทรศัพท์มือถือ, อีเมล" classLabel="bold"
                                 value={form.searchKeyword}
                                 handleChange={(value) => {
                                     setForm({ ...form, searchKeyword: value })

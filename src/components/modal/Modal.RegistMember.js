@@ -17,7 +17,7 @@ import withReactContent from 'sweetalert2-react-content';
 import swal from 'sweetalert2';
 const MySwal = withReactContent(swal)
 
-function ModalRegisterMember({ show, close, save, data }) {
+function ModalRegisterMember({ show, close, save, data, mode }) {
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -27,7 +27,8 @@ function ModalRegisterMember({ show, close, save, data }) {
         username: "",
         bankaccount: "",
         bank: "",
-        phone: "",
+        phone1: "",
+        phone2: "",
         firstname: "",
         lastname: "",
         email: "",
@@ -39,7 +40,7 @@ function ModalRegisterMember({ show, close, save, data }) {
         username: "",
         bankaccount: "",
         bank: "",
-        phone: "",
+        phone1: "",
         firstname: "",
         lastname: "",
         email: "",
@@ -47,7 +48,7 @@ function ModalRegisterMember({ show, close, save, data }) {
         remark: "",
     }
     const [form, setForm] = useState(initForm);
-
+    const [memberInfo, setMemberInfo] = useState(initForm);
     const [roleOptionList, setRoleOptionlist] = useState([])
     const [isLoad, setIsLoad] = useState(false)
     const [remarkLenght, setRemarkLenght] = useState(50)
@@ -56,6 +57,11 @@ function ModalRegisterMember({ show, close, save, data }) {
         getMemberType()
     }, [])
 
+    useEffect(() => {
+        if (mode === 'edit' && roleOptionList.length > 0) {
+            getMemberById(data)
+        }
+    }, [roleOptionList])
 
     const handleClose = () => {
         close()
@@ -95,12 +101,8 @@ function ModalRegisterMember({ show, close, save, data }) {
             addInvalid('bankaccount', "กรุณากรอกหมายเลขธนาคาร");
             validated = false;
         }
-        if (form.phone === '') {
-            addInvalid('phone', "กรุณากรอกข้อมูลติดต่อ");
-            validated = false;
-        }
-        if (form.email === '') {
-            addInvalid('email', "กรุณาระบุอีเมล");
+        if (form.phone1 === '') {
+            addInvalid('phone1', "กรุณากรอกข้อมูลติดต่อ");
             validated = false;
         }
         if (form.password === '') {
@@ -140,7 +142,47 @@ function ModalRegisterMember({ show, close, save, data }) {
             setIsLoad(false)
             console.log(error);
             MySwal.fire({
-                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกได้\n${String(error)}`,
+                icon: "error",
+                showConfirmButton: true,
+                confirmButtonText: "ตกลง",
+            })
+        }
+    }
+
+    const getMemberById = async (id) => {
+        try {
+            setIsLoad(true)
+            const response = await API.getMemberById(id)
+            const data = response?.data.data
+            if (response.status === 200) {
+                if (data && data.length > 0) {
+                    let info = {
+                        ...form,
+                        id: id,
+                        username: String(data[0].Username).length > 0 ? data[0].Username : "-",
+                        bankaccount: String(data[0].Acc_number).length > 0 ? data[0].Acc_number : "-",
+                        bank: String(data[0].Bank).length > 0 ? data[0].Bank : "-",
+                        phone1: String(data[0].Phone_number).length > 0 ? data[0].Phone_number : "-",
+                        phone2: String(data[0].Phone_number2).length > 0 ? data[0].Phone_number2 : "-",
+                        firstname: String(data[0].Firstname).length > 0 ? data[0].Firstname : "-",
+                        lastname: String(data[0].Lastname).length > 0 ? data[0].Lastname : "-",
+                        email: String(data[0].Email).length > 0 ? data[0].Email : "-",
+                        remark: String(data[0].Remark).length > 0 ? data[0].Remark : "-",
+                        role: String(data[0].Role).length > 0 ? roleOptionList.filter((item) => { return item.label === data[0].Role })[0] : [{}]
+                    }
+                    setForm(info)
+                    setMemberInfo(info)
+                }
+            } else {
+                throw response.status
+            }
+            setIsLoad(false)
+        } catch (error) {
+            setIsLoad(false)
+            console.log(error);
+            MySwal.fire({
+                text: `ไม่สามารถแสดงข้อมูลสมาชิกได้\n${String(error)}`,
                 icon: "error",
                 showConfirmButton: true,
                 confirmButtonText: "ตกลง",
@@ -150,24 +192,32 @@ function ModalRegisterMember({ show, close, save, data }) {
 
     const checkMember = () => {
         MySwal.fire({
-            text: `ยืนยันการสมัครบัญชีผู้ใช้สำหรับสมาชิก `,
+            text: mode == 'add' ? `ยืนยันการสมัครบัญชีผู้ใช้สำหรับสมาชิก` : `ยืนยันการแก้ไขข้อมูลผู้ใช้สำหรับสมาชิก`,
             icon: "question",
             confirmButtonColor: '#96CC39',
             showCancelButton: true,
             cancelButtonText: "ยกเลิก",
             confirmButtonText: "ตกลง",
         }).then(async (value) => {
-            if (value.isConfirmed) {
+            if (value.isConfirmed && validate()) {
                 try {
-                    const response = await API.searchMember(form.firstname)
+                    const response = await API.searchMember(mode === 'add' ? form.firstname : memberInfo.firstname)
                     const data = await response?.data.data
                     if (response.status === 200) {
+                        //if user equal or more than 1 ==> duplicate
+                        //else ==> no data duplicate -> register
+                        //ตรวจสอบข้อมูลซ้ำ
                         if (data && data.length >= 1) {
-                            //find match lastname
+                            //find match name -> check duplicate username
+                            //ในกรณีที่มีสมาชิกที่มีชื่อสกุลเหมือนกัน ดังนั้นการตรวจสอบ username จะสามารถระบุได้ว่ามิใช่บุคคลเดียวกัน
                             let check = data.filter((item) => item.Firstname === form.firstname && item.Lastname === form.lastname)
                             if (check.length > 0) {
-                                if (check[0].Username === form.username) {
-                                    addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้แล้ว");
+                                if (check.length === 1 && check[0].Username === form.username) {
+                                    if (mode === 'add') {
+                                        addInvalid('username', "ชื่อผู้ใช้งานนี้มีคนใช้แล้ว");
+                                    } else {
+                                        toRegister()
+                                    }
                                 } else {
                                     MySwal.fire({
                                         text: `ไม่สามารถเพิ่มสมาชิกได้เนื่องจากพบข้อมูลซ้ำในฐานข้อมูล \nกรุณาลองใหม่`,
@@ -201,17 +251,21 @@ function ModalRegisterMember({ show, close, save, data }) {
         })
     }
 
+    //รอเช็คว่า add หรือ update
     const toRegister = async () => {
         try {
             if (validate()) {
                 setIsLoad(true)
                 //register
-                const response = await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount })
+                const response = mode === 'add' ?
+                    await API.registerMember({ ...form, role: form.role.label, accnumber: form.bankaccount, email: String(form.email).length > 0 ? form.email : '-' })
+                    :
+                    await API.updateMemberById({ ...form, role: form.role.label, accnumber: form.bankaccount, email: String(form.email).length > 0 ? form.email : '-' })
                 //status 200
                 if (response.status === 200) {
                     setIsLoad(false)
                     MySwal.fire({
-                        text: "ทำการเพิ่มสมาชิกเรียบร้อย",
+                        text: mode === 'add' ? "ทำการเพิ่มสมาชิกเรียบร้อย" : "แก้ไขข้อมูลสมาชิกเรียบร้อย",
                         icon: 'success',
                         confirmButtonColor: '#96CC39',
                         confirmButtonText: 'ตกลง'
@@ -227,19 +281,23 @@ function ModalRegisterMember({ show, close, save, data }) {
         } catch (error) {
             setIsLoad(false)
             MySwal.fire({
-                text: "ระบบไม่สามารถทำการเพิ่มสมาชิกได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
+                html: <h6>ระบบไม่สามารถทำการ{mode === 'add' ? 'เพิ่มข้อมูล' : 'แก้ไขข้อมูล'}ได้ในขณะนี้<br /> กรุณาลองใหม่อีกครั้ง</h6>,
                 icon: 'warning',
                 confirmButtonText: 'ตกลง'
             })
         }
 
     }
+
+    const checkOnChanged = () => {
+        return form === memberInfo
+    }
     return (
         <Spin tip="Loading..." spinning={isLoad}>
             <Modal
                 show={show}
                 size="lg"
-                onHide={() => { handleClose() }}
+                // onHide={() => { handleClose() }}
                 centered
             >
                 <Modal.Body>
@@ -247,7 +305,7 @@ function ModalRegisterMember({ show, close, save, data }) {
                         <Col span={24}>
                             <div className='m-3'>
                                 <div className=" mb-3 d-flex justify-content-between align-items-center">
-                                    <h1 className='logo mt-3'>เพิ่มสมาชิก</h1>
+                                    <h1 className='logo mt-3'>{mode === 'add' ? 'เพิ่มสมาชิก' : 'แก้ไขข้อมูลสมาชิก'}</h1>
                                 </div>
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
@@ -301,20 +359,25 @@ function ModalRegisterMember({ show, close, save, data }) {
                                 </Row>
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
-                                        <InputText title="โทรศัพท์มือถือ" type="text" idName="phone" value={form.phone} star={true} classFormGroup="w-100"
-                                            placeholder="โทรศัพท์มือถือ" handleChange={(value) => setForm({ ...form, phone: value })}
-                                            handleInvalid={() => removeInvalid("phone")} invalid={invalid.phone}
+                                        <InputText title="โทรศัพท์มือถือ" type="text" idName="phone1" value={form.phone1} star={true} classFormGroup="w-100"
+                                            placeholder="โทรศัพท์มือถือ" handleChange={(value) => setForm({ ...form, phone1: value })}
+                                            handleInvalid={() => removeInvalid("phone1")} invalid={invalid.phone1}
                                         />
                                     </Col>
                                     <Col span={12}>
-                                        <InputText title="อีเมล" type="text" idName="email" value={form.email} star={true} classFormGroup="w-100"
-                                            placeholder="อีเมล" handleChange={(value) => setForm({ ...form, email: value })}
-                                            handleInvalid={() => {
-                                                removeInvalid("username")
-                                            }} invalid={invalid.email}
+                                        <InputText title="โทรศัพท์มือถือ (สำรอง)" type="text" idName="phone2" value={form.phone2} classFormGroup="w-100"
+                                            placeholder="โทรศัพท์มือถือ (สำรอง)" handleChange={(value) => setForm({ ...form, phone2: value })}
                                         />
                                     </Col>
                                 </Row>
+                                <div className='mb-3'>
+                                    <InputText title="อีเมล" type="text" idName="email" value={form.email} star={false} classFormGroup="w-100"
+                                        placeholder="อีเมล" handleChange={(value) => setForm({ ...form, email: value })}
+                                        handleInvalid={() => {
+                                            removeInvalid("email")
+                                        }} invalid={invalid.email}
+                                    />
+                                </div>
                                 <div className='mb-3'>
                                     < InputText
                                         title={`หมายเหตุ (${form.remark.length}/${remarkLenght})`} idName="remark"
@@ -329,7 +392,7 @@ function ModalRegisterMember({ show, close, save, data }) {
                                 <div className='mb-4 d-flex justify-content-end'>
                                     <Row gutter={[20, 0]}>
                                         <Col>
-                                            <Button bg={'#96CC39'} color={'#fff'} onClick={() => { checkMember() }}>เพิ่มสมาชิก</Button>
+                                            <Button bg={'#96CC39'} color={'#fff'} onClick={() => { checkMember() }} disabled={checkOnChanged()}>{mode === 'add' ? "เพิ่มสมาชิก" : "บันทึก"}</Button>
                                         </Col>
                                         <Col>
                                             <Button bg={'#E72525'} color={'#fff'} onClick={() => { handleClose() }}>ยกเลิก</Button>

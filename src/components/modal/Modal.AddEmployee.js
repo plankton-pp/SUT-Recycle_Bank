@@ -121,7 +121,7 @@ function ModalAddEmployee({ show, close, save, data }) {
     return (<Modal
         show={show}
         size="m"
-        onHide={() => { handleClose() }}
+        // onHide={() => { handleClose() }}
         centered
     >
         <ModalHeader handleClose={() => { handleClose() }} BgColor={'#96CC39'}>
