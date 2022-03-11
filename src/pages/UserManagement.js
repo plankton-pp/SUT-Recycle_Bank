@@ -35,7 +35,7 @@ function UserManagement() {
       width: '150px'
     },
     {
-      title: 'เบอร์โทร',
+      title: 'โทรศัพท์มือถือ',
       dataIndex: 'phone',
       width: '150px'
     },

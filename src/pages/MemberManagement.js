@@ -36,6 +36,7 @@ function MemberManagement() {
   const [showModalAdd, setShowModalAdd] = useState(false)
   const [showModalManage, setShowModalManage] = useState(false)
 
+  const [editId, setEditId] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [clearSelectedRow, setClearSelectedRow] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
@@ -74,18 +75,27 @@ function MemberManagement() {
       width: '200px',
     },
     {
-      title: 'เบอร์โทร',
+      title: 'โทรศัพท์มือถือ',
       dataIndex: 'Phone_number',
       width: '150px',
+      align: 'center',
+    },
+    {
+      title: 'โทรศัพท์มือถือ (สำรอง)',
+      dataIndex: 'Phone_number2',
+      width: '150px',
+      align: 'center',
     },
     {
       title: 'อีเมล',
       dataIndex: 'Email',
+      align: 'center',
     },
     {
       title: 'หมายเหตุ',
       dataIndex: 'Remark',
       width: '200px',
+      align: 'left',
     },
   ];
 
@@ -146,7 +156,7 @@ function MemberManagement() {
       setIsLoad(false)
       console.log(error);
       MySwal.fire({
-        text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+        text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกได้\n${String(error)}`,
         icon: "error",
         showConfirmButton: true,
         confirmButtonText: "ตกลง",
@@ -170,6 +180,9 @@ function MemberManagement() {
 
     filteredMember.forEach((item, index) => {
       item['key'] = index + 1
+      item['Email'] = String(item['Email']).length > 0 ? item['Email'] : '-'
+      item['Phone_number'] = String(item['Phone_number']).length > 0 ? item['Phone_number'] : '-'
+      item['Phone_number2'] = String(item['Phone_number2']).length > 0 ? item['Phone_number2'] : '-'
     })
     return filteredMember
   }
@@ -180,7 +193,9 @@ function MemberManagement() {
 
 
   const onSelected = () => {
-    alert(JSON.stringify(selectedData[1][0]))
+    // alert(JSON.stringify(selectedData[1][0].ID))
+    setEditId(selectedData[1][0].ID)
+    setShowModalManage(true)
   }
 
   const searchMember = async (keyword) => {
@@ -238,7 +253,7 @@ function MemberManagement() {
               </Col>
               <Col span={12}>
                 <InputText type="text" idName="search-keyword"
-                  placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
+                  placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, โทรศัพท์มือถือ, อีเมล" classLabel="bold"
                   value={searchKeyword}
                   handleChange={(value) => {
                     setOnChangeSearch(true)
@@ -299,6 +314,7 @@ function MemberManagement() {
 
       {showModalAdd &&
         <ModalAddMember
+          mode={'add'}
           show={showModalAdd}
           close={() => {
             setShowModalAdd(false)
@@ -309,6 +325,8 @@ function MemberManagement() {
 
       {showModalManage &&
         <ModalAddMember
+          mode={'edit'}
+          data={editId}
           show={showModalManage}
           close={() => {
             setShowModalManage(false)
