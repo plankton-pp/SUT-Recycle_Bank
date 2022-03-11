@@ -74,13 +74,21 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
             width: '200px',
         },
         {
-            title: 'เบอร์โทร',
+            title: 'โทรศัพท์มือถือ',
             dataIndex: 'Phone_number',
             width: '150px',
+            align: 'center',
+        },
+        {
+            title: 'โทรศัพท์มือถือ (สำรอง)',
+            dataIndex: 'Phone_number2',
+            width: '150px',
+            align: 'center',
         },
         {
             title: 'อีเมล',
             dataIndex: 'Email',
+            align: 'center',
         },
         {
             title: 'หมายเหตุ',
@@ -153,7 +161,7 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
             setIsLoad(false)
             console.log(error);
             MySwal.fire({
-                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกที่ได้\n${String(error)}`,
+                text: `ไม่สามารถแสดงข้อมูลประเภทสมาชิกได้\n${String(error)}`,
                 icon: "error",
                 showConfirmButton: true,
                 confirmButtonText: "ตกลง",
@@ -162,7 +170,6 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
     }
 
     const getMemberInformation = () => {
-        console.log(memberData);
         let filteredMember = memberData.filter((item, index) => {
             let textSearch = String(searchKeyword).toLowerCase();
             let checkMemId = String(item.ID).toLowerCase().includes(textSearch)
@@ -178,6 +185,9 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
 
         filteredMember.forEach((item, index) => {
             item['key'] = index + 1
+            item['Email'] = String(item['Email']).length > 0 ? item['Email'] : '-'
+            item['Phone_number'] = String(item['Phone_number']).length > 0 ? item['Phone_number'] : '-'
+            item['Phone_number2'] = String(item['Phone_number2']).length > 0 ? item['Phone_number2'] : '-'
         })
         return filteredMember
     }
@@ -266,7 +276,7 @@ function ModalSearchMember({ show, close, save, data, showmodal }) {
                         </Col>
                         <Col span={12}>
                             <InputText type="text" idName="search-keyword"
-                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, เบอร์โทร, อีเมล" classLabel="bold"
+                                placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, โทรศัพท์มือถือ, อีเมล" classLabel="bold"
                                 value={searchKeyword}
                                 handleChange={(value) => {
                                     setOnChangeSearch(true)
