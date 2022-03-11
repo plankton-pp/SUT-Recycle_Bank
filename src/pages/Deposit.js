@@ -335,6 +335,7 @@ function Deposit() {
                     setIsLoad(true)
                     const response = await API.addDeposit(dataToSave);
                     if (response.status === 200) {
+                        console.log('time to send receipt');
                         //if success
                         sendReceipt()
                     } else {
