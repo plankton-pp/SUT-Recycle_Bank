@@ -184,7 +184,7 @@ function Deposit() {
     }
 
     const sendReceipt = async () => {
-        if (String(form.Email).includes('@')) {
+        if (!String(form.Email).includes('@')) {
             MySwal.fire({
                 text: `บันทึกสำเร็จ`,
                 icon: "success",
