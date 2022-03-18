@@ -51,6 +51,7 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
     const [memberInfo, setMemberInfo] = useState(initForm);
     const [roleOptionList, setRoleOptionlist] = useState([])
     const [isLoad, setIsLoad] = useState(false)
+    const [waitForEdit, setWaitForEdit] = useState(true)
     const [remarkLenght, setRemarkLenght] = useState(50)
 
     useEffect(() => {
@@ -289,9 +290,22 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
 
     }
 
-    const checkOnChanged = () => {
-        return form === memberInfo
+    const setOnEdit = () => {
+        MySwal.fire({
+            text: "ยืนยันการแก้ไขข้อมูล",
+            icon: 'warning',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#96CC39',
+        }).then((value) => {
+            if (value.isConfirmed) {
+                setWaitForEdit(false)
+            }
+        })
     }
+
     return (
         <Spin tip="Loading..." spinning={isLoad}>
             <Modal
@@ -305,7 +319,7 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                         <Col span={24}>
                             <div className='m-3'>
                                 <div className=" mb-3 d-flex justify-content-between align-items-center">
-                                    <h1 className='logo mt-3'>{mode === 'add' ? 'เพิ่มสมาชิก' : 'แก้ไขข้อมูลสมาชิก'}</h1>
+                                    <h1 className='logo mt-3'>{mode === 'add' ? 'เพิ่มสมาชิก' : waitForEdit ? 'รายละเอียดสมาชิก' : 'แก้ไขข้อมูลสมาชิก'}</h1>
                                 </div>
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
@@ -315,10 +329,12 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                                 removeInvalid("username")
                                                 removeInvalid("email")
                                             }} invalid={invalid.username}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                     <Col span={12}>
                                         <InputSelect
+                                            disabled={waitForEdit}
                                             title="ประเภทผู้ใช้งาน"
                                             star={true}
                                             optionsList={roleOptionList}
@@ -334,12 +350,14 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                         <InputText title="ชื่อ" type="text" idName="firstname" value={form.firstname} star={true} classFormGroup="w-100"
                                             placeholder="ชื่อ" handleChange={(value) => setForm({ ...form, firstname: value })}
                                             handleInvalid={() => removeInvalid("firstname")} invalid={invalid.firstname}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                     <Col span={12}>
                                         <InputText title="นามสกุล" type="text" idName="lastname" value={form.lastname} star={true} classFormGroup="w-100"
                                             placeholder="นามสกุล" handleChange={(value) => setForm({ ...form, lastname: value })}
                                             handleInvalid={() => removeInvalid("lastname")} invalid={invalid.lastname}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                 </Row>
@@ -348,12 +366,14 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                         <InputText title="ธนาคาร" type="text" idName="bank" value={form.bank} star={true} classFormGroup="w-100"
                                             placeholder="ธนาคาร" handleChange={(value) => setForm({ ...form, bank: value })}
                                             handleInvalid={() => removeInvalid("bank")} invalid={invalid.bank}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                     <Col span={12}>
                                         <InputText title="เลขบัญชีธนาคาร" type="text" idName="bank-account" value={form.bankaccount} star={true} classFormGroup="w-100"
                                             placeholder="เลขบัญชีธนาคาร" handleChange={(value) => setForm({ ...form, bankaccount: value })}
                                             handleInvalid={() => removeInvalid("bankaccount")} invalid={invalid.bankaccount}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                 </Row>
@@ -362,11 +382,13 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                         <InputText title="โทรศัพท์มือถือ" type="text" idName="phone1" value={form.phone1} star={true} classFormGroup="w-100"
                                             placeholder="โทรศัพท์มือถือ" handleChange={(value) => setForm({ ...form, phone1: value })}
                                             handleInvalid={() => removeInvalid("phone1")} invalid={invalid.phone1}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                     <Col span={12}>
                                         <InputText title="โทรศัพท์มือถือ (สำรอง)" type="text" idName="phone2" value={form.phone2} classFormGroup="w-100"
                                             placeholder="โทรศัพท์มือถือ (สำรอง)" handleChange={(value) => setForm({ ...form, phone2: value })}
+                                            disabled={waitForEdit}
                                         />
                                     </Col>
                                 </Row>
@@ -376,10 +398,12 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                         handleInvalid={() => {
                                             removeInvalid("email")
                                         }} invalid={invalid.email}
+                                        disabled={waitForEdit}
                                     />
                                 </div>
                                 <div className='mb-3'>
                                     < InputText
+                                        disabled={waitForEdit}
                                         title={`หมายเหตุ (${form.remark.length}/${remarkLenght})`} idName="remark"
                                         type="text"
                                         as={"textarea"} rows={2}
@@ -390,9 +414,9 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                                     />
                                 </div>
                                 <div className='mb-4 d-flex justify-content-end'>
-                                    <Row gutter={[20, 0]}>
+                                    <Row gutter={[10, 0]}>
                                         <Col>
-                                            <Button bg={'#96CC39'} color={'#fff'} onClick={() => { checkMember() }} disabled={checkOnChanged()}>{mode === 'add' ? "เพิ่มสมาชิก" : "บันทึก"}</Button>
+                                            <Button style={{ width: '80px' }} bg={waitForEdit ? 'orange' : '#96CC39'} color={'#fff'} onClick={() => { waitForEdit ? setOnEdit() : checkMember() }}>{mode === 'add' ? "เพิ่มสมาชิก" : waitForEdit ? "แก้ไข" : "บันทึก"}</Button>
                                         </Col>
                                         <Col>
                                             <Button bg={'#E72525'} color={'#fff'} onClick={() => { handleClose() }}>ยกเลิก</Button>
