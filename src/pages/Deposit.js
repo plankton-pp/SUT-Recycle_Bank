@@ -184,7 +184,7 @@ function Deposit() {
     }
 
     const sendReceipt = async () => {
-        if (String(form.Email).includes('@')) {
+        if (!String(form.Email).includes('@')) {
             MySwal.fire({
                 text: `บันทึกสำเร็จ`,
                 icon: "success",
@@ -335,6 +335,7 @@ function Deposit() {
                     setIsLoad(true)
                     const response = await API.addDeposit(dataToSave);
                     if (response.status === 200) {
+                        console.log('time to send receipt');
                         //if success
                         sendReceipt()
                     } else {
