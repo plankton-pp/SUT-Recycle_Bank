@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Spin, Button as ButtonIcon, } from 'antd'
+import { Spin, Button as ButtonIcon, Row, Col } from 'antd'
 import { DeleteOutlined, } from '@ant-design/icons'
+import InputText from '../components/InputText'
 import DataTable from '../components/DataTable'
 import BoxCard from '../components/BoxCard'
 import { Button } from '../components/styles/globalStyles'
@@ -47,11 +48,25 @@ function UserManagement() {
   const [isLoad, setIsLoad] = useState(false)
   const [userUnregist, setUserUnregist] = useState([])
   const [userRegisted, setUserRegistered] = useState([])
+  const [userUnregistFiltered, setUserUnregistFiltered] = useState([])
+  const [userRegistedFiltered, setUserRegisteredFiltered] = useState([])
+
   const [showModalAdd, setShowModalAdd] = useState(false)
+
+  const [searchEmpUnregistKeyword, setSearchEmpUnregistKeyword] = useState("");
+  const [searchEmpRegisteredKeyword, setSearchEmpRegisteredKeyword] = useState("");
 
   useEffect(() => {
     getEmpInformation()
   }, [])
+
+  useEffect(() => {
+    searchEmpUnregist(searchEmpUnregistKeyword)
+  }, [searchEmpUnregistKeyword])
+
+  useEffect(() => {
+    searchEmpRegistered(searchEmpRegisteredKeyword)
+  }, [searchEmpRegisteredKeyword])
 
   const getEmpInformation = async () => {
     try {
@@ -80,6 +95,8 @@ function UserManagement() {
           })
           setUserUnregist(newEmpArray)
           setUserRegistered(empArray)
+          setUserUnregistFiltered(newEmpArray)
+          setUserRegisteredFiltered(empArray)
           setIsLoad(false)
         } else {
           throw 'empty data'
@@ -119,6 +136,8 @@ function UserManagement() {
               confirmButtonColor: '#96CC39',
               confirmButtonText: "ตกลง",
             }).then(() => {
+              setUserRegisteredFiltered([])
+              setUserUnregistFiltered([])
               setUserRegistered([])
               setUserUnregist([])
               getEmpInformation()
@@ -141,6 +160,36 @@ function UserManagement() {
     }
   }
 
+  const refreshEmpUnregist = async () => {
+    setSearchEmpUnregistKeyword("")
+  }
+
+  const refreshEmpRegistered = async () => {
+    setSearchEmpRegisteredKeyword("")
+  }
+
+  const searchEmpUnregist = async (keyword) => {
+    try {
+      let filteredData = userUnregist.filter((item) => {
+        return String(item.employeeId).includes(keyword) || String(item.email).includes(keyword)
+      })
+      setUserUnregistFiltered(filteredData)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const searchEmpRegistered = async (keyword) => {
+    try {
+      let filteredData = userRegisted.filter((item) => {
+        return String(item.employeeId).includes(keyword) || String(item.firstname).includes(keyword)|| String(item.lastname).includes(keyword)|| String(item.phone).includes(keyword)|| String(item.email).includes(keyword)
+      })
+      setUserRegisteredFiltered(filteredData)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const buttonAdd = () => {
     return (<Button onClick={() => setShowModalAdd(true)} >เพิ่มเจ้าหน้าที่</Button>)
   }
@@ -152,6 +201,27 @@ function UserManagement() {
           {/* <h4>ข้อมูลเจ้าหน้าที่</h4> */}
           <div className='mt-3'>
             <h5 className='w-100 py-2 px-2' style={{ background: '#FFD365', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#FF9F45', borderRadius: '10px' }}>ยังไม่ทำการสมัครเข้าใช้งาน</span></h5>
+            <div>
+              <Row gutter={[10, 10]} className='mb-4'>
+                <Col>
+                  <div className='pt-2'>
+                    <h5>{`คำค้นหา:`}</h5>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <InputText type="text" idName="search-emp-unregistered-keyword"
+                    placeholder="รหัสสมาชิก, อีเมล" classLabel="bold"
+                    value={searchEmpUnregistKeyword}
+                    handleChange={(value) => {
+                      setSearchEmpUnregistKeyword(value)
+                    }}
+                  />
+                </Col>
+                <Col>
+                  <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshEmpUnregist() }}>ล้าง</Button>
+                </Col>
+              </Row>
+            </div>
             <DataTable
               columns={[...columns,
               {
@@ -165,7 +235,7 @@ function UserManagement() {
                 }
               },
               ]}
-              data={userUnregist}
+              data={userUnregistFiltered}
               limitPositionLeft={true}
               option={{
                 "showLimitPage": true,
@@ -175,9 +245,30 @@ function UserManagement() {
           </div>
           <div className='mt-3'>
             <h5 className='w-100 py-2 px-2' style={{ background: '#D3ECA7', borderRadius: '10px' }}><span className='px-2' style={{ color: 'white', backgroundColor: '#A1B57D', borderRadius: '10px' }}>สมัครเข้าใช้งานแล้ว</span></h5>
+            <div>
+              <Row gutter={[10, 10]} className='mb-4'>
+                <Col>
+                  <div className='pt-2'>
+                    <h5>{`คำค้นหา:`}</h5>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <InputText type="text" idName="search-emp-registered-keyword"
+                    placeholder="รหัสสมาชิก, ชื่อ, นามสกุล, โทรศัพท์มือถือ, อีเมล" classLabel="bold"
+                    value={searchEmpRegisteredKeyword}
+                    handleChange={(value) => {
+                      setSearchEmpRegisteredKeyword(value)
+                    }}
+                  />
+                </Col>
+                <Col>
+                  <Button className={'mr-2'} bg={'#3C3C3C'} width={'80px'} color={'#fff'} onClick={() => { refreshEmpRegistered() }}>ล้าง</Button>
+                </Col>
+              </Row>
+            </div>
             <DataTable
               columns={columns}
-              data={userRegisted}
+              data={userRegistedFiltered}
               limitPositionLeft={true}
               option={{
                 "showLimitPage": true,
