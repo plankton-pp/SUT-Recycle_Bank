@@ -34,6 +34,9 @@ function TransactionHistory() {
                 compare: (a, b) => a.createDate - b.createDate,
                 multiple: 1,
             },
+            render: (_, record) => {
+                return helper.dateElement(record.createDate)
+            },
         },
         {
             title: 'สถานะ',
@@ -85,6 +88,16 @@ function TransactionHistory() {
         }
     }
 
+    const getSign = (status) => {
+        if (status === "withdraw") {
+            return "- "
+        } else if (status === "deposit") {
+            return "+ "
+        } else {
+            return " "
+        }
+    }
+
     const getTransaction = async () => {
         try {
             const response = await API.getTransaction();
@@ -94,14 +107,16 @@ function TransactionHistory() {
                 //loop
                 if (data) {
                     data.forEach((item, index) => {
-                        filteredData.push({
-                            key: index + 1,
-                            user: item.Firstname + " " + item.Lastname,
-                            type: <h6 style={{ color: getStatusColor(item.Type) }}>{getTypeStatus(item.Type)}</h6>,
-                            amount: Number(item.Amount).toFixed(2),
-                            createDate: item.Create_Date,
-                            createBy: item.Create_By,
-                        })
+                        if (item.Type !== "sum") {
+                            filteredData.push({
+                                key: index + 1,
+                                user: item.Firstname + " " + item.Lastname,
+                                type: <h6 style={{ color: getStatusColor(item.Type) }}>{getTypeStatus(item.Type)}</h6>,
+                                amount: <h6 style={{ color: getStatusColor(item.Type) }}>{getSign(item.Type)}{Number(item.Amount).toFixed(2)}</h6>,
+                                createDate: item.Create_Date,
+                                createBy: item.Create_By,
+                            })
+                        }
                     });
                     setContentTab(filteredData)
                 }
