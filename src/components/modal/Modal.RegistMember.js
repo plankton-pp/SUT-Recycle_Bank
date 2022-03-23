@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { Row, Col, Spin } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 
 import { useHistory, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
@@ -290,6 +291,44 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
 
     }
 
+    const toDeleteMember = (memberId) => {
+        MySwal.fire({
+            html: <span><h5>ยืนยันการลบข้อมูล</h5><h5 style={{ color: 'red' }}>{form.firstname + ' ' + form.lastname}</h5></span>,
+            icon: 'warning',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก"
+        }).then(async (value) => {
+            if (value.isConfirmed) {
+                try {
+                    // const response = {status: 200}
+                    const response = await API.deleteMemberById(memberId)
+                    if (response.status == 200) {
+                        MySwal.fire({
+                            text: "ลบข้อมูลสมาชิกเรียบร้อย" + memberId,
+                            icon: 'success',
+                            confirmButtonColor: '#96CC39',
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
+                            handleClose()
+                        })
+                    } else {
+                        throw response.status
+                    }
+                } catch (error) {
+                    MySwal.fire({
+                        html: '<h6>ระบบไม่สามารถลบข้อมูลสมาชิกได้<br />กรุณาทำรายการอีกครั้ง<h6>',
+                        icon: "error",
+                        showConfirmButton: true,
+                        confirmButtonText: "ตกลง",
+                    })
+                }
+
+            }
+        })
+    }
+
     const setOnEdit = () => {
         MySwal.fire({
             text: "ยืนยันการแก้ไขข้อมูล",
@@ -320,6 +359,7 @@ function ModalRegisterMember({ show, close, save, data, mode }) {
                             <div className='m-3'>
                                 <div className=" mb-3 d-flex justify-content-between align-items-center">
                                     <h1 className='logo mt-3'>{mode === 'add' ? 'เพิ่มสมาชิก' : waitForEdit ? 'รายละเอียดสมาชิก' : 'แก้ไขข้อมูลสมาชิก'}</h1>
+                                    <Button bg={'red'} color={'#fff'} onClick={() => toDeleteMember(data)}><DeleteOutlined style={{ verticalAlign: 'none' }} /><span>{' ลบข้อมูลสมาชิก'}</span></Button>
                                 </div>
                                 <Row gutter={[10, 0]} className='mb-3'>
                                     <Col span={12}>
