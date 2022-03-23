@@ -251,8 +251,10 @@ function ManageTypes() {
             disabled: false,
             status: 'add',
         };
+        let newTab = [...contentTab]
+        newTab.unshift(newRecord)
         setOnEditKey(contentTab.length + 1)
-        setContentTab([...contentTab, newRecord])
+        setContentTab(newTab)
     }
 
     const handleSave = (typeForm) => {

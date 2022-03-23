@@ -108,6 +108,10 @@ export const updateMemberById = async (data) => {
   return await httpClient.put(`/api/v1/member/`, data);
 }
 
+export const deleteMemberById = async (id) => {
+  return await httpClient.delete(`/api/v1/member/${id}`);
+}
+
 //=================== API: Fee
 export const getLastFee = async () => {
   return await httpClient.get(`/api/v1/fee/lastfee`);

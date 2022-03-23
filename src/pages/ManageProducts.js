@@ -418,8 +418,10 @@ function ManageProducts() {
             pricePerUnit: 0.00,
             feeid: '0'
         };
+        let newTab = [...contentTab]
+        newTab.unshift(newRecord)
         setOnEditKey(contentTab.length + 1)
-        setContentTab([...contentTab, newRecord])
+        setContentTab(newTab)
     }
 
     const handleSave = (prodsForm) => {

@@ -71,6 +71,13 @@ function Audit() {
             title: 'วันที่ทำรายการฝาก',
             dataIndex: 'createDate',
             align: 'center',
+            sorter: {
+                compare: (a, b) => a.createDate - b.createDate,
+                multiple: 1,
+            },
+            render: (_, record) => {
+                return helper.dateElement(record.createDate)
+            },
         },
     ];
     const initForm = {
